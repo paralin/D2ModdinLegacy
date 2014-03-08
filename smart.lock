@@ -1,0 +1,66 @@
+{
+  "meteor": {},
+  "dependencies": {
+    "basePackages": {
+      "streams": {},
+      "iron-router": {},
+      "bootstrap-3": {},
+      "iron-router-auth": {},
+      "user-status": {},
+      "pnotify": {},
+      "steam": {
+        "git": "https://github.com/kidovate/meteor-steam.git",
+        "branch": "master"
+      },
+      "accounts-steam": {},
+      "iron-router-progress": {}
+    },
+    "packages": {
+      "streams": {
+        "git": "https://github.com/arunoda/meteor-streams.git",
+        "tag": "v0.1.17",
+        "commit": "9fcbbc9b7bf542827babc92089c19e730892a22f"
+      },
+      "iron-router": {
+        "git": "https://github.com/EventedMind/iron-router.git",
+        "tag": "v0.6.4",
+        "commit": "927bbaed1b87894fb6fb70807f74ff3a5bd89f29"
+      },
+      "bootstrap-3": {
+        "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
+        "tag": "v3.1.1-1",
+        "commit": "63dd38968828bb8963636df93e9a1c45e2dfe67e"
+      },
+      "iron-router-auth": {
+        "git": "https://github.com/XpressiveCode/iron-router-auth.git",
+        "tag": "v0.1.2",
+        "commit": "986b3bf9fbd1cb778d632188594245339bafc569"
+      },
+      "user-status": {
+        "git": "https://github.com/mizzao/meteor-user-status.git",
+        "tag": "v0.2.0",
+        "commit": "e18cc48440710d0ac23bd1a578974f9142226bf4"
+      },
+      "pnotify": {
+        "git": "https://github.com/kidovate/meteor-pnotify.git",
+        "tag": "v0.1.2",
+        "commit": "f18629c517529f535fddc85ca96624742e795acc"
+      },
+      "steam": {
+        "git": "https://github.com/kidovate/meteor-steam.git",
+        "branch": "master",
+        "commit": "f5a2d2b82aee684b2015bc9ead87f5645a12d070"
+      },
+      "accounts-steam": {
+        "git": "https://github.com/Multiply/meteor-accounts-steam.git",
+        "tag": "v0.0.1",
+        "commit": "29e8b70d047871fc201c475c763e60d87b16ddcc"
+      },
+      "iron-router-progress": {
+        "git": "https://github.com/Multiply/iron-router-progress.git",
+        "tag": "v0.2.0",
+        "commit": "ce730d1d26feadb7c75ea25f22c5bfdb0c549a8b"
+      }
+    }
+  }
+}
