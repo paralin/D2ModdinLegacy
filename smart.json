@@ -6,10 +6,7 @@
     "iron-router-auth": {},
     "user-status": {},
     "pnotify": {},
-    "steam": {
-      "git": "https://github.com/kidovate/meteor-steam.git"
-    },
-    "accounts-steam": {},
-    "iron-router-progress": {}
+    "iron-router-progress": {},
+    "dota2": {}
   }
 }

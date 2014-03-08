@@ -8,12 +8,8 @@
       "iron-router-auth": {},
       "user-status": {},
       "pnotify": {},
-      "steam": {
-        "git": "https://github.com/kidovate/meteor-steam.git",
-        "branch": "master"
-      },
-      "accounts-steam": {},
-      "iron-router-progress": {}
+      "iron-router-progress": {},
+      "dota2": {}
     },
     "packages": {
       "streams": {
@@ -46,20 +42,15 @@
         "tag": "v0.1.2",
         "commit": "f18629c517529f535fddc85ca96624742e795acc"
       },
-      "steam": {
-        "git": "https://github.com/kidovate/meteor-steam.git",
-        "branch": "master",
-        "commit": "f5a2d2b82aee684b2015bc9ead87f5645a12d070"
-      },
-      "accounts-steam": {
-        "git": "https://github.com/Multiply/meteor-accounts-steam.git",
-        "tag": "v0.0.1",
-        "commit": "29e8b70d047871fc201c475c763e60d87b16ddcc"
-      },
       "iron-router-progress": {
         "git": "https://github.com/Multiply/iron-router-progress.git",
         "tag": "v0.2.0",
         "commit": "ce730d1d26feadb7c75ea25f22c5bfdb0c549a8b"
+      },
+      "dota2": {
+        "git": "https://github.com/kidovate/meteor-dota2.git",
+        "tag": "v0.0.1",
+        "commit": "68ffdbf9cc0edfd7f3f30aad16b1b041646ba8fb"
       }
     }
   }
