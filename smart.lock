@@ -49,8 +49,8 @@
       },
       "dota2": {
         "git": "https://github.com/kidovate/meteor-dota2.git",
-        "tag": "v0.0.1",
-        "commit": "68ffdbf9cc0edfd7f3f30aad16b1b041646ba8fb"
+        "tag": "v0.0.5",
+        "commit": "9d25efc0b0d25b8f01f769608f3582ebc8e3094a"
       }
     }
   }
