@@ -1,0 +1,12 @@
+{
+  "packages": {
+    "streams": {},
+    "iron-router": {},
+    "bootstrap-3": {},
+    "iron-router-auth": {},
+    "user-status": {},
+    "pnotify": {},
+    "accounts-steam": {},
+    "iron-router-progress": {}
+  }
+}
