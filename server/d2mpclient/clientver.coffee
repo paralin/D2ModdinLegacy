@@ -13,4 +13,4 @@ Router.map ->
     action: ->
       info = clientParams.findOne({stype: "version"})
       @response.writeHead 200, {'Content-Type': 'text/html'}
-      @response.end 'version:'+info.version+'|url:'+info.url
+      @response.end 'version:'+info.version+'|'+info.url
