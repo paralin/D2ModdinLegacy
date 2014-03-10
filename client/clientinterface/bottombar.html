@@ -1,14 +1,18 @@
 <template name="bottomBar">
+{{#if currentUser}}
 <div class="statusBar">
   <div class="left">
     <i class="fa fa-tachometer"></i>
     <span class="status">{{status}}</span>
 
   </div>
+  {{#if showDLButton}}
   <div class="rightButtons">
     <button class="btn btn-success launchmm">
       Launch Mod Manager
     </button>
   </div>
+  {{/if}}
 </div>
+{{/if}}
 </template>
