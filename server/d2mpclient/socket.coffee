@@ -1,6 +1,6 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
-clientVersion = "0.0.7"
+clientVersion = "0.1.0"
 
 Meteor.startup ->
   clients.remove({})

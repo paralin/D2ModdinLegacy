@@ -3,8 +3,8 @@ Meteor.startup ->
   if clientParams.find({stype: "version"}).count() < 1
     clientParams.insert
       stype: "version"
-      version: "0.0.7"
-      url: "https://s3-us-west-2.amazonaws.com/d2mpclient/0.0.7.zip"
+      version: "0.1.0"
+      url: "https://s3-us-west-2.amazonaws.com/d2mpclient/0.1.0.zip"
 
 Router.map ->
   @route 'clientver',
