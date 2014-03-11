@@ -9,13 +9,13 @@ Meteor.publish "clientProgram", ->
   if !@userId?
     return clients.find({secretproperty: "yupnothappening"})
   user = Meteor.users.findOne({_id: @userId})
-  clients.find({steamID: user.services.steam.id})
+  clients.find({steamIDs: user.services.steam.id})
 
 @clientServer = new ws({port: 3005})
 clientServer.on 'connection', (ws)->
   ourID = null
   clientObj =
-    steamID: null
+    steamIDs: []
     installedMods: []
     status: 0
   new Fiber(->
@@ -25,19 +25,19 @@ clientServer.on 'connection', (ws)->
   console.log "new clientEXE connected"
   ws.on 'message', (msg)->
     splitMsg = msg.split ':'
-    # should be 2 parts
     if splitMsg.length < 2
       return
     if splitMsg[0] is 'init'
-      steamID = splitMsg[1]
-      steamID = steamID.replace(/\D/g,'')
-      if steamID.length != 17
-        ws.send 'invalidid'
-        return
       if splitMsg[2] != clientVersion
         clientObj.status = 1
-      console.log "client steamID is "+steamID
-      clientObj.steamID = steamID
+      for steamID in splitMsg[1].split(',')
+        steamID = steamID.replace(/\D/g,'')
+        if steamID.length != 17
+          #ws.send 'invalidid'
+          return
+        console.log "client steamID: "+steamID
+        if clientObj.steamIDs.indexOf(steamID) is -1
+          clientObj.steamIDs.push(steamID)
       new Fiber(()->
         clients.update {_id: ourID}, clientObj
       ).run()
