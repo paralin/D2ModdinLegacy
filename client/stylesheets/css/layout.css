@@ -105,6 +105,11 @@ body.boxed footer {
     z-index:300;
   }
 
+  .navActiveB{
+    font-weight:bold;
+    color: black;
+  }
+
   header#topNav div.nav-main-collapse,
   header#topNav div.nav-main-collapse.in {
     overflow-y: visible;

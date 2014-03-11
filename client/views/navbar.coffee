@@ -1,6 +1,6 @@
 Template.navbar.helpers
-  activeRouteClass: (path)->
+  ar: (path)->
     route = Router.current()
     if !route?
       return
-    return "active" if(route.route.name == path)
+    return "navActiveB" if(route.route.name == path)
