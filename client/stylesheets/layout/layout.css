@@ -23,7 +23,7 @@ body {
 }
 
 #wrapper {
-  padding:92px 0; 	/* top nav height */
+  padding:75px 0; 	/* top nav height */
   z-index:98;			/* under top nav */
   min-height:57vh;	/* keep footer at bottom on empty page */
   position:relative;
@@ -49,185 +49,185 @@ body.boxed footer {
   margin:auto;
   max-width:1170px;
 }
-  #header_shadow {
-    background:url('../images/header_shadow.png') no-repeat top center;
-    position:fixed;
-    top:75px; left:0; right:0;
-    height:75px; 
-    z-index:99; /* same with header#page-title .container */
-  }
+#header_shadow {
+  background:url('../images/header_shadow.png') no-repeat top center;
+  position:fixed;
+  top:75px; left:0; right:0;
+  height:75px; 
+  z-index:99; /* same with header#page-title .container */
+}
 
-  header#topHead {
-    height:40px;
-    line-height:40px;
-    overflow:hidden;
+header#topHead {
+  height:40px;
+  line-height:40px;
+  overflow:hidden;
 
-    position:relative;
-    top: 0; left:0; right:0; /* do not remove - position:fixed added by javascript */
-    background-color:#fff;
-    z-index:101;
+  position:relative;
+  top: 0; left:0; right:0; /* do not remove - position:fixed added by javascript */
+  background-color:#fff;
+  z-index:101;
 
-    border-bottom:#eee 1px solid;
-  }
+  border-bottom:#eee 1px solid;
+}
 
-  header#topHead a.social {
-    margin:1px 0 0 1px;
-  }
+header#topHead a.social {
+  margin:1px 0 0 1px;
+}
 
-  header#topHead .nav {
-    margin-right:10px;
-  }
-  header#topHead .nav a {
-    color:#999;
-    font-size:13px;
-    padding-right:10px;
-  }
-  header#topNav.topHead {
-    top:40px;
-  }
-  header#topNav {
-    background:#fff;
-    padding:16px 0;
-    position:fixed;
-    top: 0; left:0; right:0;
-    width:100%;
-    z-index:100; /* always on top */
+header#topHead .nav {
+  margin-right:10px;
+}
+header#topHead .nav a {
+  color:#999;
+  font-size:13px;
+  padding-right:10px;
+}
+header#topNav.topHead {
+  top:40px;
+}
+header#topNav {
+  background:#fff;
+  padding:16px 0;
+  position:fixed;
+  top: 0; left:0; right:0;
+  width:100%;
+  z-index:100; /* always on top */
 
-    border-bottom:#F4F5F7 1px solid;
-    box-shadow:#eee 0 0 8px;
-    height: 75px;
-  }
-  header#topNav.hasTopHead {
-    top:40px !important;
-  }
+  border-bottom:#F4F5F7 1px solid;
+  box-shadow:#eee 0 0 8px;
+  height: 75px;
+}
+header#topNav.hasTopHead {
+  top:40px !important;
+}
 
-  header#topNav div.nav-main-collapse {
-    z-index:300;
-  }
+header#topNav div.nav-main-collapse {
+  z-index:300;
+}
 
-  .navActiveB{
-    font-weight:bold;
-    color: black;
-  }
+.navActiveB{
+  font-weight:bold;
+  color: black;
+}
 
-  header#topNav div.nav-main-collapse,
-  header#topNav div.nav-main-collapse.in {
-    overflow-y: visible;
-  }
+header#topNav div.nav-main-collapse,
+header#topNav div.nav-main-collapse.in {
+  overflow-y: visible;
+}
 
-  header#topNav div.nav-main-collapse.in {
-    overflow-y: visible;
-    float: none;
-    margin: 0;
-  }
+header#topNav div.nav-main-collapse.in {
+  overflow-y: visible;
+  float: none;
+  margin: 0;
+}
 
-  header#topNav nav ul.nav-main {
-    margin: -7px 10px 8px 0;
-    z-index:300;
-  }
+header#topNav nav ul.nav-main {
+  margin: -7px 10px 8px 0;
+  z-index:300;
+}
 
-  header#topNav nav ul.nav-main i.icon-caret-down {
-    background: transparent;
-    border-radius: 100%;
-    color: #ADB0AD;
-    display: inline-block;
-    font-size: 12px;
-    height: 14px;
-    line-height: 15px;
-    position: relative;
-    text-align: center;
-    top: -1px;
-    width: 14px;
-  }
+header#topNav nav ul.nav-main i.icon-caret-down {
+  background: transparent;
+  border-radius: 100%;
+  color: #ADB0AD;
+  display: inline-block;
+  font-size: 12px;
+  height: 14px;
+  line-height: 15px;
+  position: relative;
+  text-align: center;
+  top: -1px;
+  width: 14px;
+}
 
-  header#topNav nav ul.nav-main > li + li {
-    margin-left: -4px;
-  }
+header#topNav nav ul.nav-main > li + li {
+  margin-left: -4px;
+}
 
-  header#topNav nav ul.nav-main li a {
-    background: none;
-    font-style: normal;
-    line-height: 20px;
-    color: #9C9C9C;
-    font-weight: 100;
-    position: relative;
-    font-size: 1.1em;
-  }
+header#topNav nav ul.nav-main li a {
+  background: none;
+  font-style: normal;
+  line-height: 20px;
+  color: #9C9C9C;
+  font-weight: 100;
+  position: relative;
+  font-size: 1.1em;
+}
 
-  header#topNav nav ul.nav-pills > li > a,
-  header#topNav nav ul.nav-pills > li > a:hover,
-  header#topNav nav ul.nav-pills > li > a:focus,
-  header#topNav nav ul.nav-pills > li.active > a,
-  header#topNav nav ul.nav-pills > li.active > a:hover,
-  header#topNav nav ul.nav-pills > li.active > a:focus {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
+header#topNav nav ul.nav-pills > li > a,
+header#topNav nav ul.nav-pills > li > a:hover,
+header#topNav nav ul.nav-pills > li > a:focus,
+header#topNav nav ul.nav-pills > li.active > a,
+header#topNav nav ul.nav-pills > li.active > a:hover,
+header#topNav nav ul.nav-pills > li.active > a:focus {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
 
-    border: 0;
-    background: none;
-  }
+  border: 0;
+  background: none;
+}
 
-  header#topNav nav ul.nav-main li ul a {
-    text-transform: none;
-    font-weight: normal;
-    font-size: 0.9em;
-  }
+header#topNav nav ul.nav-main li ul a {
+  text-transform: none;
+  font-weight: normal;
+  font-size: 0.9em;
+}
 
-  header#topNav nav ul.nav-main li.dropdown:hover > a {
-    padding-bottom: 11px;
-    margin-bottom: -1px;
-    position: relative;
-  }
+header#topNav nav ul.nav-main li.dropdown:hover > a {
+  padding-bottom: 11px;
+  margin-bottom: -1px;
+  position: relative;
+}
 
-  header#topNav nav ul.nav-main li.dropdown:hover > a:after {
-    content: " ";
-    display: block;
-    position: absolute;
-    width: 0; height: 0;
-    left: 40%; bottom: -3px;
+header#topNav nav ul.nav-main li.dropdown:hover > a:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 0; height: 0;
+  left: 40%; bottom: -3px;
 
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-  }
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
 
-  header#topNav nav ul.nav-main li.dropdown:hover a.dropdown-toggle {
-    -webkit-border-radius: 5px 5px 0px 0px;
-    -moz-border-radius: 5px 5px 0px 0px;
-    border-radius: 5px 5px 0px 0px;
-  }
+header#topNav nav ul.nav-main li.dropdown:hover a.dropdown-toggle {
+  -webkit-border-radius: 5px 5px 0px 0px;
+  -moz-border-radius: 5px 5px 0px 0px;
+  border-radius: 5px 5px 0px 0px;
+}
 
-  header#topNav nav ul.nav-main li.dropdown:hover > ul {
-    display: block;
-    z-index:300;
-  }
-  header#topNav li.divider {
-    border:0;
-    border-bottom:#465260 1px solid;
-    border-top:#1B1F23 1px solid;
-    padding:1;
-  }
-  header#topNav li a i.fa {
-    padding-right:6px;
-  }
-  header#topNav li a em {
-    color:#fff;
-  }
-  header#topNav a.logo {
-    color:#333;
-    text-decoration:none;
-    font-size:35px;
-    display:inline-block;
-    margin-left: 20px;
-    margin-top: 5px;
-    height:60px; line-height:25px;
-    font-weight:600;
-    letter-spacing:-2px;
-  }
+header#topNav nav ul.nav-main li.dropdown:hover > ul {
+  display: block;
+  z-index:300;
+}
+header#topNav li.divider {
+  border:0;
+  border-bottom:#465260 1px solid;
+  border-top:#1B1F23 1px solid;
+  padding:1;
+}
+header#topNav li a i.fa {
+  padding-right:6px;
+}
+header#topNav li a em {
+  color:#fff;
+}
+header#topNav a.logo {
+  color:#333;
+  text-decoration:none;
+  font-size:35px;
+  display:inline-block;
+  margin-left: 20px;
+  margin-top: 5px;
+  height:60px; line-height:25px;
+  font-weight:600;
+  letter-spacing:-2px;
+}
 
 
-  /** 04. Slider
-   **************************************************************** **/
+/** 04. Slider
+ **************************************************************** **/
   #slider * { color:#fff; }
   #slider {
     color:#fff;
@@ -473,18 +473,9 @@ body.boxed footer {
   body.boxed #slider .image-caption {
     left:30%;
   }
-
-
-
-
-
-
-  /** 05. Content
-   **************************************************************** **/
-  /* page title */
   header#page-title {
     color:#fff;
-    padding:20px 0;
+    padding:20px 30px;
     background:#ddd;
     position:relative;
     margin-bottom:40px;
