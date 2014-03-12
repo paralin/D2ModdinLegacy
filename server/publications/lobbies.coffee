@@ -4,6 +4,7 @@ Meteor.publish "lobbyList", ->
   lobbies.find
     public: true
     isMatchmaking: false
+    status: {$lt: 1}
   ,
     fields:
       name: 1
@@ -11,11 +12,12 @@ Meteor.publish "lobbyList", ->
       mod: 1
       creator: 1
 
-Meteor.publish "lobbyDetail", ->
-  if !@userId
-    return
+Meteor.publish "lobbyDetails", ->
+  #if !@userId
+  #  return
   lobbies.find
     $or: [{"radiant._id": @userId}, {"dire._id": @userId}]
+    status: {$ne: 3}
   ,
     fields:
       name: 1
@@ -26,3 +28,6 @@ Meteor.publish "lobbyDetail", ->
       serverIP: 1
       status: 1
       requiresFullLobby: 1
+      creatorid: 1
+      radiant: 1
+      dire: 1

@@ -4,7 +4,11 @@
     <h1 class="text-center">
       <strong>Lobby</strong> List
       <span class="subtitle">Join or create a game lobby to start playing.</span>
-      {{#if hasMod}}<span class="subtitle">Filtered to mod: {{mod}}.</span>{{/if}}
+      {{#if hasMod}}
+      <span class="subtitle"><strong>Filtered</strong> to: {{mod}}.</span>
+      <a href="{{pathFor 'lobbyList'}}" class="btn btn-primary">Show All Lobbies</a><br/>
+      {{/if}}
+      <button class="btn createLobbyBtn">Create a Lobby</button>
     </h1>
   </section>
   <div id="mods">

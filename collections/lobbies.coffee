@@ -7,6 +7,7 @@
 #   - public -> true
 #   - mod -> "fof"
 #   - creator -> "Nigma" (IF isMatchmaking == false)
+#   - creatorid -> "userid"
 #   - radiant -> [{_id: id, name: "Quantum", avatar: "someshit"}]
 #   - dire -> same thing
 #   - invitedPlayers -> [user ID array]
