@@ -1,0 +1,21 @@
+<template name="modDetail">
+{{#with mod}}
+<div id="modDetail" style="pointer-events: none; background:url('{{spreadimage}}') no-repeat center center fixed;">
+</div>
+<div class="container titleContainer" style="margin-top: 75px;">
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="description-texts">
+        <h1 class="site-slogan"><span style="line-height:5px">{{fullname}}</span></h1>
+        <p class="app-description">
+        {{#each features}}
+        <span>{{this}}</span><br>
+        {{/each}}
+        </p>
+        <a class="btn btn-success" href="{{playNow}}">Play Now!</a>
+      </div>
+    </div>
+  </div>
+</div>
+{{/with}}
+</template>
