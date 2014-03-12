@@ -1,4 +1,39 @@
 <template name="lobbyList">
-  <h1>Welcome to the lobbyList template</h1>
-  <p>You can edit me in <b>client/views/lobby_list/lobby_list.html</b></p>
+<div id="wrapper">
+  <section class="container text-center" style="margin-top: 30px;">
+    <h1 class="text-center">
+      <strong>Lobby</strong> List
+      <span class="subtitle">Join or create a game lobby to start playing.</span>
+      {{#if hasMod}}<span class="subtitle">Filtered to mod: {{mod}}.</span>{{/if}}
+    </h1>
+  </section>
+  <div id="mods">
+    <section class="container">
+      <div class="row">
+        <table class="table">
+        <thead>
+          <tr>
+            <th style="width: 50px">Password</th>
+            <th>Name</th>
+            <th>Mod</th>
+            <th>Host</th>
+            <th>Join</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{#each lobbies}}
+        <tr>
+          <td><input type="checkbox" {{#if hasPassword}}checked{{/if}} disabled/></td>
+          <td>{{name}}</td>
+          <td>{{mod}}</td>
+          <td>{{creator}}</td>
+          <td><button class="btn btn-success joinBtn">Join</button></td>
+        </tr>
+        {{/each}}
+        </tbody>
+      </table>
+      </div>
+    </section>
+  </div>
+</div>
 </template>

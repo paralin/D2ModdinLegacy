@@ -10,7 +10,8 @@
       "pnotify": {},
       "iron-router-progress": {},
       "dota2": {},
-      "font-awesome": {}
+      "font-awesome": {},
+      "roles": {}
     },
     "packages": {
       "streams": {
@@ -57,6 +58,11 @@
         "git": "https://github.com/nate-strauser/meteor-font-awesome.git",
         "tag": "v4.0.3",
         "commit": "61e9361384347547ae144f8228faa4deffda23db"
+      },
+      "roles": {
+        "git": "https://github.com/alanning/meteor-roles.git",
+        "tag": "v1.2.6",
+        "commit": "f2a9058281f8f2fe028767841d7445aadd6893cf"
       }
     }
   }
