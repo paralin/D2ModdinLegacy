@@ -1,3 +1,9 @@
+#Monitor user events
+Meteor.startup ->
+  Meteor.users.find({"status.online": false}).observeChanges
+    added: (id, fields)->
+      leaveLobby(id)
+
 setPlayerTeam = (lobby, uid, tteam)->
   return if !lobby?
   index = _.findWhere(lobby.radiant, {_id: uid})
