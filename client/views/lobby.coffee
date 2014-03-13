@@ -7,6 +7,8 @@ pushChatMessage = (msg)->
   box = $(".chatBox")
   box.val(box.val()+"\n"+msg)
   console.log "chat message: "+msg
+  #scroll down
+  box.scrollTop(box[0].scrollHeight)
 
 Meteor.startup ->
   Deps.autorun -> #Detect if we're in a lobby
