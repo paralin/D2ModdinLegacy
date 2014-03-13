@@ -1,6 +1,6 @@
 Template.lobbyList.events
   "click .joinBtn": ->
-    Router.go(Router.routes["lobby"].path({id: @_id}))
+    Meteor.call "joinLobby", @_id
   "click .createLobbyBtn": ->
     $.pnotify
       title: "Creating lobby..."
