@@ -1,8 +1,11 @@
 #Constants
 radiantSlots = 5
 direSlots = 5
+Template.lobby.lobby = ->
+  lobbies.findOne()
 Template.lobby.status = ->
   lobby = lobbies.findOne()
+  return if !lobby?
   switch lobby.status
     when 0 then return "Waiting for players..."
     when 1 then return "Searching for a server..."
@@ -13,6 +16,7 @@ Template.lobby.events
     Meteor.call "switchTeam", @team
 Template.lobby.emptySlotR = ->
   lobby = lobbies.findOne()
+  return if !lobby?
   slots = []
   i = 0
   while i < (radiantSlots-lobby.radiant.length)
@@ -21,10 +25,10 @@ Template.lobby.emptySlotR = ->
   slots
 Template.lobby.emptySlotD = ->
   lobby = lobbies.findOne()
+  return if !lobby?
   slots = []
   i = 0
   while i < (direSlots-lobby.dire.length)
     slots.push({team: "dire"})
     i++
   slots
-

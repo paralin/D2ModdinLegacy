@@ -2,7 +2,7 @@
 <div id="wrapper">
   <section class="container text-center" style="margin-top: 30px;">
     <h1 class="text-center">
-      <strong>{{name}}</strong>
+      <strong>{{lobby.name}}</strong>
       <span class="subtitle">{{status}}</span>
     </h1>
   </section>
@@ -13,7 +13,7 @@
       </div>
       <table class="table table-striped">
         <tbody>
-        {{#each radiant}}
+        {{#each lobby.radiant}}
         <tr><td>{{name}}</td></tr>
         {{/each}}
         {{#each emptySlotR}}
@@ -28,7 +28,7 @@
       </div>
       <table class="table table-striped">
         <tbody>
-        {{#each dire}}
+        {{#each lobby.dire}}
         <tr><td>{{name}}</td></tr>
         {{/each}}
         {{#each emptySlotD}}

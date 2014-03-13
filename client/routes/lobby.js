@@ -34,9 +34,6 @@ Router.map(function () {
           $.pnotify({title:"Joined Lobby", text: "Welcome to the lobby.", type: "success", delay: 1500, closer: false, sticker: false})
         }
       });
-    },
-    data: function(){
-      return lobbies.findOne();
-    },
+    }
   });
 });
