@@ -4,6 +4,10 @@ Meteor.startup ->
     added: (id, fields)->
       #leaveLobby(id)
 
+@findUserLobby = (userId)->
+  lobbies.findOne
+    $or: [{creatorid: userId}, {"radiant._id": userId}, {"dire._id": userId}]
+    status: {$lt: 2}
 setPlayerTeam = (lobby, uid, tteam)->
   return if !lobby?
   index = _.findWhere(lobby.radiant, {_id: uid})
@@ -49,9 +53,7 @@ internalRemoveFromLobby = (userId, lobby)->
   return if !userId?
   user = Meteor.users.findOne({_id: userId})
   return if !user?
-  lobby = lobbies.findOne
-    $or: [{"radiant._id": userId}, {"dire._id": userId}]
-    status: 2
+  lobby = findUserLobby(userId)
   if lobby.isMatchmaking
     console.log "user abandoned matchmaking game: "+userId
     #Various peanalties here
@@ -63,9 +65,7 @@ isIngame = (userId)->
   return if !userId?
   user = Meteor.users.findOne({_id: userId})
   return if !user?
-  lobby = lobbies.findOne
-    $or: [{"radiant._id": userId}, {"dire._id": userId}]
-    status: 2
+  lobby = findUserLobby(userId)
   return lobby?
 
 @leaveLobby = (userId)->
@@ -148,8 +148,6 @@ Meteor.methods
     return createLobby(@userId)
   "switchTeam": (team)->
     return if !@userId?
-    lobby = lobbies.findOne
-      $or: [{creatorid: @userId}, {"radiant._id": @userId}, {"dire._id": @userId}]
-      status: {$lt: 2}
+    lobby = findUserLobby(@userId)
     return if !lobby?
     setPlayerTeam lobby, @userId, team

@@ -1,19 +1,41 @@
 #Constants
 radiantSlots = 5
 direSlots = 5
-
-#Detect if we're in a lobby
+streamSetup = false
 Meteor.startup ->
-  Deps.autorun ->
+  Deps.autorun -> #Detect if we're in a lobby
     lobby = lobbies.findOne({status: {$ne: null}})
     return if !lobby?
     route = Router.current()
     return if !route?
     if route.route.name isnt "lobby"
       Router.go Router.routes["lobby"].path({id: lobby._id})
+  Deps.autorun -> #Chat callbacks
+    lobby = lobbies.findOne({status: {$ne: null}})
+    if !lobby?
+      streamSetup = false
+      return
+    return if streamSetup
+    route = Router.current()
+    return if !route?
+    return if route.route.name isnt "lobby"
+    return if !chatStream?
+    streamSetup = true
+    chatStream.on "message", (msg)->
+      box = $(".chatBox")
+      box.val(box.val()+"\n"+msg)
+      console.log "chat message: "+msg
+
+Template.lobbyChat.events
+  'keypress #chatInput': (evt, template)->
+    if evt.which is 13
+      text = template.find(".newLink").value
+      template.find(".newLink").value = ""
+      Session.get("chatStream").emit("message", text)
 
 Template.lobby.lobby = ->
   lobbies.findOne()
+
 Template.lobby.status = ->
   lobby = lobbies.findOne()
   return if !lobby? or !lobby.status?

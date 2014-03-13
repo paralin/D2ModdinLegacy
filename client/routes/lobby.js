@@ -6,6 +6,7 @@ Meteor.startup(function(){
     Meteor.call("leaveLobby");
   });
 });
+chatStream = null;
 Router.map(function () {
   this.route("lobby", {
     path: "/lobby/:id",
@@ -14,7 +15,19 @@ Router.map(function () {
       name: 'loggingIn',
       shouldRoute: false
     },
+    unload: function(){
+      if(chatStream != null)
+      {
+        chatStream.close();
+        chatStream = null;
+        Session.set("chatStream", null);
+      }
+    },
     load: function(){
+      //Get chat stream
+      chatStream = new Meteor.Stream(this.params.id); 
+      console.log(chatStream)
+      Session.set("chatStream",chatStream);
       //check if already in lobby
       var lobby = lobbies.findOne({status: {$ne: null}}, {reactive: false});
       if(lobby == null){

@@ -38,5 +38,18 @@
       </table>
     </div>
   </div>
+  {{>lobbyChat}}
+</div>
+</template>
+<template name="lobbyChat">
+<div class="chatRow">
+  <div class="col-md-6 chatCol">
+    <div style="text-align: center; font-weight: bold">Chat</div>
+    {{#isolate}}
+    <textarea style="width:100%;height:150px;resize:none" class="form-control chatBox" readonly="readonly">
+    </textarea>
+    {{/isolate}}
+    <input style="width: 100%;margin-top:5px" class="form-control" id="chatInput"/>
+  </div>
 </div>
 </template>
