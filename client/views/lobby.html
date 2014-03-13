@@ -3,7 +3,7 @@
   <section class="container text-center" style="margin-top: 30px;">
     <h1 class="text-center">
       <strong>{{lobby.name}}</strong>
-      <span class="subtitle">{{status}}</span>
+      <span class="subtitle" style="margin-top:10px">{{status}}</span>
     </h1>
   </section>
   <div class="teamRow">
@@ -38,16 +38,13 @@
       </table>
     </div>
   </div>
-  {{>lobbyChat}}
-</div>
-</template>
-<template name="lobbyChat">
-<div class="chatRow">
-  <div class="col-md-6 chatCol">
-    <div style="text-align: center; font-weight: bold">Chat</div>
-    <textarea style="width:100%;height:150px;resize:none" class="form-control chatBox" readonly="readonly">
-    </textarea>
-    <input style="width: 100%;margin-top:5px" class="form-control" id="chatInput"/>
+  <div class="chatRow">
+    <div class="col-md-6 chatCol">
+      <div style="text-align: center; font-weight: bold">Chat</div>
+      <textarea style="width:100%;height:150px;resize:none" class="form-control chatBox" readonly="readonly">
+      </textarea>
+      <input style="width: 100%;margin-top:5px" class="form-control" id="chatInput"/>
+    </div>
   </div>
 </div>
 </template>

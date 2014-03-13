@@ -30,7 +30,7 @@ Meteor.startup ->
     return if !chatStream?
     streamSetup = true
     chatStream.on "message", pushChatMessage
-Template.lobbyChat.events
+Template.lobby.events
   'keypress #chatInput': (evt, template)->
     if evt.which is 13
       text = template.find("#chatInput").value
