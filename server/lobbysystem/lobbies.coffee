@@ -1,3 +1,18 @@
+setPlayerTeam = (lobby, uid, tteam)->
+  return if !lobby?
+  index = _.findWhere(lobby.radiant, {_id: uid})
+  team = "radiant"
+  if !index?
+    index = _.findWhere(lobby.dire, {_id: uid})
+    team = "dire"
+  return if tteam is team
+  if index?
+    lobby[tteam].push(lobby[team].splice(index, 1)[0])
+    lobbies.update {_id: lobby._id},
+      $set:
+        radiant: lobby.radiant
+        dire: lobby.dire
+
 @checkIfDeleteLobby = (lobbyId)->
   lobby = lobbies.find({_id: lobbyId})
   return if !lobby?
@@ -10,12 +25,12 @@
 internalRemoveFromLobby = (userId, lobby)->
   index = _.findWhere(lobby.radiant, {_id: userId})
   team = null
-  if index != -1
+  if index?
     team = "radiant"
   else
     index = _.findWhere(lobby.dire, {_id: userId})
     team = "dire"
-  if index != -1
+  if index?
     updateObj = {}
     lobby[team].splice(index, 1)
     updateObj[team] = lobby[team]
@@ -125,3 +140,10 @@ Meteor.methods
     if isIngame(@userId)
       throw new Meteor.Error 403, "You are already in a game."
     return createLobby(@userId)
+  "switchTeam": (team)->
+    return if !@userId?
+    lobby = lobbies.findOne
+      $or: [{creatorid: @userId}, {"radiant._id": @userId}, {"dire._id": @userId}]
+      status: {$lt: 2}
+    return if !lobby?
+    setPlayerTeam lobby, @userId, team
