@@ -2,7 +2,7 @@
 Meteor.startup ->
   Meteor.users.find({"status.online": false}).observeChanges
     added: (id, fields)->
-      leaveLobby(id)
+      #leaveLobby(id)
 
 setPlayerTeam = (lobby, uid, tteam)->
   return if !lobby?
@@ -100,8 +100,8 @@ isIngame = (userId)->
 @joinLobby = (lobby, userId)->
   #Check if already in 
   return if userId is lobby.creatorid
-  return if (_.findWhere(lobby.dire, {_id: userId})) isnt -1
-  return if (_.findWhere(lobby.radiant, {_id: userId})) isnt -1
+  return if (_.findWhere(lobby.dire, {_id: userId}))?
+  return if (_.findWhere(lobby.radiant, {_id: userId}))?
   user = Meteor.users.findOne({_id: userId})
   team = null
   if lobby.dire.length >= lobby.radiant.length && lobby.dire.length < 5

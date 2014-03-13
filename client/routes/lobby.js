@@ -12,11 +12,11 @@ Router.map(function () {
     template: "lobby",
     loginRequired: {
       name: 'loggingIn',
-    shouldRoute: false
+      shouldRoute: false
     },
     load: function(){
       //check if already in lobby
-      var lobby = lobbies.findOne({status: {$ne: null}});
+      var lobby = lobbies.findOne({status: {$ne: null}}, {reactive: false});
       if(lobby == null){
         console.log("Joining lobby "+this.params.id);
         Meteor.call("joinLobby", this.params.id, function(err, res){

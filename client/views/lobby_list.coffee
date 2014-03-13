@@ -1,6 +1,9 @@
 Template.lobbyList.events
   "click .joinBtn": ->
-    Meteor.call "joinLobby", @_id
+    Meteor.call "joinLobby", @_id, (err, res)->
+      console.log err if err?
+      console.log res if res?
+      Meteor.subscribe "lobbyDetails"
   "click .createLobbyBtn": ->
     $.pnotify
       title: "Creating lobby..."
