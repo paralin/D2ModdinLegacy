@@ -27,7 +27,7 @@
         <tbody>
         {{#each lobbies}}
         <tr>
-          <td><input type="checkbox" {{#if hasPassword}}checked{{/if}} disabled/></td>
+          <td><input type="checkbox" checked={{hasPassword}} disabled/></td>
           <td>{{name}}</td>
           <td>{{mod}}</td>
           <td>{{creator}}</td>

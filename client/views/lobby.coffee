@@ -1,7 +1,13 @@
 #Constants
 radiantSlots = 5
 direSlots = 5
+
 streamSetup = false
+pushChatMessage = (msg)->
+  box = $(".chatBox")
+  box.val(box.val()+"\n"+msg)
+  console.log "chat message: "+msg
+
 Meteor.startup ->
   Deps.autorun -> #Detect if we're in a lobby
     lobby = lobbies.findOne({status: {$ne: null}})
@@ -21,17 +27,14 @@ Meteor.startup ->
     return if route.route.name isnt "lobby"
     return if !chatStream?
     streamSetup = true
-    chatStream.on "message", (msg)->
-      box = $(".chatBox")
-      box.val(box.val()+"\n"+msg)
-      console.log "chat message: "+msg
-
+    chatStream.on "message", pushChatMessage
 Template.lobbyChat.events
   'keypress #chatInput': (evt, template)->
     if evt.which is 13
-      text = template.find(".newLink").value
-      template.find(".newLink").value = ""
-      Session.get("chatStream").emit("message", text)
+      text = template.find("#chatInput").value
+      template.find("#chatInput").value = ""
+      chatStream.emit("message", text)
+      pushChatMessage Meteor.user().profile.name+": "+text
 
 Template.lobby.lobby = ->
   lobbies.findOne()

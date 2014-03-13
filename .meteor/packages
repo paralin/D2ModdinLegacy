@@ -7,9 +7,7 @@ standard-app-packages
 preserve-inputs
 streams
 coffeescript
-iron-router
 bootstrap-3
-iron-router-auth
 accounts-ui-bootstrap-3
 stylus
 user-status
@@ -22,4 +20,5 @@ steam
 dota2
 npm
 font-awesome
-roles
+iron-router
+blaze-layout

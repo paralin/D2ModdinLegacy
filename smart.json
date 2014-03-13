@@ -1,14 +1,19 @@
 {
   "packages": {
     "streams": {},
-    "iron-router": {},
     "bootstrap-3": {},
-    "iron-router-auth": {},
     "user-status": {},
     "pnotify": {},
-    "iron-router-progress": {},
     "dota2": {},
     "font-awesome": {},
-    "roles": {}
+    "iron-router": {
+      "git": "https://github.com/EventedMind/iron-router.git",
+      "branch": "blaze-integration"
+    },
+    "accounts-ui-bootstrap-3": {
+      "git": "https://github.com/kidovate/meteor-accounts-ui-bootstrap-3.git",
+      "branch": "steam"
+    },
+    "blaze-layout": {}
   }
 }
