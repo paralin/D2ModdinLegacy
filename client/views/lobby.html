@@ -45,6 +45,22 @@
       </textarea>
       <input style="width: 100%;margin-top:5px" class="form-control" id="chatInput"/>
     </div>
+    {{#if isHost}}
+    <div class="col-md-6 hostCol">
+      <div style="text-align:center;font-weight:bold">Lobby Controls</div>
+      <div style="width:100%;height:150px;padding:15px;">
+        <input class="titleInput form-control" value={{lobby.name}} maxlength=40 />
+        {{#if statusIs 0}}
+        <a class="btn btn-success startBtn" style="margin-top:15px;width:100%">Start Game</a>
+        {{/if}}
+        {{#if statusIs 1}}
+        <a class="btn btn-danger stopBtn" style="margin-top:15px;width:100%">
+          Cancel Searching
+        </a>
+        {{/if}}
+      </div>
+    </div>
+    {{/if}}
   </div>
 </div>
 </template>

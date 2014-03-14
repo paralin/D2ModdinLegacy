@@ -68,12 +68,24 @@ isIngame = (userId)->
   lobby = findUserLobby(userId)
   return lobby?
 
+maybeStopMatchmaking = (userId, l)->
+  if l.status is 1
+    console.log l._id+" cancel server search b/c user left"
+    lobbies.update {_id: l._id}, {$set: {status: 0}}
+    cancelFindServer l._id
+
 @leaveLobby = (userId)->
   lobby = lobbies.find
     $or: [{creatorid: userId}, {"radiant._id": userId}, {"dire._id": userId}]
     status: {$lt: 2}
   lobby.forEach (l)->
     internalRemoveFromLobby(userId, l)
+    maybeStopMatchmaking(userId, l)
+    stopFinding(l)
+
+startGame = (lobby)->
+  startFindServer lobby._id
+  lobbies.update({_id: lobby._id}, {$set: {status: 1}})
 
 @createLobby = (creatorId)->
   return if !creatorId?
@@ -117,7 +129,41 @@ isIngame = (userId)->
   updateObj[team] = lobby[team]
   lobbies.update {_id: lobby._id}, {$set: updateObj}
 
+stopFinding = (lobby)->
+  return if lobby.status isnt 1
+  cancelFindServer lobby._id
+  lobbies.update {_id: lobby._id}, {$set: {status: 0}}
+
 Meteor.methods
+  "stopFinding": ->
+    if !@userId?
+      throw new Meteor.Error 404, "Not finding a match."
+    lobby = lobbies.findOne({creatorid: @userId})
+    if !lobby?
+      throw new Meteor.Error 403, "Not the owner of this lobby."
+    stopFinding(lobby)
+  "startGame": ->
+    if !@userId?
+      throw new Meteor.Error 403, "Log in first."
+    lobby = lobbies.findOne({creatorid: @userId})
+    if !lobby?
+      throw new Meteor.Error 404, "You are not the host of a lobby."
+    if lobby.status isnt 0
+      throw new Meteor.Error 403, "Lobby has already been started."
+    if lobby.requiresFullLobby and (lobby.dire.length+lobby.radiant.length) isnt 10
+      throw new Meteor.Error 403, "Lobby must be full to start."
+    startGame(lobby)
+  "setLobbyName": (name)->
+    check(name, String)
+    if !@userId?
+      throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
+    lobby = lobbies.findOne({creatorid: @userId})
+    if !lobby?
+      throw new Meteor.Error 403, "You don't own any lobbies."
+    if name.length > 40
+      name = name.substring 0, 40
+    #name = name.replace(/\W+/g, " ")
+    lobbies.update {_id: lobby._id}, {$set: {name: name}}
   "joinLobby": (id)->
     console.log "joinLobby request " +id
     if !@userId?

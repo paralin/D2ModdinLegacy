@@ -30,13 +30,41 @@ Meteor.startup ->
     return if !chatStream?
     streamSetup = true
     chatStream.on "message", pushChatMessage
+
+Template.lobby.statusIs = (st)->
+  lobby = lobbies.findOne()
+  return false if !lobby?
+  lobbies.findOne().status is st
 Template.lobby.events
+  'click .stopBtn': ->
+    Meteor.call "stopFinding"
+  'click .startBtn': ->
+    Meteor.call "startGame", (err, res)->
+      if err?
+        $.pnotify
+          title: "Can't Start"
+          text: err.reason
+          type: "error"
+          delay: 5000
+  'keypress .titleInput': (evt, template)->
+    if evt.which is 13
+      field = template.find(".titleInput")
+      text = field.value
+      Meteor.call("setLobbyName", text)
+      field.blur()
   'keypress #chatInput': (evt, template)->
     if evt.which is 13
       text = template.find("#chatInput").value
       template.find("#chatInput").value = ""
       chatStream.emit("message", text)
       pushChatMessage Meteor.user().profile.name+": "+text
+
+Template.lobby.isHost = ->
+  user = Meteor.userId()
+  return if !user?
+  lobby = lobbies.findOne()
+  return if !lobby?
+  user is lobby.creatorid
 
 Template.lobby.lobby = ->
   lobbies.findOne()
