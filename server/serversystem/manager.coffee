@@ -25,10 +25,11 @@ launchServer = (serv, lobby)->
   serv.activeLobbies.push
     id: id
     port: port
-    lobby: lobby._id
+    lobby: lobby
   servers.update {_id: serv._id}, {$set: {activeLobbies: serv.activeLobbies}}
-  lobbies.update {_id: lobby._id}, {$set: {status: 2, serverIP: serv.ip+":"+port}}
-  sockets[serv._id].send "launchServer|"+id+"|"+port+"|"+(if lobby.devMode then "True" else "False")
+  lobbies.update {_id: lobby}, {$set: {status: 2, serverIP: serv.ip+":"+port}}
+  theLob = lobbies.findOne({_id: lobby})
+  sockets[serv._id].send "launchServer|"+id+"|"+port+"|"+(if theLob.devMode then "True" else "False")
   console.log "server launched, id: "+id
 
 queueProc = ->
