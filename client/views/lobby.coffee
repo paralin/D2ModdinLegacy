@@ -18,6 +18,18 @@ Meteor.startup ->
     return if !route?
     if route.route.name isnt "lobby"
       Router.go Router.routes["lobby"].path({id: lobby._id})
+  Deps.autorun -> #Server status change
+    lobby = lobbies.findOne({status: {$ne: null}})
+    return if !lobby?
+    status = lobby.status
+    if status is 1
+      $.pnotify
+        title: "Finding a server"
+        text: "Waiting for an open server slot."
+        type: "info"
+        delay: 5000
+        closer: false
+        sticker: false
   Deps.autorun -> #Chat callbacks
     lobby = lobbies.findOne({status: {$ne: null}})
     if !lobby?
