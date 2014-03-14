@@ -133,3 +133,7 @@ Template.lobby.emptySlotD = ->
     slots.push({team: "dire"})
     i++
   slots
+
+Template.connectDialog.connectURL = ->
+  lobby = lobbies.findOne()
+  "steam://connect/"+lobby.serverIP

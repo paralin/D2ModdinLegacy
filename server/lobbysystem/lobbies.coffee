@@ -1,5 +1,7 @@
 #Monitor user events
 Meteor.startup ->
+  #Delete temporary lobbies (not finished)
+  lobbies.remove {status: {$lt: 3}}
   Meteor.users.find({"status.online": false}).observeChanges
     added: (id, fields)->
       #leaveLobby(id)

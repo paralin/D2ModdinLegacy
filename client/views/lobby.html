@@ -3,9 +3,13 @@
   <section class="container text-center" style="margin-top: 30px;">
     <h1 class="text-center">
       <strong>{{lobby.name}}</strong>
-      <span class="subtitle" style="margin-top:10px">{{status}}</span>
+      {{#unless arePlaying}}<span class="subtitle" style="margin-top:10px">{{status}}</span>{{/unless}}
     </h1>
   </section>
+  {{#if arePlaying}}
+  {{>connectDialog}}
+  {{/if}}
+  {{#unless arePlaying}}
   <div class="teamRow">
     <div class="col-md-6 teamCol">
       <div style="text-align: center; font-weight: bold">
@@ -62,5 +66,13 @@
     </div>
     {{/if}}
   </div>
+  {{/unless}}
+</div>
+</template>
+<template name="connectDialog">
+<div class="connectDialog">
+  <div class="dTitle">GAME READY</div><br/>
+  Manual IP: {{lobby.serverIP}}<br/><br/>
+  <a class="btn btn-success connectBtn" href={{connectURL}}>Connect Automatically</a>
 </div>
 </template>
