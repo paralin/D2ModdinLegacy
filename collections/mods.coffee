@@ -12,7 +12,7 @@
 #   -> public -> true
 #   -> playable -> false (for now)
 # PRIVATE
-#   -> bundlepath: (info on S3 bucket)
+#   -> bundlepath: (info on S3 bucket) - if null then no local files
 #   -> requirements:
 #     {
 #       "d2_gamecount": 50

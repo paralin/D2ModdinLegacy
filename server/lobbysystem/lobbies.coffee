@@ -1,10 +1,22 @@
+
+#Not yet horizontally scalable (see disconnectTimeouts)
+disconnectTimeouts = {}
 #Monitor user events
 Meteor.startup ->
   #Delete temporary lobbies (not finished)
   lobbies.remove {status: {$lt: 3}}
   Meteor.users.find({"status.online": false}).observeChanges
+    removed: (id)->
+      timeout = disconnectTimeouts[id]
+      if timeout?
+        Meteor.clearTimeout(timeout)
+        delete disconnectTimeouts[id]
     added: (id, fields)->
-      #leaveLobby(id)
+      #Schedule leave lobby
+      disconnectTimeouts[id] = Meteor.setTimeout ->
+        leaveLobby(id)
+        shutdownClient(id)
+      , 30000
 
 @findUserLobby = (userId)->
   lobbies.findOne
