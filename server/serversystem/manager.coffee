@@ -1,15 +1,55 @@
+
+#Note this class cannot yet horizontally scale
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
 serverPassword = "mHCYLzo7SAcpIcxXCmlR"
 
+idCounter=100
+
+sockets = {}
+
 servers = new Meteor.Collection "servers"
 Meteor.startup ->
   servers.remove({})
+  lobbyQueue.find().observeChanges
+    added: (id, fields)->
+      queueProc()
+  servers.find().observeChanges
+    added: (id, fields)->
+      queueProc()
+
+launchServer = (serv, lobby)->
+  id = idCounter
+  idCounter+=1
+  port = Math.floor(Math.random() * 2900) + 2500
+  serv.activeLobbies.push
+    id: id
+    port: port
+    lobby: lobby._id
+  servers.update {_id: serv._id}, {$set: {activeLobbies: serv.activeLobbies}}
+  lobbies.update {_id: lobby._id}, {$set: {status: 2, serverIP: serv.ip+":"+port}}
+  sockets[serv._id].send "launchServer|"+id+"|"+port+"|"+(if lobby.devMode then "True" else "False")
+  console.log "server launched, id: "+id
+
+queueProc = ->
+  #Find elegible servers
+  nextGame = lobbyQueue.findOne({}, {started: 1})
+  return if !nextGame?
+  servs = servers.find().fetch()
+  maxLobbies = 9999999999
+  chosen = null
+  for serv in servs
+    if serv.activeLobbies.length < maxLobbies && serv.activeLobbies.length<maxLobbies
+      chosen = serv
+      maxLobbies = serv.activeLobbies
+  return if !chosen?
+  launchServer(chosen, nextGame)
+  lobbyQueue.remove({_id: nextGame._id})
 
 @hostServer = new ws({port: 3006})
 hostServer.on 'connection', (ws)->
   serverObj =
-    maxPlayers: 0
+    maxLobbies: 0
     activeLobbies: []
     ip: ""
   ourID = null
@@ -21,6 +61,7 @@ hostServer.on 'connection', (ws)->
           lobbies.update {_id: sess.lobby}, {$set: {$status: 3}}
         servers.remove({_id: ourID})
     ).run()
+    delete sockets[ourID]
     console.log "host disconnected "+serverObj.ip
   ws.on 'message', (msg)->
     new Fiber(->
@@ -31,15 +72,19 @@ hostServer.on 'connection', (ws)->
           if splitMsg[1] isnt serverPassword
             ws.send 'authFail'
             return
-          serverObj.maxPlayers = parseInt(splitMsg[2])
+          serverObj.maxLobbies = parseInt(splitMsg[2])
           serverObj.ip = ws.upgradeReq.connection.remoteAddress
-          console.log "new server init "+serverObj.ip+" max players "+serverObj.maxPlayers
+          console.log "new server init "+serverObj.ip+" max lobbies "+serverObj.maxLobbies
           ourID = servers.insert serverObj
+          sockets[ourID] = ws
         when "onShutdown"
+          serverObj = servers.findOne({_id: ourID})
           sessId = parseInt(splitMsg[1])
           lobIdx = _.findWhere serverObj.activeLobbies, {id: sessId}
           return if !lobIdx?
           console.log "game session ended "+splitMsg[1]
           sess = serverObj.activeLobbies.splice lobIdx, 1
           lobbies.update {_id: sess.lobby}, {$set: {status: 3}}
+          servers.update {_id: ourID}, {$set: {activeLobbies: serverObj.activeLobbies}}
+          queueProc()
     ).run()
