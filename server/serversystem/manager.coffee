@@ -43,7 +43,7 @@ queueProc = ->
       chosen = serv
       maxLobbies = serv.activeLobbies
   return if !chosen?
-  launchServer(chosen, nextGame)
+  launchServer(chosen, nextGame.lobby)
   lobbyQueue.remove({_id: nextGame._id})
 
 @hostServer = new ws({port: 3006})
