@@ -21,7 +21,7 @@ Meteor.startup ->
 launchServer = (serv, lobby)->
   id = idCounter
   idCounter+=1
-  port = Math.floor(Math.random() * 2900) + 2500
+  port = Math.floor(Math.random() * 27100) +27000
   serv.activeLobbies.push
     id: id
     port: port
