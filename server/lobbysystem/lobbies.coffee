@@ -145,7 +145,7 @@ Meteor.methods
   "startGame": ->
     if !@userId?
       throw new Meteor.Error 403, "Log in first."
-    lobby = lobbies.findOne({creatorid: @userId})
+    lobby = lobbies.findOne({creatorid: @userId, status: {$ne: 3}})
     if !lobby?
       throw new Meteor.Error 404, "You are not the host of a lobby."
     if lobby.status isnt 0

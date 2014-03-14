@@ -10,6 +10,7 @@ pushChatMessage = (msg)->
   #scroll down
   box.scrollTop(box[0].scrollHeight)
 
+wasInLobby = false
 Meteor.startup ->
   Deps.autorun -> #Detect if we're in a lobby
     lobby = lobbies.findOne({status: {$ne: null}})
@@ -42,7 +43,24 @@ Meteor.startup ->
     return if !chatStream?
     streamSetup = true
     chatStream.on "message", pushChatMessage
-
+    wasInLobby = true
+  Deps.autorun -> #Leave when game is over
+    route = Router.current()
+    return if !route?
+    if route.route.name isnt "lobby"
+      wasInLobby = false
+      return
+    lobby = lobbies.findOne({status: {$ne: null}})
+    if !lobby? and wasInLobby
+      Router.go Router.routes["lobbyList"].path()
+      $.pnotify
+        title: "Game Over"
+        text: "The game has ended!"
+        delay: 5000
+        closer: false
+        sticker: false
+      return
+      
 Template.lobby.statusIs = (st)->
   lobby = lobbies.findOne()
   return false if !lobby?
