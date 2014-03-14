@@ -46,7 +46,12 @@ Meteor.startup ->
 Template.lobby.statusIs = (st)->
   lobby = lobbies.findOne()
   return false if !lobby?
-  lobbies.findOne().status is st
+  lobby.status is st
+
+Template.lobby.arePlaying = ->
+  lobby = lobbies.findOne()
+  return false if !lobby?
+  lobby.status is 2
 Template.lobby.events
   'click .stopBtn': ->
     Meteor.call "stopFinding"

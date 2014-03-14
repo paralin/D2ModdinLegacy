@@ -85,6 +85,7 @@ hostServer.on 'connection', (ws)->
           return if !lobIdx?
           console.log "game session ended "+splitMsg[1]
           sess = serverObj.activeLobbies.splice lobIdx, 1
+          sess = sess[0]
           lobbies.update {_id: sess.lobby}, {$set: {status: 3}}
           servers.update {_id: ourID}, {$set: {activeLobbies: serverObj.activeLobbies}}
           queueProc()
