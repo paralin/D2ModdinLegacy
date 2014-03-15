@@ -13,6 +13,7 @@
 #   -> playable -> false (for now)
 # PRIVATE
 #   -> bundlepath: (info on S3 bucket) - if null then no local files
+#   -> version: mod version code
 #   -> requirements:
 #     {
 #       "d2_gamecount": 50

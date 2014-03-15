@@ -1,0 +1,11 @@
+<template name="installMod">
+<div class="installDialog">
+  <div class="dTitle">Mod Installation</div><br/>
+  The mod manager will automatically install the mod files for you to your steam directory.<br/><br/>
+  {{#if hasModManager}}
+  <a class="btn btn-success mainBtn installBtn">Install Mod</a>
+  {{else}}
+  <a class="btn btn-success mainBtn managerBtn">Launch Manager</a>
+  {{/if}}
+</div>
+</template>

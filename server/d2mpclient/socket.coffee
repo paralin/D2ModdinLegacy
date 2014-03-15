@@ -3,6 +3,12 @@ ws = Meteor.require('ws').Server
 clientVersion = "0.1.0"
 
 clientSockets = {}
+@installMod = (client, mod)->
+  sock = clientSockets[client._id]
+  return false if !sock?
+  #TODO write generateModDownloadURL from amazon
+  sock.send "installmod:"+mod.name+":"+generateModDownloadURL(mod)
+  return true
 @shutdownClient = (userId)->
   user = Meteor.users.findOne({_id: userId})
   client = clients.findOne({steamIDs: user.services.steam.id})

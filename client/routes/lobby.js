@@ -34,6 +34,12 @@ Router.map(function () {
         console.log("Joining lobby "+this.params.id);
         Meteor.call("joinLobby", this.params.id, function(err, res){
           if(err != null){
+            if(err.error==401){
+              console.log("Mod files not installed, redirecting");
+              Session.set("requestedLobby", this.params.id);
+              Router.go("/install/"+err.reason);
+              return;
+            }
             console.log("error joining: "+err.reason);
             Router.go(Router.routes["lobbyList"].path());
             $.pnotify({

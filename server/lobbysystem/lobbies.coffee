@@ -101,7 +101,7 @@ startGame = (lobby)->
   startFindServer lobby._id
   lobbies.update({_id: lobby._id}, {$set: {status: 1}})
 
-@createLobby = (creatorId)->
+@createLobby = (creatorId, mod)->
   return if !creatorId?
   console.log creatorId+" created lobby"
   user = Meteor.users.findOne({_id: creatorId})
@@ -113,7 +113,7 @@ startGame = (lobby)->
     radiant: [{_id: creatorId, name: user.profile.name, avatar: user.services.steam.avatar}]
     dire: []
     isMatchmaking: false
-    mod: "fof"
+    mod: mod.name
     invitedPlayers: []
     serverIP: ""
     mmid: null
@@ -192,6 +192,15 @@ Meteor.methods
       throw new Meteor.Error 404, "Lobby is full."
     if lobby.isMatchmaking
       throw new Meteor.Error 403, "Can't join a matchmaking lobby directly."
+    if lobby.bundlePath?
+      #Find their client
+      user = Meteor.users.findOne({_id: @userId})
+      mod = mods.findOne({name: lobby.mod})
+      if !mod?
+        throw new Meteor.Error 404, "Can't seem to find the mod in the database."
+      client = clients.findOne({steamIDs: user.services.steam.id})
+      if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
+        throw new Meteor.Error 401, lobby.mod
     joinLobby lobby, @userId
     console.log @userId+" joined lobby "+lobby.name
   "leaveLobby": ->
@@ -205,7 +214,14 @@ Meteor.methods
     leaveLobby(@userId)
     if isIngame(@userId)
       throw new Meteor.Error 403, "You are already in a game."
-    return createLobby(@userId)
+    mod = mods.findOne() #TODO GET THE MOD WE WANT HERE
+    if mod.bundlepath?
+      #Find their client
+      user = Meteor.users.findOne({_id: @userId})
+      client = clients.findOne({steamIDs: user.services.steam.id})
+      if !client? || !_.contains(client.installedMods, mod.name+"="+mod.version)
+        throw new Meteor.Error 401, mod.name
+    return createLobby(@userId, mod)
   "switchTeam": (team)->
     return if !@userId?
     lobby = findUserLobby(@userId)

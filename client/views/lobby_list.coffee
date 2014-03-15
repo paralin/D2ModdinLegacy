@@ -14,6 +14,9 @@ Template.lobbyList.events
       sticker: false
     Meteor.call "createLobby", (err, res)->
       if err?
+        if err.error is 401
+          Router.go "/install/"+err.reason
+          return
         console.log err
         $.pnotify
           title: "Can't Create Lobby"
