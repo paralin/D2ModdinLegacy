@@ -16,7 +16,7 @@ Meteor.startup ->
       bucketFound = false
       for bucket, i in data.Buckets
         console.log "  --> "+bucket.Name
-generateModDownloadURL = (mod)->
+@generateModDownloadURL = (mod)->
   response = Async.runSync (done)->
     done null, s3.getSignedUrl 'getObject', {Bucket: bucket, Key: mod.bundlepath}
   response.result
