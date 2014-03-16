@@ -12,7 +12,7 @@ Template.installMod.events
   "click .installBtn": ->
     Meteor.call "installMod", Router.current().params.mod, (err,res)->
       if err?
-        $.notify
+        $.pnotify
           title: "Can't Install Mod"
           text: err.reason
           type: "error"
