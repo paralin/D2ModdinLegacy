@@ -1,6 +1,4 @@
 AWS = Meteor.require 'aws-sdk'
-
-bucket = "d2mpclient"
 AWS.config.update
   'accessKeyId'     : "AKIAJ4QROL3BSAMJTI7Q",
   'secretAccessKey' : "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",
@@ -18,5 +16,5 @@ Meteor.startup ->
         console.log "  --> "+bucket.Name
 @generateModDownloadURL = (mod)->
   response = Async.runSync (done)->
-    done null, s3.getSignedUrl 'getObject', {Bucket: bucket, Key: mod.bundlepath}
+    done null, s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: mod.bundlepath}
   response.result
