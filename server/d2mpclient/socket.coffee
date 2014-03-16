@@ -54,6 +54,7 @@ clientServer.on 'connection', (ws)->
         when 'init'
           if splitMsg[2] != clientVersion
             clientObj.status = 1
+          console.log msg
           for steamID in splitMsg[1].split(',')
             steamID = steamID.replace(/\D/g,'')
             if steamID.length != 17
@@ -62,7 +63,17 @@ clientServer.on 'connection', (ws)->
             console.log "client steamID: "+steamID
             if clientObj.steamIDs.indexOf(steamID) is -1
               clientObj.steamIDs.push(steamID)
-          clientObj.installedMods = splitMsg[2].split ","
+          clientObj.installedMods = splitMsg[3].split ","
+          clients.update {_id: ourID}, clientObj
+        when 'installedMod'
+          modname = splitMsg[1]
+          mod = mods.findOne({name: modname})
+          if !mod?
+            console.log "client installed unknown mod: "+modname
+            return
+          modname += "="+mod.version
+          console.log "client installed "+modname
+          clientObj.installedMods.push(modname)
           clients.update {_id: ourID}, clientObj
     ).run()
   ws.on 'close', ->
