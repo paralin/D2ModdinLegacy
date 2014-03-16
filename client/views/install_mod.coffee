@@ -24,6 +24,7 @@ Template.installMod.hasModManager = ->
 Template.installMod.destroyed = ->
   if installingNot?
     installingNot.pnotify_remove() if(installingNot.pnotify_remove)
+  installingNot = null
       
 Template.installMod.events
   "click .installBtn": ->
