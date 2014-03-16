@@ -10,15 +10,24 @@ Template.installMod.destroyed = ->
       
 Template.installMod.events
   "click .installBtn": ->
-    Meteor.call "installMod", Router.current().params.mod
-    installingNot = $.pnotify
-      title: "Installing..."
-      text: "Your manager has been told to install the mod. Please wait."
-      type: "success"
-      nonblock: true
-      hide: false
-      closer: false
-      sticker: false
+    Meteor.call "installMod", Router.current().params.mod, (err,res)->
+      if err?
+        $.notify
+          title: "Can't Install Mod"
+          text: err.reason
+          type: "error"
+          nonblock: true
+          closer: false
+          sticker: false
+      else
+        installingNot = $.pnotify
+          title: "Installing..."
+          text: "Your manager has been told to install the mod. Please wait."
+          type: "success"
+          nonblock: true
+          hide: false
+          closer: false
+          sticker: false
   "click .managerBtn": ->
     Session.set("managerStatus", "Waiting for launcher to connect...")
     window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/launcher.exe"
