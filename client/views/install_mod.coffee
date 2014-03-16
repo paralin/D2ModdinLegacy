@@ -10,7 +10,7 @@ Template.installMod.destroyed = ->
       
 Template.installMod.events
   "click .installBtn": ->
-    Meteor.call "installMod", modnamehere
+    Meteor.call "installMod", Router.current().params.mod
     installingNot = $.pnotify
       title: "Installing..."
       text: "Your manager has been told to install the mod. Please wait."
