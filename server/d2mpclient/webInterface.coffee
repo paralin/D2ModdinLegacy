@@ -1,7 +1,7 @@
 Meteor.methods
   "installMod": (modName)->
     mod = mods.findOne({name: modName, public: true})
-    if !@mod?
+    if !mod?
       throw new Meteor.Error 404, "Mod "+modName+" not found."
     if !@userId?
       throw new Meteor.Error 403, "You must be logged in."

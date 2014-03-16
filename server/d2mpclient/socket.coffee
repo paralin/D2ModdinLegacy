@@ -7,7 +7,9 @@ clientSockets = {}
   sock = clientSockets[client._id]
   return false if !sock?
   #TODO write generateModDownloadURL from amazon
-  sock.send "installmod:"+mod.name+":"+generateModDownloadURL(mod)
+  command = "installmod:"+mod.name+":"+generateModDownloadURL(mod)
+  console.log "Install mod: "+command
+  sock.send command
   return true
 @shutdownClient = (userId)->
   user = Meteor.users.findOne({_id: userId})
