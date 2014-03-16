@@ -17,7 +17,7 @@ Meteor.startup ->
       features: ["Capture the Flag meets Dota 2.", "Minimal farming, constant action, and diverse strategies.", "Roles for every play style.", "First competitive Dota 2 mod!"]
       public: true
       playable: false
-      version: 0.3
+      version: "0.3.2"
       bundlepath: "d2fof.zip"
       requirements:
         d2_gamecount: 50
