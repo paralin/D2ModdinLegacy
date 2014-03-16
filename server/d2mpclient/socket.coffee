@@ -23,8 +23,11 @@ Meteor.startup ->
 
 Meteor.publish "clientProgram", ->
   if !@userId?
-    return clients.find({secretproperty: "yupnothappening"})
+    return []
   user = Meteor.users.findOne({_id: @userId})
+  steamID = user.services.steam.id
+  clients.find({steamIDs: steamID})
+  
 
 @clientServer = new ws({port: 3005})
 clientServer.on 'connection', (ws)->
