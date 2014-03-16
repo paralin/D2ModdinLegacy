@@ -2,6 +2,23 @@ installingNot = null
 
 #some kind of autorun that redirects off this page if mod is installed and manager
 #is installed
+Meteor.startup ->
+  Meteor.autorun ->
+    route = Router.current()
+    return if !route?
+    client = clients.findOne()
+    return if !client?
+    return if !(route.route.name is "install")
+    return if !installingNot?
+    for mod in client.installedMods
+      if mod.split("=")[0] is route.params.mod
+        Router.go("/lobbies/"+route.params.mod)
+        $.pnotify
+          title: "Installed"
+          text: "The mod has been installed."
+          delay: 5000
+          type: "success"
+        
 Template.installMod.hasModManager = ->
   clients.findOne()?
 Template.installMod.destroyed = ->
