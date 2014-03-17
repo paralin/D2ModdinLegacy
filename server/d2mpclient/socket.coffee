@@ -1,6 +1,6 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
-clientVersion = "0.1.2"
+clientVersion = "0.1.3"
 
 clientSockets = {}
 @installMod = (client, mod)->
