@@ -96,6 +96,7 @@ maybeStopMatchmaking = (userId, l)->
     internalRemoveFromLobby(userId, l)
     maybeStopMatchmaking(userId, l)
     stopFinding(l)
+    console.log userId+" left lobby "+l._id
 
 startGame = (lobby)->
   startFindServer lobby._id
@@ -205,7 +206,6 @@ Meteor.methods
     console.log @userId+" joined lobby "+lobby.name
   "leaveLobby": ->
     return if !@userId?
-    console.log "user leaving lobby "+@userId
     leaveLobby(@userId)
   "createLobby": ->
     if !@userId?
