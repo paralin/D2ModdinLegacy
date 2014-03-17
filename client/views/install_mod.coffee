@@ -30,13 +30,23 @@ Template.installMod.events
   "click .installBtn": ->
     Meteor.call "installMod", Router.current().params.mod, (err,res)->
       if err?
-        $.pnotify
-          title: "Can't Install Mod"
-          text: err.reason
-          type: "error"
-          nonblock: true
-          closer: false
-          sticker: false
+        if err.error is 410
+          Router.go("/lobbies/")
+          $.pnotify
+            title: "Mod Already Installed"
+            text: err.reason
+            type: success
+            delay: 5000
+            closer: false
+            sticker: false
+        else
+          $.pnotify
+            title: "Can't Install Mod"
+            text: err.reason
+            type: "error"
+            nonblock: true
+            closer: false
+            sticker: false
       else
         installingNot = $.pnotify
           title: "Installing..."
