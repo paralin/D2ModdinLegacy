@@ -1,10 +1,12 @@
 <template name="installMod">
 <div class="installDialog">
+  {{#if hasModManager}}
   <div class="dTitle">Mod Installation</div><br/>
   The mod manager will automatically install the mod files for you to your steam directory.<br/><br/>
-  {{#if hasModManager}}
   <a class="btn btn-success mainBtn installBtn">Install Mod</a>
   {{else}}
+  <div class="dTitle">Mod Manager</div><br/>
+  The requested mod requires local files. Please launch the D2Moddin mod launcher.
   <a class="btn btn-primary mainBtn managerBtn">Launch Manager</a>
   {{/if}}
 </div>
