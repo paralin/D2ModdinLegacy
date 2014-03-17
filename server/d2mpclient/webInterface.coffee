@@ -11,5 +11,5 @@ Meteor.methods
       throw new Meteor.Error 404, "Your client is not running."
     ver = mod.name+"="+mod.version
     if _.contains(client.installedMods, ver)
-      throw new Meteor.Error 404, "It seems that "+ver+" is already installed."
+      throw new Meteor.Error 410, "It seems that "+ver+" is already installed."
     installMod client, mod
