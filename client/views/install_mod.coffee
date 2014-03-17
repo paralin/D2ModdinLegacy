@@ -35,7 +35,7 @@ Template.installMod.events
           $.pnotify
             title: "Mod Already Installed"
             text: err.reason
-            type: success
+            type: "success"
             delay: 5000
             closer: false
             sticker: false
