@@ -5,7 +5,7 @@
 Meteor.startup ->
   if mods.find().count() is 0
     mods.insert
-      name: "fof"
+      name: "rota"
       fullname: "Fight or Flight"
       author: "Jicyphex"
       authorimage: "https://pbs.twimg.com/profile_images/440598138659672064/zz7c2bzE_bigger.png"
@@ -17,7 +17,7 @@ Meteor.startup ->
       features: ["Capture the Flag meets Dota 2.", "Minimal farming, constant action, and diverse strategies.", "Roles for every play style.", "First competitive Dota 2 mod!"]
       public: true
       playable: false
-      version: "0.3.2"
+      version: "0.3.5"
       bundlepath: "d2fof.zip"
       requirements:
         d2_gamecount: 50
