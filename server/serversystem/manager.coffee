@@ -29,7 +29,7 @@ launchServer = (serv, lobby)->
   servers.update {_id: serv._id}, {$set: {activeLobbies: serv.activeLobbies}}
   lobbies.update {_id: lobby}, {$set: {status: 2, serverIP: serv.ip+":"+port}}
   theLob = lobbies.findOne({_id: lobby})
-  sockets[serv._id].send "launchServer|"+id+"|"+port+"|"+(if theLob.devMode then "True" else "False")+"|"+lobby.mod
+  sockets[serv._id].send "launchServer|"+id+"|"+port+"|"+(if theLob.devMode then "True" else "False")+"|"+theLob.mod
   console.log "server launched, id: "+id
 
 queueProc = ->
