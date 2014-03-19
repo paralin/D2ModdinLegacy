@@ -34,7 +34,7 @@ configureServer = (serverObj, lobby, instance)->
       srvr.send "add_dire_player "+plyr.steam+" "+plyr.name
     console.log "server configured"
     new Fiber(->
-      finalizeInstance(serverObj, lobby)
+      finalizeInstance(serverObj, lobby, instance)
     ).run()
   ).on('response', (str)->
     console.log "rcon response: "+str
@@ -68,8 +68,9 @@ launchServer = (serv, lobby)->
     started: new Date().getTime()
   console.log "server launched, id: "+id+" waiting for configure"
 
-finalizeInstance = (serv, lobby)->
-  lobbies.update {_id: lobby}, {$set: {status: 3, serverIP: serv.ip+":"+port}}
+finalizeInstance = (serv, lobby, instance)->
+  lobbies.update {_id: lobby}, {$set: {status: 3, serverIP: serv.ip+":"+serv.port}}
+  pendingInstances.remove {id: instance.id}
 
 queueProc = ->
   #Find elegible servers
