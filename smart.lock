@@ -31,8 +31,8 @@
       },
       "user-status": {
         "git": "https://github.com/mizzao/meteor-user-status.git",
-        "tag": "v0.2.0",
-        "commit": "e18cc48440710d0ac23bd1a578974f9142226bf4"
+        "tag": "v0.3.4",
+        "commit": "741df5e3304807ba42fbe0aca5b8251c5683e1f7"
       },
       "pnotify": {
         "git": "https://github.com/kidovate/meteor-pnotify.git",
@@ -52,17 +52,22 @@
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
         "branch": "blaze-integration",
-        "commit": "f8ffd44bceacc6a55f4ebcc218c072f5a18138b4"
+        "commit": "947991731df164e56b53cfdae8ef23802d989142"
       },
       "accounts-ui-bootstrap-3": {
         "git": "https://github.com/kidovate/meteor-accounts-ui-bootstrap-3.git",
         "branch": "steam",
-        "commit": "7dc1353f53da8f1d6a9a7c2b2ecbb3084247c3dc"
+        "commit": "b70ce39798aca6922366e35676e0e238afb86c38"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",
-        "tag": "v0.2.1",
+        "branch": "master",
         "commit": "f52f416d6277f27b11832355298553e46b8cc6fd"
+      },
+      "timesync": {
+        "git": "https://github.com/mizzao/meteor-timesync.git",
+        "tag": "v0.1.3",
+        "commit": "e8c1a76a6c3c10e3d5ec86e4c0b5ec45b7beb230"
       }
     }
   }

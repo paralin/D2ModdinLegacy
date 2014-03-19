@@ -29,9 +29,13 @@ configureServer = (serverObj, lobby, instance)->
   srvr.on('auth', ->
     connecting = false
     for plyr in lobby.radiant
-      srvr.send "add_radiant_player "+plyr.steam+" "+plyr.name
+      cmd = "add_radiant_player "+plyr.steam+" "+plyr.name
+      srvr.send cmd
+      console.log "  - "+cmd
     for plyr in lobby.dire
-      srvr.send "add_dire_player "+plyr.steam+" "+plyr.name
+      cmd = "add_dire_player "+plyr.steam+" "+plyr.name
+      srvr.send cmd
+      console.log "  - "+cmd
     console.log "server configured"
     new Fiber(->
       finalizeInstance(serverObj, lobby, instance)
@@ -99,7 +103,7 @@ hostServer.on 'connection', (ws)->
     new Fiber(->
       if ourID?
         for sess in serverObj.activeLobbies
-          lobbies.update {_id: sess.lobby}, {$set: {$status: 4}}
+          lobbies.update {_id: sess.lobby}, {$set: {status: 4}}
         servers.remove({_id: ourID})
     ).run()
     delete sockets[ourID]
