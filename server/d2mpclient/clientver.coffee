@@ -1,4 +1,4 @@
-clientParams = new Meteor.Collection "clientParams"
+@clientParams = new Meteor.Collection "clientParams"
 Meteor.startup ->
   if clientParams.find({stype: "version"}).count() < 1
     clientParams.insert
