@@ -4,7 +4,7 @@ disconnectTimeouts = {}
 #Monitor user events
 Meteor.startup ->
   #Delete temporary lobbies (not finished)
-  lobbies.remove {status: {$lt: 3}}
+  lobbies.remove {status: {$lt: 4}}
   Meteor.users.find({"status.online": false}).observeChanges
     removed: (id)->
       timeout = disconnectTimeouts[id]
@@ -40,9 +40,9 @@ setPlayerTeam = (lobby, uid, tteam)->
 @checkIfDeleteLobby = (lobbyId)->
   lobby = lobbies.find({_id: lobbyId})
   return if !lobby?
-  return if lobby.status is 2
+  return if lobby.status is 2 or lobby.status is 3
   if !(_.contains(lobby.radiant, lobby.creatorid)) && !(_.contains(lobby.dire, lobby.creatorid))
-    if lobby.status < 3
+    if lobby.status < 4
       #Game never started
       lobbies.remove({_id: lobbyId})
 
@@ -83,7 +83,7 @@ isIngame = (userId)->
   return lobby?
 
 maybeStopMatchmaking = (userId, l)->
-  if l.status is 1
+  if l.status is 1 or l.status is 2
     console.log l._id+" cancel server search b/c user left"
     lobbies.update {_id: l._id}, {$set: {status: 0}}
     cancelFindServer l._id
@@ -91,7 +91,7 @@ maybeStopMatchmaking = (userId, l)->
 @leaveLobby = (userId)->
   lobby = lobbies.find
     $or: [{creatorid: userId}, {"radiant._id": userId}, {"dire._id": userId}]
-    status: {$lt: 2}
+    status: {$lt: 3}
   lobby.forEach (l)->
     internalRemoveFromLobby(userId, l)
     maybeStopMatchmaking(userId, l)
@@ -111,7 +111,7 @@ startGame = (lobby)->
     hasPassword: false
     creator: user.profile.name
     creatorid: creatorId
-    radiant: [{_id: creatorId, name: user.profile.name, avatar: user.services.steam.avatar}]
+    radiant: [{_id: creatorId, name: user.profile.name, avatar: user.services.steam.avatar, steam: user.services.steam.id}]
     dire: []
     isMatchmaking: false
     mod: mod.name
@@ -121,7 +121,6 @@ startGame = (lobby)->
     public: true
     status: 0
     requiresFullLobby: false
-    serverStatus: 0
     devMode: true
 
 @joinLobby = (lobby, userId)->
@@ -139,13 +138,14 @@ startGame = (lobby)->
     _id: userId
     name: user.profile.name
     avatar: user.services.steam.avatar
+    steam: user.services.steam.id
   console.log userId+" joined lobby "+lobby.name
   updateObj  = {}
   updateObj[team] = lobby[team]
   lobbies.update {_id: lobby._id}, {$set: updateObj}
 
 stopFinding = (lobby)->
-  return if lobby.status isnt 1
+  return if lobby.status isnt 1 or lobby.status isnt 2
   cancelFindServer lobby._id
   lobbies.update {_id: lobby._id}, {$set: {status: 0}}
 
@@ -160,7 +160,7 @@ Meteor.methods
   "startGame": ->
     if !@userId?
       throw new Meteor.Error 403, "Log in first."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$ne: 3}})
+    lobby = lobbies.findOne({creatorid: @userId, status: {$ne: 4}})
     if !lobby?
       throw new Meteor.Error 404, "You are not the host of a lobby."
     if lobby.status isnt 0
@@ -172,7 +172,7 @@ Meteor.methods
     check(name, String)
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId})
+    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     if name.length > 40

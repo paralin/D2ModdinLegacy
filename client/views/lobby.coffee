@@ -54,8 +54,8 @@ Meteor.startup ->
     if !lobby? and wasInLobby
       Router.go Router.routes["lobbyList"].path()
       $.pnotify
-        title: "Game Over"
-        text: "The game has ended!"
+        title: "Lobby Finished"
+        text: "The lobby has closed."
         delay: 5000
         closer: false
         sticker: false
@@ -69,7 +69,7 @@ Template.lobby.statusIs = (st)->
 Template.lobby.arePlaying = ->
   lobby = lobbies.findOne()
   return false if !lobby?
-  lobby.status is 2
+  lobby.status is 3
 Template.lobby.events
   'click .stopBtn': ->
     Meteor.call "stopFinding"
@@ -108,10 +108,11 @@ Template.lobby.status = ->
   lobby = lobbies.findOne()
   return if !lobby? or !lobby.status?
   switch lobby.status
-    when 0 then return "Waiting for players..."
+    when 0 then return "Waiting for players to be ready..."
     when 1 then return "Searching for a server..."
-    when 2 then return "Playing! Hit connect."
-    when 3 then return "Game has ended."
+    when 2 then return "Configuring server..."
+    when 3 then return "Playing! Hit connect."
+    when 4 then return "Game has ended."
 Template.lobby.events
   "click .joinBtn": ->
     Meteor.call "switchTeam", @team

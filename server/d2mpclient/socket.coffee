@@ -74,13 +74,13 @@ clientServer.on 'connection', (ws)->
           modname += "="+mod.version
           toRemove = []
           for mod in clientObj.installedMods
-            if mod.split("=")[0] is modname
+            if mod.split("=")[0] is mod.name
               toRemove.push(mod)
           toRemove.unshift clientObj.installedMods
           clientObj.installedMods = _.without.apply(_, toRemove)
           console.log "client installed "+modname
-          console.log "  -> mods: "+toRemove
           clientObj.installedMods.push(modname)
+          console.log "  -> mods: "+clientObj.installedMods
           clients.update {_id: ourID}, clientObj
     ).run()
   ws.on 'close', ->

@@ -14,6 +14,3 @@ Meteor.startup ->
     lobby: lobbyId
     started: new Date().getTime()
 
-
-@kickPlayer = (steamId)->
-  console.log "removing player from server "+steamId

@@ -17,7 +17,7 @@ Meteor.publish "lobbyDetails", ->
   #  return
   lobbies.find
     $or: [{"radiant._id": @userId}, {"dire._id": @userId}]
-    status: {$ne: 3}
+    status: {$ne: 4}
   ,
     fields:
       name: 1
