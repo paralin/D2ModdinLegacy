@@ -127,7 +127,7 @@ hostServer.on 'connection', (ws)->
           sessId = parseInt(splitMsg[1])
           pendInstance = pendingInstances.findOne {id: sessId}
           lobby = lobbies.findOne {_id: pendInstance.lobby}
-          lobbies.remove {_id: pendInstance.lobby}
+          lobbyQueue.remove {lobby: pendInstance.lobby}
           configureServer serverObj, lobby, pendInstance
         when "onShutdown"
           serverObj = servers.findOne({_id: ourID})
