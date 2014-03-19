@@ -73,7 +73,7 @@ launchServer = (serv, lobby)->
   console.log "server launched, id: "+id+" waiting for configure"
 
 finalizeInstance = (serv, lobby, instance)->
-  lobbies.update {_id: lobby}, {$set: {status: 3, serverIP: serv.ip+":"+serv.port}}
+  lobbies.update {_id: lobby._id}, {$set: {status: 3, serverIP: serv.ip+":"+instance.port}}
   pendingInstances.remove {id: instance.id}
 
 queueProc = ->
