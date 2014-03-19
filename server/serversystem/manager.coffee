@@ -23,7 +23,7 @@ Meteor.startup ->
 
 configureServer = (serverObj, lobby, instance)->
   console.log "configuring server "+instance.ip+":"+instance.port
-  srvr = newRcon instance.ip+":"+instance.port, instance.rconPass
+  srvr = new Rcon instance.ip+":"+instance.port, instance.rconPass
   Async.runSync (done)->
     srvr.connect ->
       for plyr in lobby.radiant
