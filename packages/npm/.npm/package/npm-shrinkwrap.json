@@ -32,6 +32,9 @@
           "version": "0.4.2"
         }
       }
+    },
+    "srcds-rcon": {
+      "version": "1.1.2"
     }
   }
 }
