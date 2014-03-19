@@ -1,7 +1,7 @@
 
 #Note this class cannot yet horizontally scale
 Fiber = Npm.require('fibers')
-Rcon = Meteor.require('srcds-rcon')
+Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "mHCYLzo7SAcpIcxXCmlR"
 
@@ -23,18 +23,26 @@ Meteor.startup ->
 
 configureServer = (serverObj, lobby, instance)->
   console.log "configuring server "+instance.ip+":"+instance.port
-  srvr = new Rcon instance.ip+":"+instance.port, instance.rconPass
-  Async.runSync (done)->
-    srvr.connect ->
-      for plyr in lobby.radiant
-        Async.runSync (done2)->
-          srvr.runCommand "add_radiant_player "+plyr.steam+" "+plyr.name, done2
-      for plyr in lobby.dire
-        Async.runSync (done2)->
-          srvr.runCommand "add_dire_player "+plyr.steam+" "+plyr.name, done2
-      done()
-  console.log "server configured"
-  finalizeInstance(serverObj, lobby)
+  srvr = new Rcon instance.ip, instance.port, instance.rconPass, {challenge:false}
+  connecting = true
+  srvr.connect()
+  srvr.on('auth', ->
+    connecting = false
+    for plyr in lobby.radiant
+      srvr.send "add_radiant_player "+plyr.steam+" "+plyr.name
+    for plyr in lobby.dire
+      srvr.send "add_dire_player "+plyr.steam+" "+plyr.name
+    console.log "server configured"
+    new Fiber(->
+      finalizeInstance(serverObj, lobby)
+    ).run()
+  ).on('response', (str)->
+    console.log "rcon response: "+str
+  ).on('end', ->
+    console.log "rcon disconnected for "+instance.id
+    if connecting
+      console.log "configuring server failed!!!"
+  )
 
 launchServer = (serv, lobby)->
   id = idCounter
