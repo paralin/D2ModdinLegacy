@@ -29,13 +29,13 @@ configureServer = (serverObj, lobby, instance)->
   srvr.on('auth', ->
     connecting = false
     for plyr in lobby.radiant
-      cmd = "add_radiant_player "+plyr.steam+" "+plyr.name
+      cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\""
       srvr.send cmd
-      console.log "  - "+cmd
+      console.log cmd
     for plyr in lobby.dire
-      cmd = "add_dire_player "+plyr.steam+" "+plyr.name
+      cmd = "add_dire_player "+plyr.steam+" \""+plyr.name+"\""
       srvr.send cmd
-      console.log "  - "+cmd
+      console.log cmd
     console.log "server configured"
     new Fiber(->
       finalizeInstance(serverObj, lobby, instance)
