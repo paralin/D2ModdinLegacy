@@ -72,7 +72,14 @@ Template.lobby.arePlaying = ->
   lobby.status is 3
 Template.lobby.events
   'click .stopBtn': ->
-    Meteor.call "stopFinding"
+    console.log "stop finding button"
+    Meteor.call "stopFinding", (err, res)->
+      if err?
+        $.pnotify
+          title: "Can't Stop Queuing"
+          text: err.reason
+          type: "error"
+          delay: 5000
   'click .startBtn': ->
     Meteor.call "startGame", (err, res)->
       if err?
@@ -93,6 +100,8 @@ Template.lobby.events
       template.find("#chatInput").value = ""
       chatStream.emit("message", text)
       pushChatMessage Meteor.user().profile.name+": "+text
+  "click .joinBtn": ->
+    Meteor.call "switchTeam", @team
 
 Template.lobby.isHost = ->
   user = Meteor.userId()
@@ -113,9 +122,6 @@ Template.lobby.status = ->
     when 2 then return "Configuring server..."
     when 3 then return "Playing! Hit connect."
     when 4 then return "Game has ended."
-Template.lobby.events
-  "click .joinBtn": ->
-    Meteor.call "switchTeam", @team
 Template.lobby.emptySlotR = ->
   lobby = lobbies.findOne()
   return if !lobby? or !lobby.radiant?

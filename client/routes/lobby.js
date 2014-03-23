@@ -24,6 +24,7 @@ Router.map(function () {
       }
     },
     load: function(){
+      Meteor.subscribe("lobbyDetails"); //make sure this is done
       //Get chat stream
       chatStream = new Meteor.Stream(this.params.id); 
       console.log(chatStream)
@@ -52,7 +53,6 @@ Router.map(function () {
             });
           }else{
             console.log("joined lobby");
-            Meteor.subscribe("lobbyDetails"); //make sure this is done
             $.pnotify({title:"Joined Lobby", text: "Welcome to the lobby.", type: "success", delay: 1500, closer: false, sticker: false})
           }
         });

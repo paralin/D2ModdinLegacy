@@ -145,7 +145,7 @@ startGame = (lobby)->
   lobbies.update {_id: lobby._id}, {$set: updateObj}
 
 stopFinding = (lobby)->
-  return if lobby.status isnt 1 or lobby.status isnt 2
+  return if lobby.status != 1 && lobby.status != 2
   cancelFindServer lobby._id
   lobbies.update {_id: lobby._id}, {$set: {status: 0}}
 
