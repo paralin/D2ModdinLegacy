@@ -1,7 +1,6 @@
 #Constants
 radiantSlots = 5
 direSlots = 5
-
 streamSetup = false
 pushChatMessage = (msg)->
   box = $(".chatBox")
@@ -11,7 +10,32 @@ pushChatMessage = (msg)->
   box.scrollTop(box[0].scrollHeight)
 
 wasInLobby = false
+targetFindTime = 30000 #30 seconds average?
 Meteor.startup ->
+  Session.set "servProgress", 50
+  Deps.autorun -> #Loading bar tick
+    curr = Session.get "servProgress"
+    lobby = lobbies.findOne()
+    startTime = Session.get "findStartTime"
+    currTime = Session.get "500mstick"
+    Session.set "servTimeElapsed", Math.floor((currTime-startTime)/1000)
+    if !lobby? or lobby.status is 0
+      Session.set "servProgress", 0
+      Session.set "findStartTime", 0
+    else if lobby.status is 1
+      if Session.get("findStartTime") is 0
+        Session.set "findStartTime", new Date().getTime()
+      prog = (currTime-startTime)/targetFindTime*100
+      if prog > 75
+        targetFindTime += 30000
+      Session.set "servProgress", prog
+      Session.set "servProgColor", "info"
+    else if lobby.status is 2
+      Session.set "servProgress", 80
+      Session.set "servProgColor", "warning"
+    else if lobby.status is 3
+      Session.set "servProgress", 100
+      Session.set "servProgColor", "success"
   Deps.autorun -> #Detect if we're in a lobby
     lobby = lobbies.findOne({status: {$ne: null}})
     return if !lobby?
@@ -66,12 +90,23 @@ Template.lobby.statusIs = (st)->
   return false if !lobby?
   lobby.status is st
 
-Template.lobby.arePlaying = ->
+Template.lobby.showPlayerList = ->
+  lobby = lobbies.findOne()
+  return false if !lobby?
+  lobby.status is 0
+Template.lobby.areFinding = ->
+  lobby = lobbies.findOne()
+  return false if !lobby?
+  lobby.status is 1 or lobby.status is 2
+Template.findDialog.servProgColor = ->
+  Session.get "servProgColor"
+Template.findDialog.arePlaying = ->
   lobby = lobbies.findOne()
   return false if !lobby?
   lobby.status is 3
-Template.lobby.events
-  'click .stopBtn': ->
+
+Template.findDialog.events
+  'click .stopFindingBtn': ->
     console.log "stop finding button"
     Meteor.call "stopFinding", (err, res)->
       if err?
@@ -80,6 +115,7 @@ Template.lobby.events
           text: err.reason
           type: "error"
           delay: 5000
+Template.lobby.events
   'click .startBtn': ->
     Meteor.call "startGame", (err, res)->
       if err?
@@ -113,7 +149,7 @@ Template.lobby.isHost = ->
 Template.lobby.lobby = ->
   lobbies.findOne()
 
-Template.lobby.status = ->
+Template.lobby.status = Template.findDialog.status = ->
   lobby = lobbies.findOne()
   return if !lobby? or !lobby.status?
   switch lobby.status
@@ -141,6 +177,20 @@ Template.lobby.emptySlotD = ->
     i++
   slots
 
-Template.connectDialog.connectURL = ->
+Template.findDialog.connectURL = ->
   lobby = lobbies.findOne()
+  return if !lobby? or !lobby.serverIP?
   "steam://connect/"+lobby.serverIP
+
+Template.findDialog.progress = ->
+  Session.get("servProgress")
+
+Template.findDialog.timeElapsed = ->
+  Session.get "servTimeElapsed"
+Template.findDialog.progBarClass = ->
+  lobby = lobbies.findOne()
+  return if !lobby?
+  "progress-striped active" if lobby.status isnt 3
+Template.findDialog.isConfiguring = ->
+  lobby = lobbies.findOne()
+  !lobby? or lobby.status is 2
