@@ -26,7 +26,7 @@ Meteor.startup ->
       fullname: "Pudge Wars"
       author: "Kobb and Aderum"
       authorimage: "/authorimg/pudge.png"
-      thumbnail: "http://hydra-media.cursecdn.com/dota2.gamepedia.com/9/9c/Meat_Hook_icon.png"
+      thumbnail: "/thumbs/pudgewars.jpg"
       spreadimage: "/spread/pudge.png"
       website: "http://d2pudgewars.com/"
       subtitle: "A modern rendition of the classic WC3 mod."
