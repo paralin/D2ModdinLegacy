@@ -29,7 +29,7 @@ Meteor.startup ->
       thumbnail: "/thumbs/pudgewars.jpg"
       spreadimage: "/spread/pudge.png"
       website: "http://d2pudgewars.com/"
-      subtitle: "A modern rendition of the classic WC3 mod."
+      subtitle: "Remake of the classic WC3 Pudge Wars in Dota 2."
       description: "Pudge Wars is a 5v5 team game. Each player controls a Pudge with only one spell to use: Meat Hook. The teams faces off on a square map divided by an uncrossable river. The first team to get 50 kills wins the game."
       features: ["Every player plays pudge.", "Square map divided by a river.", "Upgrade the damage, range, radius, or speed of your hook.", "First team to 50 kills wins the game!"]
       public: true
