@@ -3,7 +3,15 @@ Router.map(function () {
     path: "lobbies/:name?",
     template: "lobbyList",
     waitOn: function(){
-      return Meteor.subscribe("lobbyList");
+      var modSub = null;
+      if(this.params.name != undefined)
+      {
+        modSub = Meteor.subscribe("modDetails", this.params.name);
+      }else
+      {
+        modSub = Meteor.subscribe("modList");
+      }
+      return [Meteor.subscribe("lobbyList"), modSub];
     },
     data: function(){
       if(this.params.name != undefined)

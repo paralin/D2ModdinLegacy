@@ -17,7 +17,23 @@ Meteor.startup ->
       features: ["Capture the Flag meets Dota 2.", "Minimal farming, constant action, and diverse strategies.", "Roles for every play style.", "First competitive Dota 2 mod!"]
       public: true
       playable: false
-      version: "0.3.5"
+      version: "0.3.7"
       bundlepath: "d2fof.zip"
       requirements:
         d2_gamecount: 50
+    mods.insert
+      name: "pudgewars"
+      fullname: "Pudge Wars"
+      author: "Kobb and Aderum"
+      authorimage: "/authorimg/pudge.png"
+      thumbnail: "http://hydra-media.cursecdn.com/dota2.gamepedia.com/9/9c/Meat_Hook_icon.png"
+      spreadimage: "/spread/pudge.png"
+      website: "http://d2pudgewars.com/"
+      subtitle: "A modern rendition of the classic WC3 mod."
+      description: "Pudge Wars is a 5v5 team game. Each player controls a Pudge with only one spell to use: Meat Hook. The teams faces off on a square map divided by an uncrossable river. The first team to get 50 kills wins the game."
+      features: ["Every player plays pudge.", "Square map divided by a river.", "Upgrade the damage, range, radius, or speed of your hook.", "First team to 50 kills wins the game!"]
+      public: true
+      playable: false
+      version: "0.0.12"
+      #bundlepath: "pudgewars.zip"
+      requirements: {} #No requirements
