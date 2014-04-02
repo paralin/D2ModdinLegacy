@@ -6,10 +6,7 @@
     "pnotify": {},
     "dota2": {},
     "font-awesome": {},
-    "iron-router": {
-      "git": "https://github.com/EventedMind/iron-router.git",
-      "branch": "blaze-integration"
-    },
+    "iron-router": {},
     "accounts-ui-bootstrap-3": {
       "git": "https://github.com/kidovate/meteor-accounts-ui-bootstrap-3.git",
       "branch": "steam"
