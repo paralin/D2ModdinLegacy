@@ -158,6 +158,8 @@ Template.lobby.status = Template.findDialog.status = ->
     when 2 then return "Configuring server..."
     when 3 then return "Playing! Hit connect."
     when 4 then return "Game has ended."
+Template.lobby.mod = ->
+  mods.findOne()
 Template.lobby.emptySlotR = ->
   lobby = lobbies.findOne()
   return if !lobby? or !lobby.radiant?
@@ -194,3 +196,4 @@ Template.findDialog.progBarClass = ->
 Template.findDialog.isConfiguring = ->
   lobby = lobbies.findOne()
   !lobby? or lobby.status is 2
+

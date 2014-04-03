@@ -6,6 +6,11 @@
       {{#if showPlayerList}}<span class="subtitle" style="margin-top:10px">{{status}}</span>{{/if}}
     </h1>
   </section>
+  {{#with mod}}
+  <div style="margin-left:auto;margin-right:auto;width:251px">
+    {{>modThumbnail}}
+  </div>
+  {{/with}}
   {{#unless showPlayerList}}
   {{>findDialog}}
   {{/unless}}
