@@ -33,7 +33,7 @@ Meteor.startup ->
       description: "Pudge Wars is a 5v5 team game. Each player controls a Pudge with only one spell to use: Meat Hook. The teams faces off on a square map divided by an uncrossable river. The first team to get 50 kills wins the game."
       features: ["Every player plays pudge.", "Square map divided by a river.", "Upgrade the damage, range, radius, or speed of your hook.", "First team to 50 kills wins the game!"]
       public: true
-      playable: false
-      version: "0.0.12"
-      #bundlepath: "pudgewars.zip"
+      playable: true
+      version: "0"
+      bundlepath: "pudgewars.zip"
       requirements: {} #No requirements
