@@ -28,12 +28,3 @@ Meteor.publish "modList", ->
       authorimage: 1
       thumbnail: 1
       subtitle: 1
-
-Meteor.publish "modList", ->
-  mods.find
-    public: true
-  ,
-    fields:
-      name: 1
-      fullname: 1
-      version: 1
