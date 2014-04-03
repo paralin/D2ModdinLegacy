@@ -42,3 +42,14 @@ Meteor.publish "modList", ->
       authorimage: 1
       thumbnail: 1
       subtitle: 1
+
+Meteor.publish "modThumbList", ->
+  mods.find
+    public: true
+  ,
+    fields:
+      name: 1
+      fullname: 1
+      author: 1
+      thumbnail: 1
+      subtitle: 1

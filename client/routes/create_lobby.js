@@ -3,7 +3,7 @@ Router.map(function () {
     path: "newlobby",
     template: "createLobby",
     waitOn: function(){
-      return Meteor.subscribe("modList");
+      return Meteor.subscribe("modThumbList");
     },
     loginRequired: {
       name: 'loggingIn',
