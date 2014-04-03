@@ -16,6 +16,20 @@ Meteor.publish "modDetails", (name) ->
       features: 1
       description: 1
       playable: 1
+Meteor.publish "modDetailsForLobby", ->
+  user = null
+  return [] if !@userId?
+  lobby = findUserLobby @userId
+  return [] if !lobby?
+  mods.find
+    name: lobby.mod
+  ,
+    fields:
+      name: 1
+      fullname: 1
+      author: 1
+      thumbnail: 1
+      subtitle: 1
 
 Meteor.publish "modList", ->
   mods.find

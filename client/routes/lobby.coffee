@@ -5,13 +5,6 @@ Meteor.startup ->
     return if(route == null)
     if(route.route.name != "lobby")
       Meteor.call("leaveLobby")
-      if modDetailsSub?
-        modDetailsSub.stop()
-        modDetailsSub = null
-    else
-      lobby = lobbies.findOne()
-      if !modDetailsSub? && lobby?
-        modDetailsSub = Meteor.subscribe("modDetails", lobby.mod)
 @chatStream = {}
 Router.map ->
   @.route "lobby",
@@ -20,6 +13,8 @@ Router.map ->
     loginRequired:
       name: 'loggingIn',
       shouldRoute: false
+    waitOn: ->
+      Meteor.subscribe("modDetailsForLobby")
     load:->
       Meteor.subscribe("lobbyDetails")
       #Get chat stream
