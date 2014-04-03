@@ -21,6 +21,21 @@ Meteor.startup ->
     added: (id, fields)->
       queueProc()
 
+#versions looks like rota=0.1,lobby=0.5
+getAddonInstalls = (versions)->
+  toinst = []
+  currAddons = {}
+  for ver in versions
+    p = ver.split '='
+    currAddons[p[0]] = p[1]
+  console.log currAddons
+  #check against server versions
+  for addon in ServerAddons.find().fetch()
+    curr = currAddons[addon.name]
+    if !curr? || curr isnt addon.version
+      toinst.push(addon.name+"="+addon.version+"="+getBundleDownloadURL(addon.bundle).split('=').join('+'))
+  toinst.join ','
+
 configureServer = (serverObj, lobby, instance)->
   console.log "configuring server "+instance.ip+":"+instance.port
   srvr = new Rcon instance.ip, instance.port, instance.rconPass, {challenge:false}
@@ -28,6 +43,14 @@ configureServer = (serverObj, lobby, instance)->
   srvr.connect()
   srvr.on('auth', ->
     connecting = false
+    srvr.send "update_addon_paths;"
+    srvr.send "dota_local_custom_enable 1;"
+    srvr.send "dota_local_custom_game "+lobby.mod+";"
+    srvr.send "dota_local_custom_map "+lobby.mod+";"
+    srvr.send "dota_force_gamemode 15;"
+    srvr.send "dota_wait_for_players_to_load 1;"
+    srvr.send "dota_wait_for_players_to_load_timeout 30;"
+    srvr.send "map "+lobby.mod+";"
     for plyr in lobby.radiant
       cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\""
       srvr.send cmd
@@ -41,12 +64,12 @@ configureServer = (serverObj, lobby, instance)->
       finalizeInstance(serverObj, lobby, instance)
     ).run()
   ).on('response', (str)->
-    console.log "rcon response: "+str
+    #console.log "rcon response: "+str
   ).on('end', ->
     console.log "rcon disconnected for "+instance.id
     if connecting
       console.log "configuring server failed!!!"
-  )
+  ).on('error', console.log)
 
 launchServer = (serv, lobby)->
   id = idCounter
@@ -119,9 +142,15 @@ hostServer.on 'connection', (ws)->
             return
           serverObj.maxLobbies = parseInt(splitMsg[2])
           serverObj.ip = ws.upgradeReq.connection.remoteAddress
-          console.log "new server init "+serverObj.ip+" max lobbies "+serverObj.maxLobbies
-          ourID = servers.insert serverObj
-          sockets[ourID] = ws
+          versions = splitMsg[3].split ','
+          installStr = getAddonInstalls(versions)
+          if installStr is ""
+            console.log "new server init "+serverObj.ip
+            ourID = servers.insert serverObj
+            sockets[ourID] = ws
+          else
+            #console.log "told server to install "+installStr
+            ws.send 'installAddons|'+installStr
         when "serverLaunched"
           serverObj = servers.findOne({_id: ourID})
           sessId = parseInt(splitMsg[1])

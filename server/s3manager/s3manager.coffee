@@ -18,3 +18,7 @@ Meteor.startup ->
   response = Async.runSync (done)->
     done null, s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: mod.bundlepath}
   response.result
+@getBundleDownloadURL = (file)->
+  response = Async.runSync (done)->
+    done null, s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: file}
+  response.result
