@@ -15,7 +15,13 @@ Router.map(function () {
     },
     data: function(){
       if(this.params.name != undefined)
+      {
+        if(mods.findOne() == null){
+          Router.go("/lobbies");
+          return;
+        }
         return {hasMod: true, mod: this.params.name, lobbies: lobbies.find({mod: this.params.name}), modD: mods.findOne({name: this.params.name})};
+      }
       return {lobbies: lobbies.find()};
     }
   });
