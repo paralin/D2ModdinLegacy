@@ -102,12 +102,12 @@ startGame = (lobby)->
   startFindServer lobby._id
   lobbies.update({_id: lobby._id}, {$set: {status: 1}})
 
-@createLobby = (creatorId, mod)->
+@createLobby = (creatorId, mod, name)->
   return if !creatorId?
   console.log creatorId+" created lobby"
   user = Meteor.users.findOne({_id: creatorId})
   return lobbies.insert
-    name: user.profile.name+"'s Lobby"
+    name: name
     hasPassword: false
     creator: user.profile.name
     creatorid: creatorId
@@ -207,21 +207,23 @@ Meteor.methods
   "leaveLobby": ->
     return if !@userId?
     leaveLobby(@userId)
-  "createLobby": ->
+  "createLobby": (mod, name) ->
     if !@userId?
       throw new Meteor.Error 403, "You must be logged in to make a lobby."
     user = Meteor.users.findOne({_id: @userId})
     leaveLobby(@userId)
     if isIngame(@userId)
       throw new Meteor.Error 403, "You are already in a game."
-    mod = mods.findOne() #TODO GET THE MOD WE WANT HERE
+    if !name?
+      name = user.profile.name+"'s Lobby"
+    mod = mods.findOne({name: mod})
     if mod.bundlepath?
       #Find their client
       user = Meteor.users.findOne({_id: @userId})
       client = clients.findOne({steamIDs: user.services.steam.id})
       if !client? || !_.contains(client.installedMods, mod.name+"="+mod.version)
         throw new Meteor.Error 401, mod.name
-    return createLobby(@userId, mod)
+    return createLobby(@userId, mod, name)
   "switchTeam": (team)->
     return if !@userId?
     lobby = findUserLobby(@userId)

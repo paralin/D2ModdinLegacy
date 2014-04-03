@@ -2,40 +2,43 @@
 <div id="wrapper">
   <section class="container text-center" style="margin-top: 30px;">
     <h1 class="text-center">
-      <strong>Lobby</strong> List
-      <span class="subtitle">Join or create a game lobby to start playing.</span>
+      <strong>Lobbies</strong><br/>
       {{#if hasMod}}
-      <span class="subtitle"><strong>Filtered</strong> to: {{mod}}.</span>
-      <a href="{{pathFor 'lobbyList'}}" class="btn btn-primary">Show All Lobbies</a><br/>
+      {{#with modD}}
+      <div style="width: 251px;margin-left:auto;margin-right:auto">
+        {{>modThumbnail}}
+      </div>
+      {{/with}}
+      <a href="{{pathFor 'lobbyList'}}" class="btn btn-link">Show All Lobbies</a>
       {{/if}}
-      <button class="btn createLobbyBtn">Create a Lobby</button>
+      <a class="btn btn-link createLobbyBtn" href="">Create a Lobby</a>
     </h1>
   </section>
   <div id="mods">
     <section class="container">
       <div class="row">
         <table class="table">
-        <thead>
+          <thead>
+            <tr>
+              <th style="width: 50px">Password</th>
+              <th>Name</th>
+              <th>Mod</th>
+              <th>Host</th>
+              <th>Join</th>
+            </tr>
+          </thead>
+          <tbody>
+          {{#each lobbies}}
           <tr>
-            <th style="width: 50px">Password</th>
-            <th>Name</th>
-            <th>Mod</th>
-            <th>Host</th>
-            <th>Join</th>
+            <td><input type="checkbox" checked={{hasPassword}} disabled/></td>
+            <td>{{name}}</td>
+            <td>{{mod}}</td>
+            <td>{{creator}}</td>
+            <td><button class="btn btn-success joinBtn">Join</button></td>
           </tr>
-        </thead>
-        <tbody>
-        {{#each lobbies}}
-        <tr>
-          <td><input type="checkbox" checked={{hasPassword}} disabled/></td>
-          <td>{{name}}</td>
-          <td>{{mod}}</td>
-          <td>{{creator}}</td>
-          <td><button class="btn btn-success joinBtn">Join</button></td>
-        </tr>
-        {{/each}}
-        </tbody>
-      </table>
+          {{/each}}
+          </tbody>
+        </table>
       </div>
     </section>
   </div>

@@ -1,0 +1,36 @@
+<template name="createLobby">
+<div id="wrapper">
+  <div class="panel panel-success" id="newLobbyPanel">
+    <div class="panel-heading">Create a new lobby</div>
+    <div class="panel-body">
+      <form class="form-horizontal" role="form">
+        <div class="form-group">
+          <label for="lobbyName" class="col-sm-2 control-label">Name</label>
+          <div class="col-sm-10">
+            <input id="lobbyName" class="form-control" placeholder="{{currentUser.profile.name}}'s Lobby"/>
+          </div>
+        </div>
+        <div class="form-group" style="margin: 0">
+          <label class="col-sm-2 control-label" style="width: 100%; text-align: center">Choose a Mod</label>
+        </div>
+        <div class="form-group">
+          {{#each mods}}
+          <div style="margin-left:auto;margin-right:auto;width:251px">
+            {{>modThumbnail}}
+          </div>
+          {{/each}}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</template>
+<template name="modThumbnail">
+<div class="modThumbnail" style="cursor:pointer;margin-top:3px">
+  <img src={{thumbnail}} style="width:50px;height:50px;" />
+  <div class="thumbDetail">
+    <p style="font-weight: bold">{{fullname}}</p>
+    <p>{{subtitle}}</p>
+  </div>
+</div>
+</template>
