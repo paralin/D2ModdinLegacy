@@ -10,8 +10,9 @@ setupFilters = (stream, id)->
     return if !@userId?
     if eventName is "message"
       user = Meteor.users.findOne _id: @userId
+      return if args[0] is ""
       args[0] = user.profile.name+": "+args[0]
-      console.log args[0]
+      console.log "chat message ("+id+"): "+args[0]
     return args
     
 streams = {}

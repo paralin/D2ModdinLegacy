@@ -1,6 +1,7 @@
 #Constants
 radiantSlots = 5
 direSlots = 5
+stream = null
 streamSetup = false
 pushChatMessage = (msg)->
   box = $(".chatBox")
@@ -64,9 +65,10 @@ Meteor.startup ->
     route = Router.current()
     return if !route?
     return if route.route.name isnt "lobby"
-    return if !chatStream?
+    stream = chatStream[lobby._id]
+    return if !stream?
     streamSetup = true
-    chatStream.on "message", pushChatMessage
+    stream.on "message", pushChatMessage
     wasInLobby = true
   Deps.autorun -> #Leave when game is over
     route = Router.current()
@@ -134,7 +136,8 @@ Template.lobby.events
     if evt.which is 13
       text = template.find("#chatInput").value
       template.find("#chatInput").value = ""
-      chatStream.emit("message", text)
+      return if text is ""
+      stream.emit("message", text)
       pushChatMessage Meteor.user().profile.name+": "+text
   "click .joinBtn": ->
     Meteor.call "switchTeam", @team

@@ -12,7 +12,7 @@ Meteor.startup ->
       lobby = lobbies.findOne()
       if !modDetailsSub? && lobby?
         modDetailsSub = Meteor.subscribe("modDetails", lobby.mod)
-chatStream = null
+@chatStream = {}
 Router.map ->
   @.route "lobby",
     path: "/lobby/:id",
@@ -20,17 +20,11 @@ Router.map ->
     loginRequired:
       name: 'loggingIn',
       shouldRoute: false
-    unload: ->
-      if(chatStream != null)
-        chatStream.close()
-        chatStream = null
-        Session.set("chatStream", null)
     load:->
       Meteor.subscribe("lobbyDetails")
       #Get chat stream
-      chatStream = new Meteor.Stream(@.params.id)
-      console.log(chatStream)
-      Session.set("chatStream",chatStream)
+      if !chatStream[@params.id]?
+        chatStream[@params.id] = new Meteor.Stream(@.params.id)
       #check if already in lobby
       lobby = lobbies.findOne({status: {$ne: null}}, {reactive: false})
       if(lobby == null)
