@@ -193,12 +193,11 @@ Meteor.methods
       throw new Meteor.Error 404, "Lobby is full."
     if lobby.isMatchmaking
       throw new Meteor.Error 403, "Can't join a matchmaking lobby directly."
-    if lobby.bundlePath?
-      #Find their client
+    mod = mods.findOne({name: lobby.mod})
+    if !mod?
+      throw new Meteor.Error 404, "Can't seem to find the mod in the database."
+    if mod.bundlePath?
       user = Meteor.users.findOne({_id: @userId})
-      mod = mods.findOne({name: lobby.mod})
-      if !mod?
-        throw new Meteor.Error 404, "Can't seem to find the mod in the database."
       client = clients.findOne({steamIDs: user.services.steam.id})
       if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
         throw new Meteor.Error 401, lobby.mod
