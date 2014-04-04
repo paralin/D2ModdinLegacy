@@ -1,9 +1,24 @@
 Template.lobbyList.events
   "click .joinBtn": ->
     Meteor.call "joinLobby", @_id, (err, res)->
-      console.log err if err?
-      console.log res if res?
-      Meteor.subscribe "lobbyDetails"
+      if err?
+        if err.error is 401
+          Router.go "/install/"+err.reason
+          return
+        console.log err
+        $.pnotify
+          title: "Can't Join Lobby"
+          type: "error"
+          text: err.reason
+          delay: 5000
+          sticker: false
+      else if !res?
+        $.pnotify
+          title: "Problem joining lobby"
+          type: "error"
+          text: "It seems the server somehow failed to put you in the lobby. Try again."
+          delay: 5000
+          sticker: false
   "click .createLobbyBtn": ->
     if !@mod?
       Router.go Router.routes["createLobby"].path()

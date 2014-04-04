@@ -43,28 +43,31 @@ configureServer = (serverObj, lobby, instance)->
   srvr.connect()
   srvr.on('auth', ->
     connecting = false
+    srvr.send "log 1;"
     srvr.send "update_addon_paths;"
     srvr.send "dota_local_custom_enable 1;"
     srvr.send "dota_local_custom_game "+lobby.mod+";"
     srvr.send "dota_local_custom_map "+lobby.mod+";"
-    srvr.send "dota_force_gamemode 15;"
-    srvr.send "dota_wait_for_players_to_load 1;"
-    srvr.send "dota_wait_for_players_to_load_timeout 30;"
-    srvr.send "map "+lobby.mod+";"
     for plyr in lobby.radiant
-      cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\""
+      #cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\""
+      cmd = "add_radiant_player "+plyr.steam+" \"RadiantPlayer\";"
       srvr.send cmd
       console.log cmd
     for plyr in lobby.dire
-      cmd = "add_dire_player "+plyr.steam+" \""+plyr.name+"\""
+      #cmd = "add_dire_player "+plyr.steam+" \""+plyr.name+"\""
+      cmd = "add_dire_player "+plyr.steam+" \"DirePlayer\";"
       srvr.send cmd
       console.log cmd
+    srvr.send "dota_force_gamemode 15;"
+    srvr.send "map "+lobby.mod+";"
     console.log "server configured"
     new Fiber(->
-      finalizeInstance(serverObj, lobby, instance)
+      Meteor.setTimeout(->
+        finalizeInstance(serverObj, lobby, instance)
+      , 10000)
     ).run()
   ).on('response', (str)->
-    #console.log "rcon response: "+str
+    console.log "rcon resp: "+str
   ).on('end', ->
     console.log "rcon disconnected for "+instance.id
     if connecting

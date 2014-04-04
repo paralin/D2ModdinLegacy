@@ -17,7 +17,7 @@ Meteor.startup ->
       features: ["Capture the Flag meets Dota 2.", "Minimal farming, constant action, and diverse strategies.", "Roles for every play style.", "First competitive Dota 2 mod!"]
       public: true
       playable: false
-      version: "0.3.7"
+      version: "0.3.8"
       bundlepath: "d2fof.zip"
       requirements:
         d2_gamecount: 50
@@ -34,6 +34,6 @@ Meteor.startup ->
       features: ["Every player plays pudge.", "Square map divided by a river.", "Upgrade the damage, range, radius, or speed of your hook.", "First team to 50 kills wins the game!"]
       public: true
       playable: true
-      version: "0"
+      version: "0.12"
       bundlepath: "pudgewars.zip"
       requirements: {} #No requirements

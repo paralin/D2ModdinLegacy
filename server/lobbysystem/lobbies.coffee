@@ -180,7 +180,6 @@ Meteor.methods
     #name = name.replace(/\W+/g, " ")
     lobbies.update {_id: lobby._id}, {$set: {name: name}}
   "joinLobby": (id)->
-    console.log "joinLobby request " +id
     if !@userId?
       throw new Meteor.Error 403, "You must be logged in to join a lobby."
     lobby = lobbies.findOne
@@ -196,10 +195,13 @@ Meteor.methods
     mod = mods.findOne({name: lobby.mod})
     if !mod?
       throw new Meteor.Error 404, "Can't seem to find the mod in the database."
-    if mod.bundlePath?
+    if mod.bundlepath?
       user = Meteor.users.findOne({_id: @userId})
       client = clients.findOne({steamIDs: user.services.steam.id})
       if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
+        console.log "mod install needed: "
+        console.log "  -> client = "+JSON.stringify client
+        console.log "  -> mod needed = "+lobby.mod+"="+mod.version
         throw new Meteor.Error 401, lobby.mod
     joinLobby lobby, @userId
     console.log @userId+" joined lobby "+lobby.name
