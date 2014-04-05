@@ -1,13 +1,13 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
-clientVersion = "0.2.0"
+clientVersion = "0.3.0"
 
 clientSockets = {}
 @installMod = (client, mod)->
   sock = clientSockets[client._id]
   return false if !sock?
   #TODO write generateModDownloadURL from amazon
-  command = "installmod:"+mod.name+":"+generateModDownloadURL(mod)
+  command = "installmod:"+mod.name+"="+mod.version+":"+generateModDownloadURL(mod)
   console.log "Install mod: "+command
   sock.send command
   return true
@@ -73,9 +73,9 @@ clientServer.on 'connection', (ws)->
             return
           modname += "="+mod.version
           toRemove = []
-          for mod in clientObj.installedMods
-            if mod.split("=")[0] is mod.name
-              toRemove.push(mod)
+          for modn in clientObj.installedMods
+            if modn.split("=")[0] is mod.name
+              toRemove.push(modn)
           toRemove.unshift clientObj.installedMods
           clientObj.installedMods = _.without.apply(_, toRemove)
           console.log "client installed "+modname

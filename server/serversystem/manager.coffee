@@ -44,18 +44,19 @@ configureServer = (serverObj, lobby, instance)->
   srvr.on('auth', ->
     connecting = false
     srvr.send "log 1;"
+    srvr.send "sm plugins load addxp;"
     srvr.send "update_addon_paths;"
     srvr.send "dota_local_custom_enable 1;"
     srvr.send "dota_local_custom_game "+lobby.mod+";"
     srvr.send "dota_local_custom_map "+lobby.mod+";"
     for plyr in lobby.radiant
-      #cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\""
-      cmd = "add_radiant_player "+plyr.steam+" \"RadiantPlayer\";"
+      cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\""
+      #cmd = "add_radiant_player "+plyr.steam+" \"RadiantPlayer\";"
       srvr.send cmd
       console.log cmd
     for plyr in lobby.dire
-      #cmd = "add_dire_player "+plyr.steam+" \""+plyr.name+"\""
-      cmd = "add_dire_player "+plyr.steam+" \"DirePlayer\";"
+      cmd = "add_dire_player "+plyr.steam+" \""+plyr.name+"\""
+      #cmd = "add_dire_player "+plyr.steam+" \"DirePlayer\";"
       srvr.send cmd
       console.log cmd
     srvr.send "dota_force_gamemode 15;"
@@ -77,7 +78,7 @@ configureServer = (serverObj, lobby, instance)->
 launchServer = (serv, lobby)->
   id = idCounter
   idCounter+=1
-  port = Math.floor(Math.random()*1000)+27000
+  port = Math.floor(Math.random()*1000)+30000
   rconPass = Random.id()
   serv.activeLobbies.push
     id: id
