@@ -73,7 +73,11 @@ configureServer = (serverObj, lobby, instance)->
     console.log "rcon disconnected for "+instance.id
     if connecting
       console.log "configuring server failed!!!"
-  ).on('error', console.log)
+      handleFailConfigure serverObj, lobby, instance
+  ).on 'error', (err)->
+    if err.errno is 'ETIMEDOUT'
+      console.log "RCON failed connection to server "+instance.ip+":"+instance.port
+      handleFailConfigure serverObj, lobby, instance
 
 launchServer = (serv, lobby)->
   id = idCounter
@@ -99,6 +103,13 @@ launchServer = (serv, lobby)->
     started: new Date().getTime()
   console.log "server launched, id: "+id+" waiting for configure"
 
+handleFailConfigure = (serv, lobby, instance)->
+  console.log "failed to configure server, re-queuing lobby and disabling server"
+  removeServerFromPool serv._id
+  pendingInstances.remove {id: instance.id}
+  lobbyQueue.remove {lobby: lobby._id}
+  startFindServer lobby._id
+
 finalizeInstance = (serv, lobby, instance)->
   lobbies.update {_id: lobby._id}, {$set: {status: 3, serverIP: serv.ip+":"+instance.port}}
   pendingInstances.remove {id: instance.id}
@@ -118,12 +129,19 @@ queueProc = ->
   launchServer(chosen, nextGame.lobby)
   lobbyQueue.remove({_id: nextGame._id})
 
+removeServerFromPool = (id)->
+  serv = servers.findOne {_id: id}
+  return if !serv?
+  console.log "removing server "+id+" ("+serv.ip+") from pool due to failure"
+  servers.update {_id: id}, {$set: {enabled: false}}
+
 @hostServer = new ws({port: 3006})
 hostServer.on 'connection', (ws)->
   serverObj =
     maxLobbies: 0
     activeLobbies: []
     ip: ""
+    enabled: true
   ourID = null
   console.log "new server connected"
   ws.on 'close', ->
