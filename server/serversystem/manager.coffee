@@ -73,11 +73,15 @@ configureServer = (serverObj, lobby, instance)->
     console.log "rcon disconnected for "+instance.id
     if connecting
       console.log "configuring server failed!!!"
-      handleFailConfigure serverObj, lobby, instance
+      new Fiber(->
+        handleFailConfigure serverObj, lobby, instance
+      ).run()
   ).on 'error', (err)->
     if err.errno is 'ETIMEDOUT'
       console.log "RCON failed connection to server "+instance.ip+":"+instance.port
-      handleFailConfigure serverObj, lobby, instance
+      new Fiber(->
+        handleFailConfigure serverObj, lobby, instance
+      ).run()
 
 launchServer = (serv, lobby)->
   id = idCounter
