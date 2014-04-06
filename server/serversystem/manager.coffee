@@ -109,6 +109,7 @@ launchServer = (serv, lobby)->
 
 handleFailConfigure = (serv, lobby, instance)->
   console.log "failed to configure server, re-queuing lobby and disabling server"
+  sockets[serv._id].send "shutdownServer|"+instance.id
   removeServerFromPool serv._id
   pendingInstances.remove {id: instance.id}
   lobbyQueue.remove {lobby: lobby._id}
