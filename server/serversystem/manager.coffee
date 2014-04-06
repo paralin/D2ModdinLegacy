@@ -118,7 +118,7 @@ queueProc = ->
   #Find elegible servers
   nextGame = lobbyQueue.findOne({}, {started: 1})
   return if !nextGame?
-  servs = servers.find().fetch()
+  servs = servers.find({enabled: true}).fetch()
   maxLobbies = 9999999999
   chosen = null
   for serv in servs
