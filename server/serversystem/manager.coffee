@@ -73,15 +73,21 @@ configureServer = (serverObj, lobby, instance)->
     console.log "rcon disconnected for "+instance.id
     if connecting
       console.log "configuring server failed!!!"
+      sockets[serv._id].send "shutdownServer|"+instance.id
       new Fiber(->
         handleFailConfigure serverObj, lobby, instance
       ).run()
   ).on 'error', (err)->
     if err.errno is 'ETIMEDOUT'
       console.log "RCON failed connection to server "+instance.ip+":"+instance.port
+      sockets[serv._id].send "shutdownServer|"+instance.id
       new Fiber(->
         handleFailConfigure serverObj, lobby, instance
       ).run()
+    else
+      console.log "Unknown error configuring server:"
+      console.log err
+      console.log "!!! The server is now in an unknown state!!!"
 
 launchServer = (serv, lobby)->
   id = idCounter
@@ -109,7 +115,6 @@ launchServer = (serv, lobby)->
 
 handleFailConfigure = (serv, lobby, instance)->
   console.log "failed to configure server, re-queuing lobby and disabling server"
-  sockets[serv._id].send "shutdownServer|"+instance.id
   removeServerFromPool serv._id
   pendingInstances.remove {id: instance.id}
   lobbyQueue.remove {lobby: lobby._id}
