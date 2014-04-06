@@ -13,4 +13,4 @@ Meteor.startup ->
   lobbyQueue.insert
     lobby: lobbyId
     started: new Date().getTime()
-
+  lobbies.update {_id: lobbyId}, {$set: {status: 1}}
