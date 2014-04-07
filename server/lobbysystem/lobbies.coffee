@@ -121,7 +121,7 @@ startGame = (lobby)->
     public: true
     status: 0
     requiresFullLobby: false
-    devMode: true
+    devMode: false
 
 @joinLobby = (lobby, userId)->
   #Check if already in 

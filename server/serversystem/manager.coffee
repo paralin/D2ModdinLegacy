@@ -3,7 +3,8 @@
 Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
-serverPassword = "mHCYLzo7SAcpIcxXCmlR"
+serverPassword = "kwxmMKDcuVjQNutZOwZy"
+serverVersion = "1.0.1"
 
 idCounter=100
 
@@ -37,8 +38,8 @@ getAddonInstalls = (versions)->
   toinst.join ','
 
 configureServer = (serverObj, lobby, instance)->
-  console.log "configuring server "+instance.ip+":"+instance.port
-  srvr = new Rcon instance.ip, instance.port, instance.rconPass, {challenge:false}
+  console.log "configuring server "+instance.ip+":"+instance.port+" rcon pass "+instance.rconPass
+  srvr = new Rcon instance.ip, instance.port, instance.rconPass, {tcp: true, challenge: true}
   connecting = true
   srvr.connect()
   srvr.on('auth', ->
@@ -73,14 +74,14 @@ configureServer = (serverObj, lobby, instance)->
     console.log "rcon disconnected for "+instance.id
     if connecting
       console.log "configuring server failed!!!"
-      sockets[serv._id].send "shutdownServer|"+instance.id
+      sockets[serverObj._id].send "shutdownServer|"+instance.id
       new Fiber(->
         handleFailConfigure serverObj, lobby, instance
       ).run()
   ).on 'error', (err)->
     if err.errno is 'ETIMEDOUT'
       console.log "RCON failed connection to server "+instance.ip+":"+instance.port
-      sockets[serv._id].send "shutdownServer|"+instance.id
+      sockets[serverObj._id].send "shutdownServer|"+instance.id
       new Fiber(->
         handleFailConfigure serverObj, lobby, instance
       ).run()
@@ -93,6 +94,9 @@ launchServer = (serv, lobby)->
   id = idCounter
   idCounter+=1
   port = Math.floor(Math.random()*1000)+30000
+  if process.env.FORCE_PORT?
+    port = process.env.FORCE_PORT
+    console.log "port forced to "+port+" by env variable"
   rconPass = Random.id()
   serv.activeLobbies.push
     id: id
@@ -132,7 +136,7 @@ queueProc = ->
   maxLobbies = 9999999999
   chosen = null
   for serv in servs
-    if serv.activeLobbies.length < maxLobbies && serv.activeLobbies.length<maxLobbies
+    if serv.activeLobbies.length < maxLobbies && serv.activeLobbies.length<serv.maxLobbies
       chosen = serv
       maxLobbies = serv.activeLobbies
   return if !chosen?
@@ -172,6 +176,10 @@ hostServer.on 'connection', (ws)->
           if splitMsg[1] isnt serverPassword
             ws.send 'authFail'
             return
+          if splitMsg[4] isnt serverVersion
+            ws.send 'outOfDate|'+getBundleDownloadURL("d2mpserver.zip")
+            return
+
           serverObj.maxLobbies = parseInt(splitMsg[2])
           serverObj.ip = ws.upgradeReq.connection.remoteAddress
           versions = splitMsg[3].split ','
