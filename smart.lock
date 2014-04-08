@@ -15,7 +15,8 @@
       },
       "blaze-layout": {},
       "filter-collections": {},
-      "collection2": {}
+      "collection2": {},
+      "ms-seo": {}
     },
     "packages": {
       "streams": {
@@ -72,6 +73,11 @@
         "git": "https://github.com/aldeed/meteor-collection2.git",
         "tag": "v0.3.11",
         "commit": "7e970671305657678e8508d8107d5e6c5e158559"
+      },
+      "ms-seo": {
+        "git": "https://github.com/DerMambo/ms-seo",
+        "tag": "v0.2.6",
+        "commit": "1a4ba31a1f6f29009d3941e9dd883829ff4e4b8b"
       },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",
