@@ -11,6 +11,7 @@
       "git": "https://github.com/kidovate/meteor-accounts-ui-bootstrap-3.git",
       "branch": "steam"
     },
-    "blaze-layout": {}
+    "blaze-layout": {},
+    "filter-collections": {}
   }
 }

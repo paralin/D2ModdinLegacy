@@ -13,7 +13,8 @@
         "git": "https://github.com/kidovate/meteor-accounts-ui-bootstrap-3.git",
         "branch": "steam"
       },
-      "blaze-layout": {}
+      "blaze-layout": {},
+      "filter-collections": {}
     },
     "packages": {
       "streams": {
@@ -54,12 +55,17 @@
       "accounts-ui-bootstrap-3": {
         "git": "https://github.com/kidovate/meteor-accounts-ui-bootstrap-3.git",
         "branch": "steam",
-        "commit": "bbcd146a4b9321555d98c4affa5fdf14e133e2a6"
+        "commit": "b70ce39798aca6922366e35676e0e238afb86c38"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",
-        "tag": "v0.2.3",
-        "commit": "0166a768476c1c54d659a919a7ff0cb52f30ef81"
+        "tag": "v0.2.4",
+        "commit": "b40e9b0612329288d75cf52ad14a7da64bb8618f"
+      },
+      "filter-collections": {
+        "git": "https://github.com/julianmontagna/filter-collections.git",
+        "tag": "v0.1.4",
+        "commit": "87bc9cee7a23459e427d4613383be3f67f29245c"
       },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",
