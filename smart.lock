@@ -14,7 +14,8 @@
         "branch": "steam"
       },
       "blaze-layout": {},
-      "filter-collections": {}
+      "filter-collections": {},
+      "collection2": {}
     },
     "packages": {
       "streams": {
@@ -67,10 +68,20 @@
         "tag": "v0.1.4",
         "commit": "87bc9cee7a23459e427d4613383be3f67f29245c"
       },
+      "collection2": {
+        "git": "https://github.com/aldeed/meteor-collection2.git",
+        "tag": "v0.3.11",
+        "commit": "7e970671305657678e8508d8107d5e6c5e158559"
+      },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",
         "tag": "v0.1.5",
         "commit": "3ee7eb21f60650de2ca32661b7c964e464e578e3"
+      },
+      "simple-schema": {
+        "git": "https://github.com/aldeed/meteor-simple-schema.git",
+        "tag": "v0.2.45",
+        "commit": "27a5a943a70a7376c90f18d2e2a4a122c6fc73fb"
       }
     }
   }
