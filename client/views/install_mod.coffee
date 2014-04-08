@@ -59,7 +59,7 @@ Template.installMod.events
   "click .managerBtn": ->
     if !installingNot?
       Session.set("managerStatus", "Waiting for launcher to connect...")
-      window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/launcher.exe"
+      window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPLauncher.exe"
       $.pnotify
         title: "Download Started"
         text: "Run the launcher (downloading now) to finish the mod installation."
