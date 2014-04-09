@@ -12,13 +12,6 @@ Template.lobbyList.events
           text: err.reason
           delay: 5000
           sticker: false
-      else if !res?
-        $.pnotify
-          title: "Problem joining lobby"
-          type: "error"
-          text: "It seems the server somehow failed to put you in the lobby. Try again."
-          delay: 5000
-          sticker: false
   "click .createLobbyBtn": ->
     if !@mod?
       Router.go Router.routes["createLobby"].path()
