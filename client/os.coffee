@@ -1,4 +1,4 @@
-Meteor.startup ->
+Template.osmessage.rendered = ->
   apv = navigator.appVersion
   console.log apv
   if !apv? || apv.indexOf("Win") is -1

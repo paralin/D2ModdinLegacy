@@ -3,9 +3,11 @@
  <link rel="icon" type="image/png" href="/favicon.png?v=2">
 </head>
 <template name="layout">
+{{>osmessage}}
 {{>navbar}}
 <div class="container">
   {{>yield}}
 </div>
 {{>bottomBar}}
 </template>
+<template name="osmessage"></template>
