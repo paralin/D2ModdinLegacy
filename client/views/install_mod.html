@@ -1,12 +1,14 @@
 <template name="installMod">
 <div class="installDialog">
   {{#if hasModManager}}
-  <div class="dTitle">Mod Installation</div><br/>
-  The mod manager will automatically install the mod files for you to your steam directory.<br/><br/>
+  <div class="dTitle">Mod File Download</div><br/>
+  The mod manager will automatically download the mod files for you to your Dota 2 addons directory.<br/><br/>
   <a class="btn btn-success mainBtn installBtn">Install Mod</a>
   {{else}}
   <div class="dTitle">Mod Manager</div><br/>
-  The requested mod requires local files. Please launch the D2Moddin mod launcher.
+  <p>This mod has local files, please launch the manager.</p>
+  <p>The D2Moddin mod manager automatically downloads maps, models, and other local content required to play this custom game mode to your Dota 2 addons directory.</p> 
+  <p>It does not use admin privileges and does NOT install to your machine. It only runs while you are actively visiting D2Moddin.</p>
   <a class="btn btn-primary mainBtn managerBtn" style="margin-top:20px">Launch Manager</a>
   {{/if}}
 </div>
