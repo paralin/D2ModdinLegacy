@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.0.1"
+serverVersion = "1.0.2"
 
 idCounter=100
 
@@ -68,8 +68,6 @@ configureServer = (serverObj, lobby, instance)->
         finalizeInstance(serverObj, lobby, instance)
       , 10000)
     ).run()
-  ).on('response', (str)->
-    console.log "rcon resp: "+str
   ).on('end', ->
     console.log "rcon disconnected for "+instance.id
     if connecting
@@ -85,6 +83,8 @@ configureServer = (serverObj, lobby, instance)->
       new Fiber(->
         handleFailConfigure serverObj, lobby, instance
       ).run()
+    else if err.errno is 'ECONNRESET'
+      console.log "rcon disconnected for "+instance.id
     else
       console.log "Unknown error configuring server:"
       console.log err
@@ -204,8 +204,10 @@ hostServer.on 'connection', (ws)->
           lobIdx = _.findWhere serverObj.activeLobbies, {id: sessId}
           return if !lobIdx?
           console.log "game session ended "+splitMsg[1]
-          sess = serverObj.activeLobbies.splice lobIdx, 1
+          sess = serverObj.activeLobbies.splice serverObj.activeLobbies.indexOf(lobIdx), 1
           sess = sess[0]
+          lob = lobbies.findOne {_id: sess.lobby}
+          return if lob.status isnt 3
           lobbies.update {_id: sess.lobby}, {$set: {status: 4}}
           servers.update {_id: ourID}, {$set: {activeLobbies: serverObj.activeLobbies}}
           queueProc()
