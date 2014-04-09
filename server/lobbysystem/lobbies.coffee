@@ -31,6 +31,7 @@ setPlayerTeam = (lobby, uid, tteam)->
     team = "dire"
   return if tteam is team
   if index?
+    index = lobby[team].indexOf(index)
     lobby[tteam].push(lobby[team].splice(index, 1)[0])
     lobbies.update {_id: lobby._id},
       $set:
