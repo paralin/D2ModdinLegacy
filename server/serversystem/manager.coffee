@@ -87,9 +87,11 @@ configureServer = (serverObj, lobby, instance)->
       console.log "rcon disconnected for "+instance.id
     else if err.errno is 'ECONNREFUSED'
       console.log "rcon connection refused, trying again in 3 seconds"
-      Meteor.setTimeout(->
-        srvr.connect()
-      , 3000)
+      new Fiber(->
+        Meteor.setTimeout(->
+          srvr.connect()
+        , 3000)
+      ).run()
     else
       console.log "Unknown error configuring server:"
       console.log err

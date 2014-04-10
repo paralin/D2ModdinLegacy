@@ -22,7 +22,7 @@ Meteor.startup ->
       bundle: "serv_rota.zip"
     ServerAddons.insert
       name: "sourcemod"
-      version: "0.2"
+      version: "0.3"
       bundle: "serv_sourcemod.zip"
     ServerAddons.insert
       name: "pudgewars"
