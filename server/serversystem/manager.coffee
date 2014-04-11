@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.0.2"
+serverVersion = "1.0.5"
 
 idCounter=100
 
@@ -181,10 +181,12 @@ hostServer.on 'connection', (ws)->
       switch splitMsg[0]
         when "init"
           if splitMsg[1] isnt serverPassword
+            console.log " -> auth fail"
             ws.send 'authFail'
             return
           if splitMsg[4] isnt serverVersion
-            ws.send 'outOfDate|'+getBundleDownloadURL("d2mpserver.zip")
+            console.log " -> out of date ("+splitMsg[4]+") updating to "+serverVersion
+            ws.send 'outOfDate|'+getBundleDownloadURL("s"+serverVersion+".zip")
             return
 
           serverObj.maxLobbies = parseInt(splitMsg[2])
