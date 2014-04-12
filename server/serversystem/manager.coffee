@@ -22,7 +22,7 @@ Meteor.startup ->
 @shutdownLobby = (id)->
   lob = lobbies.findOne {_id: id}
   return if !lob? || lob.status is 4
-  if lob.status is 3
+  if lob.status > 1
     serv = servers.findOne {ip: lob.serverIP.split(":")[0]}
     return if !serv?
     alob = _.find serv.activeLobbies, (obj)->
