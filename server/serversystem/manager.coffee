@@ -25,7 +25,7 @@ Meteor.startup ->
   serv = servers.findOne {ip: lob.serverIP.split(":")[0]}
   return if !serv?
   alob = _.find serv.activeLobbies, (obj)->
-    return obj.lobby._id is lob._id
+    obj.lobby is lob._id
   return if !alob?
   sock = sockets[serv._id]
   return if !sock?
