@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.0.7"
+serverVersion = "1.0.8"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -26,8 +26,19 @@ Meteor.startup ->
     return
   console.log "told host "+id+" to shut down"
   socket.send "shutdown"
+@restartHost = (id)->
+  socket = sockets[id]
+  if !socket?
+    console.log "host "+id+" told to restart but no socket found"
+    return
+  console.log "told host "+id+" to restart"
+  socket.send "restart"
 
 Meteor.methods
+  "restartHost": (id)->
+    if !checkAdmin @userId
+      throw new Meteor.Error 403, "You're not an admin."
+    restartHost id
   "shutdownHost": (id)->
     if !checkAdmin @userId
       throw new Meteor.Error 403, "You're not an admin."
