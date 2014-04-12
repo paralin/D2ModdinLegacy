@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.0.5"
+serverVersion = "1.0.6"
 
 idCounter=100
 
@@ -87,8 +87,10 @@ configureServer = (serverObj, lobby, instance)->
       console.log "rcon disconnected for "+instance.id
     else if err.errno is 'ECONNREFUSED'
       console.log "rcon connection refused, trying again in 3 seconds"
+      srvr.disconnect()
       new Fiber(->
         Meteor.setTimeout(->
+          console.log 'rcon attempting connection again'
           srvr.connect()
         , 3000)
       ).run()
@@ -100,7 +102,7 @@ configureServer = (serverObj, lobby, instance)->
 launchServer = (serv, lobby)->
   id = idCounter
   idCounter+=1
-  port = Math.floor(Math.random()*1000)+30000
+  port = Math.floor(Math.random()*(serv.portRangeEnd-serv.portRangeStart))+serv.portRangeStart
   if process.env.FORCE_PORT?
     port = process.env.FORCE_PORT
     console.log "port forced to "+port+" by env variable"
@@ -163,6 +165,8 @@ hostServer.on 'connection', (ws)->
     activeLobbies: []
     ip: ""
     enabled: true
+    portRangeStart: 3000
+    portRangeStop: 3100
   ourID = null
   console.log "new server connected"
   ws.on 'close', ->
@@ -193,6 +197,9 @@ hostServer.on 'connection', (ws)->
           serverObj.ip = ws.upgradeReq.connection.remoteAddress
           versions = splitMsg[3].split ','
           installStr = getAddonInstalls(versions)
+          prange = splitMsg[5].split '-'
+          serverObj.portRangeStart = parseInt prange[0]
+          serverObj.portRangeEnd = parseInt prange[1]
           if installStr is ""
             console.log "new server init "+serverObj.ip
             ourID = servers.insert serverObj
