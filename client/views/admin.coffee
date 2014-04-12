@@ -20,3 +20,19 @@ Template.adminServer.events
           title: "Command Sent"
           text: "Server told to shut down."
           type: "success"
+  "click .rsBtn": ->
+    id = @_id
+    if !confirm 'Are you sure you want to kill all active servers on '+@ip+"?"
+      return
+    console.log "Requesting host restart for "+id
+    Meteor.call "restartHost", id, (err, res)->
+      if err?
+        $.pnotify
+          title: "Failed to Restart Host"
+          text: err.reason
+          type: "error"
+      else
+        $.pnotify
+          title: "Command Sent"
+          text: "Server told to restart."
+          type: "success"
