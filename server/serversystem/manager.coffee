@@ -29,6 +29,8 @@ Meteor.startup ->
 
 Meteor.methods
   "shutdownHost": (id)->
+    if !checkAdmin @userId
+      throw new Meteor.Error 403, "You're not an admin."
     shutdownHost id
 
 #versions looks:like rota=0.1,lobby=0.5

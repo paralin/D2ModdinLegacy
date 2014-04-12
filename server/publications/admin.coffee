@@ -1,5 +1,5 @@
 Meteor.publish "adminData", ->
-  if !AuthManager.userIsInRole @userId, "admin"
+  if !checkAdmin @userId
     @stop()
     return
   user = Meteor.users.findOne {_id: @userId}
