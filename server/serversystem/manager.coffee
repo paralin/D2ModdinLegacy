@@ -30,7 +30,7 @@ Meteor.startup ->
   sock = sockets[serv._id]
   return if !sock?
   console.log "told server "+serv._id+" to kill instance "+alob.id
-  sockets[sock._id].send "shutdownServer|"+alob.id
+  sock.send "shutdownServer|"+alob.id
   
 @shutdownHost = (id)->
   socket = sockets[id]
