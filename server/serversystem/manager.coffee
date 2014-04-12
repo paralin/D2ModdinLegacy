@@ -267,7 +267,7 @@ hostServer.on 'connection', (ws)->
           sess = serverObj.activeLobbies.splice serverObj.activeLobbies.indexOf(lobIdx), 1
           sess = sess[0]
           lob = lobbies.findOne {_id: sess.lobby}
-          return if lob.status isnt 3
+          return if !lob? || lob.status isnt 3
           lobbies.update {_id: sess.lobby}, {$set: {status: 4}}
           servers.update {_id: ourID}, {$set: {activeLobbies: serverObj.activeLobbies}}
           queueProc()
