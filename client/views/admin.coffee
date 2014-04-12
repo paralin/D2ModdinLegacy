@@ -7,6 +7,15 @@ Template.admin.servers = ->
 Template.admin.events
   "click .servt tr": ->
     Router.go Router.routes["adminServer"].path {id: @_id}
+  "click .plbSdn": ->
+    id = @_id
+    if !confirm 'Are you sure you want to disband this perfectly decent lobby?'
+      $.pnotify
+        title: "Didn't Think So"
+        text: "They seem just fine, don't worry."
+        type: "success"
+      return
+    Meteor.call "shutdownLobby", id, showNiceNot
 
 Template.adminServer.resolvLob = ->
   lobbies.findOne({_id: @lobby})
@@ -22,16 +31,8 @@ showNiceNot = (err, res)->
       title: "Command Sent"
       text: "Your command has completed without errors."
       type: "success"
+
 Template.adminServer.events
-  "click .plbSdn": ->
-    id = @_id
-    if !confirm 'Are you sure you want to disband this perfectly decent lobby?'
-      $.pnotify
-        title: "Didn't Think So"
-        text: "They seem just fine, don't worry."
-        type: "success"
-      return
-    Meteor.call "shutdownLobby", id, showNiceNot
   "click .sdBtn": ->
     id = @_id
     if !confirm 'Are you sure you want to shut down '+@ip+"?"
