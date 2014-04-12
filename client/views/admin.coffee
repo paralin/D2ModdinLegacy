@@ -16,6 +16,11 @@ Template.admin.events
         type: "success"
       return
     Meteor.call "shutdownLobby", id, showNiceNot
+  "click .albSdn": ->
+    id = @_id
+    if !confirm 'Are you sure you want to end this in-progress game?'
+      return
+    Meteor.call "shutdownLobby", id, showNiceNot
 
 Template.adminServer.resolvLob = ->
   lobbies.findOne({_id: @lobby})

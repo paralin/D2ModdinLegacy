@@ -33,6 +33,34 @@
       </table>
     </div>
   </div>
+  <div class="adminRow">
+    <div class="col-md-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Playing Lobbies
+      </div>
+      <table class="table table-striped">
+        <tbody>
+        {{#each playingLobbies}}
+        <tr><td><i class="fa fa-ban albSdn"></i>{{name}}</td></tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="adminRow">
+    <div class="col-md-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Server Addons
+      </div>
+      <table class="table table-striped">
+        <tbody>
+        {{#each serverAddons}}
+        <tr><td>{{name}} - {{version}} - {{bundle}}</td></tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 </template>
 <template name="adminServer">
@@ -57,6 +85,22 @@
     <div class="col-md-6 adminCol niceShadow" style="min-height: 92px;">
       <div class="tileTitle">
         Active Lobbies
+      </div>
+      <table class="table table-striped">
+        <tbody class="servt">
+        {{#each activeLobbies}}
+        {{#with resolvLob}}
+        <tr><td><i class="fa fa-ban sdLob"></i>{{name}}</td></tr>
+        {{/with}}
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="adminRow">
+    <div class="col-md-6 adminCol niceShadow" style="min-height: 92px;">
+      <div class="tileTitle">
+        Playing Lobbies
       </div>
       <table class="table table-striped">
         <tbody class="servt">
