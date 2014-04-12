@@ -5,12 +5,8 @@ Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
 serverVersion = "1.0.6"
-
 idCounter=100
-
 sockets = {}
-
-servers = new Meteor.Collection "servers"
 pendingInstances = new Meteor.Collection "pendingInstances"
 Meteor.startup ->
   servers.remove({})

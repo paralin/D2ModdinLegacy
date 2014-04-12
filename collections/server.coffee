@@ -7,4 +7,5 @@
 #
 ###
 
+@servers = new Meteor.Collection "servers"
 @ServerAddons = new Meteor.Collection "serveraddons"

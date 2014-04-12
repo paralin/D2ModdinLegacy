@@ -16,7 +16,8 @@
       "blaze-layout": {},
       "filter-collections": {},
       "ms-seo": {},
-      "sitemaps": {}
+      "sitemaps": {},
+      "authorization": {}
     },
     "packages": {
       "streams": {
@@ -78,6 +79,11 @@
         "git": "https://github.com/gadicohen/meteor-sitemaps.git",
         "tag": "v0.0.16",
         "commit": "ed4d908c581071d1302b37c6ba77dbce55333dd3"
+      },
+      "authorization": {
+        "git": "https://github.com/deepwell/meteor-authorization.git",
+        "tag": "v2.0.3",
+        "commit": "55b9035f28130ca2a08089c8fc6506c6e54911b4"
       },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",

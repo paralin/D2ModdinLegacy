@@ -18,9 +18,9 @@ Meteor.publish "modDetails", (name) ->
       playable: 1
 Meteor.publish "modDetailsForLobby", ->
   user = null
-  return [] if !@userId?
+  @stop() if !@userId?
   lobby = findUserLobby @userId
-  return [] if !lobby?
+  @stop() if !lobby?
   mods.find
     name: lobby.mod
   ,
