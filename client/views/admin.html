@@ -1,2 +1,45 @@
+<template name="adminServer">
+<div id="wrapper">
+  <section class="container text-center" style="margin-top: 30px">
+    <h1 class="text-center">
+      <strong>Server</strong> Controls<br/>
+      <span class="subtitle" style="margin-top:10px">Controls for the server {{ip}}</span>
+    </h1>
+  </section>
+  <div class="adminRow">
+    <div class="col-md-6 adminCol niceShadow">
+      <div class="tileTitle">
+        General Controls
+      </div>
+      <div style="margin-top:15px;margin-bottom:15px">
+        <button class="btn btn-danger sdBtn">Shutdown</button>
+      </div>
+    </div>
+  </div>
+</div>
+</template>
 <template name="admin">
+<div id="wrapper">
+  <section class="container text-center" style="margin-top: 30px">
+    <h1 class="text-center">
+      <strong>Admin</strong> Panel<br/>
+      <span class="subtitle" style="margin-top:10px">Enjoy our fancy admin panel you've hacked your way into. Good thing our server isn't as stupid as you think it is!</span>
+    </h1>
+  </section>
+
+  <div class="adminRow">
+    <div class="col-md-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Servers
+      </div>
+      <table class="table table-striped">
+        <tbody class="servt">
+        {{#each servers}}
+        <tr><td>{{ip}}</td></tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 </template>
