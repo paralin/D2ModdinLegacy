@@ -36,3 +36,19 @@ Template.adminServer.events
           title: "Command Sent"
           text: "Server told to restart."
           type: "success"
+  "click .sdLob": ->
+    id = @lobby._id
+    if !confirm 'Are you sure you want to shutdown '+@lobby.name+"?"
+      return
+    console.log "Requesting host restart for "+id
+    Meteor.call "shutdownLobby", id, (err, res)->
+      if err?
+        $.pnotify
+          title: "Failed to Shutdown Lobby"
+          text: err.reason
+          type: "error"
+      else
+        $.pnotify
+          title: "Command Sent"
+          text: "Server told to shutdown lobby."
+          type: "success"

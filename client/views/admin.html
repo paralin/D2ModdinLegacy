@@ -16,6 +16,18 @@
         <button class="btn btn-danger sdBtn" style="float:right">Shutdown</button>
       </div>
     </div>
+    <div class="col-md-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Active Lobbies
+      </div>
+      <table class="table table-striped">
+        <tbody class="servt">
+        {{#each activeLobbies}}
+        <tr><td><i class="fa fa-ban sdLob"></i>{{lobby.name}}</td></tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 </template>

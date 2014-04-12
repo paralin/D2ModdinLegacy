@@ -19,6 +19,19 @@ Meteor.startup ->
     added: (id, fields)->
       queueProc()
 
+@shutdownLobby = (id)->
+  lob = lobbies.findOne {_id: id}
+  return if !lob? || lob.status != 3
+  serv = servers.findOne {ip: lob.ip.split(":")[0]}
+  return if !serv?
+  alob = _.find serv.activeLobbies, (obj)->
+    return obj.lobby._id is lob._id
+  return if !alob?
+  sock = sockets[serv._id]
+  return if !sock?
+  console.log "told server "+serv._id+" to kill instance "+alob.id
+  sockets[sock._id].send "shutdownServer|"+alob.id
+  
 @shutdownHost = (id)->
   socket = sockets[id]
   if !socket?
@@ -43,6 +56,10 @@ Meteor.methods
     if !checkAdmin @userId
       throw new Meteor.Error 403, "You're not an admin."
     shutdownHost id
+  "shutdownLobby": (id)->
+    if !checkAdmin @userId
+      throw new Meteor.Error 403, "You're not an admin."
+    shutdownLobby id
 
 #versions looks:like rota=0.1,lobby=0.5
 getAddonInstalls = (versions)->
