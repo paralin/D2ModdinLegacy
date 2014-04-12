@@ -1,3 +1,40 @@
+<template name="admin">
+<div id="wrapper">
+  <section class="container text-center" style="margin-top: 30px">
+    <h1 class="text-center">
+      <strong>Admin</strong> Panel<br/>
+      <span class="subtitle" style="margin-top:10px">Enjoy our fancy admin panel you've hacked your way into. Good thing our server isn't as stupid as you think it is!</span>
+    </h1>
+  </section>
+
+  <div class="adminRow">
+    <div class="col-md-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Servers
+      </div>
+      <table class="table table-striped">
+        <tbody class="servt">
+        {{#each servers}}
+        <tr><td>{{ip}}</td></tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Pending Lobbies
+      </div>
+      <table class="table table-striped">
+        <tbody class="servt">
+        {{#each pendLobbies}}
+        <tr><td><i class="fa fa-ban plbSdn"></i>{{name}}</td></tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</template>
 <template name="adminServer">
 <div id="wrapper">
   <section class="container text-center" style="margin-top: 30px">
@@ -27,31 +64,6 @@
         {{#with resolvLob}}
         <tr><td><i class="fa fa-ban sdLob"></i>{{name}}</td></tr>
         {{/with}}
-        {{/each}}
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-</template>
-<template name="admin">
-<div id="wrapper">
-  <section class="container text-center" style="margin-top: 30px">
-    <h1 class="text-center">
-      <strong>Admin</strong> Panel<br/>
-      <span class="subtitle" style="margin-top:10px">Enjoy our fancy admin panel you've hacked your way into. Good thing our server isn't as stupid as you think it is!</span>
-    </h1>
-  </section>
-
-  <div class="adminRow">
-    <div class="col-md-6 adminCol niceShadow">
-      <div class="tileTitle">
-        Servers
-      </div>
-      <table class="table table-striped">
-        <tbody class="servt">
-        {{#each servers}}
-        <tr><td>{{ip}}</td></tr>
         {{/each}}
         </tbody>
       </table>
