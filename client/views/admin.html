@@ -23,7 +23,9 @@
       <table class="table table-striped">
         <tbody class="servt">
         {{#each activeLobbies}}
-        <tr><td><i class="fa fa-ban sdLob"></i>{{lobby.name}}</td></tr>
+        {{#with resolvLob}}
+        <tr><td><i class="fa fa-ban sdLob"></i>{{name}}</td></tr>
+        {{/with}}
         {{/each}}
         </tbody>
       </table>

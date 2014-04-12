@@ -3,6 +3,10 @@ Template.admin.servers = ->
 Template.admin.events
   "click .servt tr": ->
     Router.go Router.routes["adminServer"].path {id: @_id}
+
+Template.adminServer.resolvLob = ->
+  lobbies.findOne({_id: @lobby})
+
 Template.adminServer.events
   "click .sdBtn": ->
     id = @_id
@@ -37,8 +41,8 @@ Template.adminServer.events
           text: "Server told to restart."
           type: "success"
   "click .sdLob": ->
-    id = @lobby._id
-    if !confirm 'Are you sure you want to shutdown '+@lobby.name+"?"
+    id = @_id
+    if !confirm 'Are you sure you want to shutdown '+@name+"?"
       return
     console.log "Requesting host restart for "+id
     Meteor.call "shutdownLobby", id, (err, res)->
