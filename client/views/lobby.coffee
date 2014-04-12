@@ -38,7 +38,7 @@ Meteor.startup ->
       Session.set "servProgress", 100
       Session.set "servProgColor", "success"
   Deps.autorun -> #Detect if we're in a lobby
-    lobby = lobbies.findOne({status: {$ne: null}})
+    lobby = findUserLobby Meteor.userId()
     return if !lobby?
     route = Router.current()
     return if !route?
