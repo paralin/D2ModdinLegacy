@@ -24,14 +24,14 @@ Meteor.startup ->
   return if !lob? || lob.status is 4
   if lob.status > 1
     serv = servers.findOne {ip: lob.serverIP.split(":")[0]}
-    return if !serv?
-    alob = _.find serv.activeLobbies, (obj)->
-      obj.lobby is lob._id
-    return if !alob?
-    sock = sockets[serv._id]
-    return if !sock?
-    console.log "told server "+serv._id+" to kill instance "+alob.id
-    sock.send "shutdownServer|"+alob.id
+    if !serv?
+      alob = _.find serv.activeLobbies, (obj)->
+        obj.lobby is lob._id
+     if !alob?
+       sock = sockets[serv._id]
+       if sock?
+          console.log "told server "+serv._id+" to kill instance "+alob.id
+          sock.send "shutdownServer|"+alob.id
     if alob.status is 2
       lobbies.remove({_id: id})
   else
