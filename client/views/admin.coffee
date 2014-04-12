@@ -6,6 +6,8 @@ Template.admin.events
 Template.adminServer.events
   "click .sdBtn": ->
     id = @_id
+    if !confirm 'Are you sure you want to shut down '+@ip+"?"
+      return
     console.log "Requesting host shutdown for "+id
     Meteor.call "shutdownHost", id, (err, res)->
       if err?
