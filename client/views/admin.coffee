@@ -2,6 +2,8 @@ Template.admin.pendLobbies = ->
   lobbies.find({status: {$lt: 3}})
 Template.admin.playingLobbies = ->
   lobbies.find({status: 3})
+Template.admin.serverAddons = ->
+  ServerAddons.find()
 Template.admin.servers = ->
   servers.find()
 Template.admin.events
