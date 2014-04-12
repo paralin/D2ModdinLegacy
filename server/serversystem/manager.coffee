@@ -27,7 +27,7 @@ Meteor.startup ->
     if !serv?
       alob = _.find serv.activeLobbies, (obj)->
         obj.lobby is lob._id
-     if !alob?
+     if alob?
        sock = sockets[serv._id]
        if sock?
           console.log "told server "+serv._id+" to kill instance "+alob.id
