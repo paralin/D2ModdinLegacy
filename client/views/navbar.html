@@ -16,15 +16,22 @@
       <nav class="nav-main mega-menu">
         <ul class="nav nav-pills nav-main scroll-menu" id="topMain">
           <li>
-          <a href="{{pathFor 'modlist'}}" class='{{ar "modlist"}}'>
+          <a href={{pathFor 'modlist'}} class={{ar "modlist"}}>
             Mods
           </a>
           </li>
           <li>
-          <a href="{{pathFor 'lobbyList'}}" class='{{ar "lobbyList"}}'>
+          <a href={{pathFor 'lobbyList'}} class={{ar "lobbyList"}}>
             Lobbies
           </a>
           </li>
+          {{#if isAdmin}}
+          <li>
+          <a href={{pathFor 'admin'}} class={{ar "admin"}}>
+            Admin
+          </a>
+          </li>
+          {{/if}}
         </ul>
       </nav>
     </div>
