@@ -4,10 +4,11 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.0.6"
+serverVersion = "1.0.7"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
+
 Meteor.startup ->
   servers.remove({})
   pendingInstances.remove({})
@@ -18,7 +19,19 @@ Meteor.startup ->
     added: (id, fields)->
       queueProc()
 
-#versions looks like rota=0.1,lobby=0.5
+@shutdownHost = (id)->
+  socket = sockets[id]
+  if !socket?
+    console.log "host "+id+" told to shut down but no socket found"
+    return
+  console.log "told host "+id+" to shut down"
+  socket.send "shutdown"
+
+Meteor.methods
+  "shutdownHost": (id)->
+    shutdownHost id
+
+#versions looks:like rota=0.1,lobby=0.5
 getAddonInstalls = (versions)->
   toinst = []
   currAddons = {}
