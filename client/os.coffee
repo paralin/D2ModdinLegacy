@@ -10,5 +10,5 @@ Template.osmessage.rendered = ->
       sticker: false
       hide: false
       closer: false
-   $.pnotify notification
-   console.log notification
+    $.pnotify notification
+    console.log notification
