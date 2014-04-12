@@ -6,7 +6,6 @@ AWS.config.update
 s3 = new AWS.S3()
 Meteor.startup ->
   s3.listBuckets {}, (err, data)->
-    console.log "client bucket: "+bucket
     console.log "=== buckets ==="
     if err?
       console.log "Error loading buckets: "+err
