@@ -32,7 +32,7 @@ Meteor.startup ->
     return if !sock?
     console.log "told server "+serv._id+" to kill instance "+alob.id
     sock.send "shutdownServer|"+alob.id
-    if lob.status is 2
+    if alob.status is 2
       lobbies.remove({_id: id})
   else
     lobbies.remove {_id: id}
