@@ -4,14 +4,16 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.0.8"
+serverVersion = "1.0.9"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
+@activeInstances = new Meteor.Collection "activeInstances"
 
 Meteor.startup ->
   servers.remove({})
   pendingInstances.remove({})
+  activeInstances.remove({})
   lobbyQueue.find().observeChanges
     added: (id, fields)->
       queueProc()
@@ -69,17 +71,22 @@ Meteor.methods
 #versions looks:like rota=0.1,lobby=0.5
 getAddonInstalls = (versions)->
   toinst = []
+  todel = []
   currAddons = {}
   for ver in versions
     p = ver.split '='
     currAddons[p[0]] = p[1]
   console.log currAddons
   #check against server versions
-  for addon in ServerAddons.find().fetch()
+  latestAddons =ServerAddons.find().fetch()
+  for addon in latestAddons
     curr = currAddons[addon.name]
     if !curr? || curr isnt addon.version
       toinst.push(addon.name+"="+addon.version+"="+getBundleDownloadURL(addon.bundle).split('=').join('+'))
-  toinst.join ','
+  for addon, ver of currAddons
+    if !ServerAddons.findOne({name: addon})?
+      todel.push(addon.name)
+  toinst.join(',')+"|"+todel.join(',')
 
 configureServer = (serverObj, lobby, instance)->
   console.log "configuring server "+instance.ip+":"+instance.port+" rcon pass "+instance.rconPass
@@ -108,9 +115,7 @@ configureServer = (serverObj, lobby, instance)->
     srvr.send "map "+lobby.mod+";"
     console.log "server configured"
     new Fiber(->
-      Meteor.setTimeout(->
-        finalizeInstance(serverObj, lobby, instance)
-      , 10000)
+      finalizeInstance(serverObj, lobby, instance)
     ).run()
   ).on('end', ->
     console.log "rcon disconnected for "+instance.id
@@ -178,8 +183,9 @@ handleFailConfigure = (serv, lobby, instance)->
   startFindServer lobby._id
 
 finalizeInstance = (serv, lobby, instance)->
-  lobbies.update {_id: lobby._id}, {$set: {status: 3, serverIP: serv.ip+":"+instance.port}}
+  lobbies.update {_id: lobby._id}, {$set: {status: 3, serverIP: serv.ip+":"+instance.port, instance: instance.id}}
   pendingInstances.remove {id: instance.id}
+  activeInstances.insert instance
 
 queueProc = ->
   #Find elegible servers
@@ -244,13 +250,12 @@ hostServer.on 'connection', (ws)->
           prange = splitMsg[5].split '-'
           serverObj.portRangeStart = parseInt prange[0]
           serverObj.portRangeEnd = parseInt prange[1]
-          if installStr is ""
+          if installStr is "|"
             console.log "new server init "+serverObj.ip
             ourID = servers.insert serverObj
             sockets[ourID] = ws
           else
-            #console.log "told server to install "+installStr
-            ws.send 'installAddons|'+installStr
+            ws.send 'addonOps|'+installStr
         when "serverLaunched"
           serverObj = servers.findOne({_id: ourID})
           sessId = parseInt(splitMsg[1])
