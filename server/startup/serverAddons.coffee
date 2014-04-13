@@ -15,7 +15,7 @@ Meteor.startup ->
     bundle: "serv_lobby.zip"
   ServerAddons.insert
     name: "metamod"
-    version: "0.3"
+    version: "0.3.1"
     bundle: "serv_metamod.zip"
   ServerAddons.insert
     name: "rota"
@@ -29,3 +29,7 @@ Meteor.startup ->
     name: "pudgewars"
     version: "0.13"
     bundle: "serv_pudgewars.zip"
+  ServerAddons.insert
+    name: "vscript_http"
+    version: "0.1"
+    bundle: "serv_vscript_http.zip"
