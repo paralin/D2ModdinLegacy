@@ -119,6 +119,7 @@ startGame = (lobby)->
     status: 0
     requiresFullLobby: false
     devMode: false
+    enableGG: true
 
 @joinLobby = (lobby, userId)->
   #Check if already in 

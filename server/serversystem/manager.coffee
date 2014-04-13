@@ -97,6 +97,7 @@ configureServer = (serverObj, lobby, instance)->
     connecting = false
     srvr.send "log 1;"
     srvr.send "sm plugins load addxp;"
+    srvr.send "d2lobby_gg_time "+(if lobby.enableGG then "5" else "-1")+";"
     srvr.send "update_addon_paths;"
     srvr.send "dota_local_custom_enable 1;"
     srvr.send "dota_local_custom_game "+lobby.mod+";"
