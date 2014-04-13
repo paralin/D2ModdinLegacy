@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.0.9"
+serverVersion = "1.1.1"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -85,7 +85,7 @@ getAddonInstalls = (versions)->
       toinst.push(addon.name+"="+addon.version+"="+getBundleDownloadURL(addon.bundle).split('=').join('+'))
   for addon, ver of currAddons
     if !ServerAddons.findOne({name: addon})?
-      todel.push(addon.name)
+      todel.push(addon)
   toinst.join(',')+"|"+todel.join(',')
 
 configureServer = (serverObj, lobby, instance)->
@@ -255,6 +255,7 @@ hostServer.on 'connection', (ws)->
             ourID = servers.insert serverObj
             sockets[ourID] = ws
           else
+            console.log "told host to perform ops: "+installStr
             ws.send 'addonOps|'+installStr
         when "serverLaunched"
           serverObj = servers.findOne({_id: ourID})
