@@ -12,6 +12,7 @@
 #   - dire -> same thing
 #   - invitedPlayers -> [user ID array]
 #   - serverIP -> connection address (cached)
+#   - enableGG -> enable "gg" to end function
 # PRIVATE
 #   - mmid -> matchmaking resolution ID
 #   - status -> 0 = waiting for users, 1 = finding server, 2=configuring server, 3 = playing, 4 = done
