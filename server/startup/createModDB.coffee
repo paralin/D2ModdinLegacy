@@ -3,6 +3,7 @@
 ###
 
 Meteor.startup ->
+  mods.remove({})
   if mods.find().count() is 0
     mods.insert
       name: "rota"
@@ -34,6 +35,6 @@ Meteor.startup ->
       features: ["Every player plays pudge.", "Square map divided by a river.", "Upgrade the damage, range, radius, or speed of your hook.", "First team to 50 kills wins the game!"]
       public: true
       playable: true
-      version: "0.12"
+      version: "0.2"
       bundlepath: "pudgewars.zip"
-      requirements: {} #No requirements
+      requirements: {}

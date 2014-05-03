@@ -32,13 +32,13 @@
       },
       "user-status": {
         "git": "https://github.com/mizzao/meteor-user-status.git",
-        "tag": "v0.3.4",
-        "commit": "741df5e3304807ba42fbe0aca5b8251c5683e1f7"
+        "tag": "v0.4.0",
+        "commit": "e2a1c7a4075f28b87b361387688e083a4b047a08"
       },
       "pnotify": {
         "git": "https://github.com/kidovate/meteor-pnotify.git",
-        "tag": "v0.1.2",
-        "commit": "f18629c517529f535fddc85ca96624742e795acc"
+        "tag": "v2.0.6",
+        "commit": "cbd0bb220d03b20b247e4a6a7bdfc3d2c8064216"
       },
       "dota2": {
         "git": "https://github.com/kidovate/meteor-dota2.git",
@@ -52,18 +52,18 @@
       },
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
-        "tag": "v0.7.0",
-        "commit": "05f34bc48c4cad9fdaa366c1ddcabe6980232ece"
+        "tag": "v0.7.1",
+        "commit": "d1ffb3f06ea4c112132b030f2eb1a70b81675ecb"
       },
       "accounts-ui-bootstrap-3": {
         "git": "https://github.com/kidovate/meteor-accounts-ui-bootstrap-3.git",
         "branch": "steam",
-        "commit": "bbcd146a4b9321555d98c4affa5fdf14e133e2a6"
+        "commit": "b70ce39798aca6922366e35676e0e238afb86c38"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",
-        "tag": "v0.2.4",
-        "commit": "b40e9b0612329288d75cf52ad14a7da64bb8618f"
+        "tag": "v0.2.5",
+        "commit": "273e3ab7d005d91a1a59c71bd224533b4dae2fbd"
       },
       "filter-collections": {
         "git": "https://github.com/julianmontagna/filter-collections.git",
@@ -82,13 +82,13 @@
       },
       "authorization": {
         "git": "https://github.com/deepwell/meteor-authorization.git",
-        "tag": "v2.0.3",
-        "commit": "55b9035f28130ca2a08089c8fc6506c6e54911b4"
+        "tag": "v2.0.4",
+        "commit": "a1e222fc2f4caf81906bb1b57dd7f6efa4a0d071"
       },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",
-        "tag": "v0.1.5",
-        "commit": "3ee7eb21f60650de2ca32661b7c964e464e578e3"
+        "tag": "v0.1.6",
+        "commit": "83067433f511bc13a11ae8c87e9a4d331256915e"
       },
       "robots-txt": {
         "git": "https://github.com/gadicohen/meteor-robots.txt.git",

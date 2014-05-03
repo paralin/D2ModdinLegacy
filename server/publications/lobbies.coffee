@@ -13,8 +13,8 @@ Meteor.publish "lobbyList", ->
       creator: 1
 
 Meteor.publish "lobbyDetails", ->
-  #if !@userId
-  #  return
+  if !@userId
+    return []
   lobbies.find
     $or: [{"radiant._id": @userId}, {"dire._id": @userId}]
     status: {$ne: 4}

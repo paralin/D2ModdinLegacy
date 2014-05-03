@@ -27,9 +27,9 @@ Meteor.startup ->
     bundle: "serv_sourcemod.zip"
   ServerAddons.insert
     name: "pudgewars"
-    version: "0.13"
+    version: "0.12"
     bundle: "serv_pudgewars.zip"
-  ServerAddons.insert
-    name: "vscript_http"
-    version: "0.1"
-    bundle: "serv_vscript_http.zip"
+  #ServerAddons.insert
+  #  name: "vscript_http"
+  #  version: "0.1"
+  #  bundle: "serv_vscript_http.zip"
