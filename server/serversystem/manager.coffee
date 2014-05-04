@@ -91,6 +91,7 @@ getAddonInstalls = (versions)->
 configureServer = (serverObj, lobby, instance)->
   console.log "configuring server "+instance.ip+":"+instance.port+" rcon pass "+instance.rconPass
   srvr = new Rcon instance.ip, instance.port, instance.rconPass, {tcp: true, challenge: true}
+  srvr.setTimeout 15000
   connecting = true
   srvr.connect()
   srvr.on('auth', ->
