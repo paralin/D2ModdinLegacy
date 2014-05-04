@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.1.1"
+serverVersion = "1.1.2"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -95,25 +95,13 @@ configureServer = (serverObj, lobby, instance)->
   srvr.connect()
   srvr.on('auth', ->
     connecting = false
-    srvr.send "log 1;"
-    srvr.send "sm plugins load addxp;"
     srvr.send "d2lobby_gg_time "+(if lobby.enableGG then "5" else "-1")+";"
-    srvr.send "update_addon_paths;"
-    srvr.send "dota_local_custom_enable 1;"
-    srvr.send "dota_local_custom_game "+lobby.mod+";"
-    srvr.send "dota_local_custom_map "+lobby.mod+";"
     for plyr in lobby.radiant
       cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\""
-      #cmd = "add_radiant_player "+plyr.steam+" \"RadiantPlayer\";"
       srvr.send cmd
-      console.log cmd
     for plyr in lobby.dire
       cmd = "add_dire_player "+plyr.steam+" \""+plyr.name+"\""
-      #cmd = "add_dire_player "+plyr.steam+" \"DirePlayer\";"
       srvr.send cmd
-      console.log cmd
-    srvr.send "dota_force_gamemode 15;"
-    srvr.send "map "+lobby.mod+";"
     console.log "server configured"
     new Fiber(->
       finalizeInstance(serverObj, lobby, instance)
