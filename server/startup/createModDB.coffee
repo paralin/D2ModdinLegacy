@@ -35,6 +35,6 @@ Meteor.startup ->
       features: ["Every player plays pudge.", "Square map divided by a river.", "Upgrade the damage, range, radius, or speed of your hook.", "First team to 50 kills wins the game!"]
       public: true
       playable: true
-      version: "0.2"
+      version: "0.12"
       bundlepath: "pudgewars.zip"
       requirements: {}
