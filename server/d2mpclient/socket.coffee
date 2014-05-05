@@ -1,8 +1,15 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
-clientVersion = "0.4.0"
+clientVersion = "0.5.2"
 
 clientSockets = {}
+@setMod = (client, mod)->
+  sockid = clients.findOne {steamIDs: client.services.steam.id}
+  return if !sockid?
+  sock = clientSockets[sockid._id]
+  return if !sock?
+  console.log "#{client._id} set mod #{mod}"
+  sock.send "setmod:"+mod
 @installMod = (client, mod)->
   sock = clientSockets[client._id]
   return false if !sock?

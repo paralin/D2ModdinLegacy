@@ -1,10 +1,10 @@
 @clientParams = new Meteor.Collection "clientParams"
 Meteor.startup ->
-  if clientParams.find({stype: "version"}).count() < 1
-    clientParams.insert
-      stype: "version"
-      version: "0.4.0"
-      url: "https://s3-us-west-2.amazonaws.com/d2mpclient/0.4.0.zip"
+  clientParams.remove({})
+  clientParams.insert
+    stype: "version"
+    version: "0.5.2"
+    url: "https://s3-us-west-2.amazonaws.com/d2mpclient/0.5.2.zip"
 
 Router.map ->
   @route 'clientver',
