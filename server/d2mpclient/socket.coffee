@@ -1,6 +1,6 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
-clientVersion = "0.5.2"
+clientVersion = "0.5.3"
 
 clientSockets = {}
 @setMod = (client, mod)->
@@ -10,6 +10,12 @@ clientSockets = {}
   return if !sock?
   console.log "#{client._id} set mod #{mod}"
   sock.send "setmod:"+mod
+@launchDota = (client)->
+  sockid = clients.findOne {steamIDs: client.services.steam.id}
+  return if !sockid?
+  sock = clientSockets[sockid._id]
+  return if !sock?
+  sock.send "launchdota"
 @installMod = (client, mod)->
   sock = clientSockets[client._id]
   return false if !sock?
@@ -61,7 +67,7 @@ clientServer.on 'connection', (ws)->
         when 'init'
           if splitMsg[2] != clientVersion
             clientObj.status = 1
-          console.log msg
+            console.log "wrong version #{splitMsg[2]} != #{clientVersion}"
           for steamID in splitMsg[1].split(',')
             steamID = steamID.replace(/\D/g,'')
             if steamID.length != 17

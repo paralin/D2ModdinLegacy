@@ -16,7 +16,7 @@ Meteor.startup ->
       disconnectTimeouts[id] = Meteor.setTimeout ->
         leaveLobby(id)
         shutdownClient(id)
-      , 30000
+      , 60000
 
 setPlayerTeam = (lobby, uid, tteam)->
   return if !lobby?

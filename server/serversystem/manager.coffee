@@ -88,6 +88,17 @@ getAddonInstalls = (versions)->
       todel.push(addon)
   toinst.join(',')+"|"+todel.join(',')
 
+launchClient = (client)->
+  user = Meteor.users.findOne _id: client._id
+  return if !user?
+  launchDota user
+
+launchClients = (lobby)->
+  for client in lobby.radiant
+    launchClient client
+  for client in lobby.dire
+    launchClient client
+
 configureServer = (serverObj, lobby, instance)->
   console.log "configuring server "+instance.ip+":"+instance.port+" rcon pass "+instance.rconPass
   srvr = new Rcon instance.ip, instance.port, instance.rconPass, {tcp: true, challenge: true}
@@ -105,6 +116,7 @@ configureServer = (serverObj, lobby, instance)->
       srvr.send cmd
     console.log "server configured"
     new Fiber(->
+      launchClients(lobby)
       finalizeInstance(serverObj, lobby, instance)
     ).run()
   ).on('end', ->
