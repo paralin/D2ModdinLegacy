@@ -23,7 +23,7 @@ Template.installMod.hasModManager = ->
   clients.findOne()?
 Template.installMod.destroyed = ->
   if installingNot?
-    installingNot.pnotify_remove() if(installingNot.pnotify_remove)
+    installingNot.remove() if(installingNot.remove)
   installingNot = null
       
 Template.installMod.events
