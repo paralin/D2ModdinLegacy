@@ -42,6 +42,7 @@ Meteor.publish "modList", ->
       authorimage: 1
       thumbnail: 1
       subtitle: 1
+      playable: 1
 
 Meteor.publish "modThumbList", ->
   mods.find

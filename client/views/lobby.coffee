@@ -108,6 +108,11 @@ Template.findDialog.arePlaying = ->
   lobby.status is 3
 
 Template.findDialog.events
+  'click .connectBtn': ->
+    $(".connectBtn").prop 'disabled', true
+    Meteor.setTImeout ->
+      $(".connectBtn").prop 'disabled', false
+    , 1500
   'click .stopFindingBtn': ->
     console.log "stop finding button"
     Meteor.call "stopFinding", (err, res)->
@@ -158,8 +163,8 @@ Template.lobby.status = Template.findDialog.status = ->
   switch lobby.status
     when 0 then return "Waiting for players to be ready..."
     when 1 then return "Searching for a server..."
-    when 2 then return "Configuring server..."
-    when 3 then return "Playing! Hit connect."
+    when 2 then return "Server launching..."
+    when 3 then return "Game in progress!"
     when 4 then return "Game has ended."
 Template.lobby.mod = ->
   mods.findOne()
@@ -195,7 +200,11 @@ Template.findDialog.timeElapsed = ->
 Template.findDialog.progBarClass = ->
   lobby = lobbies.findOne()
   return if !lobby?
-  "progress-striped active" if lobby.status isnt 3
+  switch lobby.status
+    when 3
+      "pbSmall"
+    else
+      "progress-striped active"
 Template.findDialog.isConfiguring = ->
   lobby = lobbies.findOne()
   !lobby? or lobby.status is 2
