@@ -19,7 +19,8 @@ Meteor.startup ->
       public: true
       playable: false
       version: "0.3.8"
-      bundlepath: "d2fof.zip"
+      #bundlepath: "d2fof.zip"
+      bundlepath: ""
       requirements:
         d2_gamecount: 50
     mods.insert
