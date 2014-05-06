@@ -59,7 +59,7 @@
       "accounts-ui-bootstrap-3": {
         "git": "https://github.com/kidovate/meteor-accounts-ui-bootstrap-3.git",
         "branch": "steam",
-        "commit": "bbcd146a4b9321555d98c4affa5fdf14e133e2a6"
+        "commit": "b70ce39798aca6922366e35676e0e238afb86c38"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",
