@@ -13,7 +13,7 @@
         {{/each}}
         </p>
         <a class="btn btn-info" href="{{website}}" target="_blank">Author Website</a>
-        <a class="btn btn-success" href="{{playNow}}">Play Now!</a>
+        <a class="btn btn-success" disabled={{notPlayable}} href="{{playNow}}">{{#if playable}}Play Now!{{else}}Not Available{{/if}}</a>
       </div>
     </div>
   </div>

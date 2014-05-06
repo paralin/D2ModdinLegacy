@@ -16,7 +16,16 @@ Router.map(function () {
     data: function(){
       if(this.params.name != undefined)
       {
-        if(mods.findOne() == null){
+        var mod = mods.findOne(); 
+        if(mod == null || !mod.playable){
+          if(!mod.playable){
+            $.pnotify({
+              title: "Not Available",
+              text: "This mod is not ready to be played yet.",
+              type: "error",
+              delay: 1000
+            });
+          }
           Router.go("/lobbies");
           return;
         }
