@@ -6,6 +6,7 @@ Meteor.startup ->
     user = Meteor.user()
     return if !user?
     lobby = findUserLobby Meteor.userId()
+    return if !lobby?
     if lobby.status is 3
       matchFoundSound.play() if !soundPlayed
       soundPlayed = true
