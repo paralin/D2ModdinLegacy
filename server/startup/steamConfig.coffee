@@ -1,5 +1,6 @@
 Accounts.config
   forbidClientAccountCreation: true
+
 if !ServiceConfiguration.configurations.findOne({service: "steam"})?
   ServiceConfiguration.configurations.insert
     service: "steam"

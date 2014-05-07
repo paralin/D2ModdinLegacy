@@ -4,6 +4,7 @@ AWS.config.update
   'secretAccessKey' : "410lWAfLqXpGD66eoqhzeau0T3Sjwc2wqCem7e9c",
   'region'          : "us-west-2"
 s3 = new AWS.S3()
+###
 Meteor.startup ->
   s3.listBuckets {}, (err, data)->
     console.log "=== buckets ==="
@@ -13,10 +14,17 @@ Meteor.startup ->
       bucketFound = false
       for bucket, i in data.Buckets
         console.log "  --> "+bucket.Name
+###
+@putObject = (file, data)->
+  Async.runSync (done)->
+    params =
+      Bucket: 'd2mpclient'
+      Key: file
+      Body: data
+      StorageClass: 'REDUCED_REDUNDANCY'
+    s3.putObject params, done
 @generateModDownloadURL = (mod)->
-  response = Async.runSync (done)->
-    done null, s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: mod.bundlepath}
-  response.result
+  s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: mod.bundlepath}
 @getBundleDownloadURL = (file)->
   response = Async.runSync (done)->
     done null, s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: file}

@@ -1,21 +1,13 @@
-### MOD OBJECT ####
-# PUBLIC
-#   -> name -> "fof"
-#   -> fullname -> "Fight or Flight"
-#   -> author -> "Jicyphex"
-#   -> authorimage -> "http://media.steampowered.com/steamcommunity/public/images/avatars/db/dbc96a9a1e22bec0d8eb600df2ed0de158fb5564_full.jpg"
-#   -> spreadimage -> "/spread/fof1.png"
-#   -> website -> "http://www.reddit.com/r/Dota2FoF/"
-#   -> subtitle -> "The first competitive mod in Dota 2 history."
-#   -> description -> "
-#     FoF is based on advanced CTF/CTP elements that redefines the stages of Dota 2; farming is reduced to a minimum, action from the get-go, multiple means of winning and diverse strategies which can be employed. It doesn't matter if you're the one who likes to defend your base, attack the enemies, support your allies, make sure you steal all their flag, or just recover yours, you will always have a place in Fight or Flight.
-#   -> public -> true
-#   -> playable -> false (for now)
-# PRIVATE
-#   -> bundlepath: (info on S3 bucket) - if null then no local files
-#   -> version: mod version code
-#   -> requirements:
-#     {
-#       "d2_gamecount": 50
-#     }
+### Current Mods (ephemeral) ####
+#new field: fetch - ID in modfetch
 @mods = new Meteor.Collection "mods"
+
+### Publish Database (fetch mods) ###
+#Stores information about the source of the mods (for the compile system)
+#
+#name: Nice name used for the publish UI
+#git: git url for the repo
+#branch: branch to fetch from
+#status: 0=Unfetched, 1=Fetching, 2=OK, 3=Problems
+#error: error message (if any)
+@modfetch = new Meteor.Collection "modfetch"

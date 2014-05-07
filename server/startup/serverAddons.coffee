@@ -4,10 +4,7 @@
 
 Meteor.startup ->
   baseJSON = Assets.getText "serveraddons.json"
-  base = EJSON.parse baseJSON
-  modsJSON = Assets.getText "smods.json"
-  mods = EJSON.parse modsJSON
-  addons = _.union base, mods
-  ServerAddons.remove({})
+  addons = EJSON.parse baseJSON
   for addon in addons
+    ServerAddons.remove {name: addon.name}
     ServerAddons.insert addon
