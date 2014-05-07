@@ -7,8 +7,14 @@ developer =
   path: "/developer"
   template: "developer"
 newFetch =
-  path: '/developer/newfetch'
+  path: '/developer/newfetch/:id?'
   template: "newFetch"
+  data: ->
+    if @params.id?
+      data = modfetch.findOne {_id: @params.id}
+      if !data?
+        @redirect Router.routes["newFetch"].path()
+      return data
 fetchDetail =
   path: '/developer/fetches/:id'
   template: 'fetchDetail'

@@ -6,18 +6,33 @@ Template.newFetch.rendered = ->
         git: $('#gitUrl').val()
         ref: $('#ref').val()
         name: $("#fetchName").val()
-      Meteor.call "createModFetch", fetch, (err, res)->
-        if err?
-          $.pnotify
-            title: "Error Creating"
-            text: err.reason
-            type: "error"
-        else
-          $.pnotify
-            title: "Created"
-            type: "success"
-            text: "This fetch has been created."
-          Router.go Router.routes["fetchDetail"].path({id: res})
+      exist = Router.current().options.params.id
+      if exist?
+        Meteor.call "updateModFetch", exist, fetch, (err, res)->
+          if err?
+            $.pnotify
+              title: "Error Updating"
+              text: err.reason
+              type: "error"
+          else
+            $.pnotify
+              title: "Updated"
+              type: "success"
+              text: "This fetch has been updated."
+            Router.go Router.routes["fetchDetail"].path({id: exist})
+      else
+        Meteor.call "createModFetch", fetch, (err, res)->
+          if err?
+            $.pnotify
+              title: "Error Creating"
+              text: err.reason
+              type: "error"
+          else
+            $.pnotify
+              title: "Created"
+              type: "success"
+              text: "This fetch has been created."
+            Router.go Router.routes["fetchDetail"].path({id: res})
     feedbackIcons:
       valid: 'fa fa-check'
       invalid: 'fa fa-ban'

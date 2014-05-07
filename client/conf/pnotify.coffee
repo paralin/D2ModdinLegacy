@@ -5,3 +5,4 @@ $.pnotify.defaults.nonblock = {nonblock: true, nonblock_opacity: 0.2}
 $.pnotify.defaults.closer = false
 $.pnotify.defaults.sticker = false
 $.pnotify.defaults.hide = true
+$.pnotify.defaults.delay = 2000

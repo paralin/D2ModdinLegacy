@@ -27,3 +27,41 @@
   </div>
 </div>
 </template>
+<template name="fetchDetail">
+<div id="wrapper">
+  <section class="container text-center" style="margin-top:30px">
+    <h1 class='text-center'>
+      <strong>Fetch: </strong>{{name}}
+      <span class="subtitle" style="margin-top:10px">
+        Status: {{error}}
+      </span>
+      <a class="btn btn-link" href={{pathFor 'developer'}}>Developer Panel</a>
+    </h1>
+  </section>
+  <div class="adminRow">
+    <div class="col-sm-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Fetch Controls
+      </div>
+      <div style="margin-top:15px">
+        <button class="btn btn-info ftBtn" disabled={{disableUpdates}}>Fetch Updates</button>
+        <button class="btn btn-info udBtn">Change Settings</button>
+      </div>
+    </div>
+    <div class="col-sm-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Parsed Information
+      </div>
+      <div style="margin-top:15px">
+        {{#unless parsedInfo}}
+        You have not performed a successful fetch yet.
+        {{else}}
+        {{#each parsedInfo}}
+        <b>{{key}}</b>: {{value}}<br/>
+        {{/each}}
+        {{/unless}}
+      </div>
+    </div>
+  </div>
+</div>
+</template>

@@ -3,3 +3,35 @@ Template.developer.fetches = ->
   if cursor.count() is 0
     return null
   cursor
+Template.fetchDetail.disableUpdates = ->
+  fetch = modfetch.findOne
+    _id: Router.current().options.params.id
+  return if !fetch?
+  fetch.status isnt 0
+Template.developer.events
+  "click .servt tr": ->
+    Router.go Router.routes["fetchDetail"].path({id: @_id})
+Template.fetchDetail.parsedInfo = ->
+  mod = mods.findOne fetch: @_id
+  return if !mod?
+  kv = []
+  for key, value of mod
+    kv.push
+      key: key
+      value: value
+  kv
+Template.fetchDetail.events
+  "click .udBtn": ->
+    Router.go Router.routes["newFetch"].path({id: @_id})
+  "click .ftBtn": ->
+    Meteor.call "doFetch", @_id, (err, res)->
+      if err?
+        $.pnotify
+          title: "Can't Fetch"
+          text: err.reason
+          type: "error"
+      else
+        $.pnotify
+          title: "Fetch Started"
+          text: "Your fetch has begun."
+          type: "success"

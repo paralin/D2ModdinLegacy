@@ -5,6 +5,8 @@ ncp = Async.wrap((Meteor.require "ncp").ncp)
 rmdir = Async.wrap(Meteor.require "rimraf")
 archiver = Meteor.require "archiver"
 
+Meteor.startup ->
+  modfetch.update {status: 1}, {$set: {status: 0, error: "Your fetch was interrupted. Please try it again."}}, {multi: true}
 # Helper Methods #
 mkdirp = (path)->
   fs.mkdir path, (e)->
@@ -12,15 +14,19 @@ mkdirp = (path)->
 
 rootDir = "#{os.tmpdir()}/d2mprepo/"
 
-cloneOrPull = (name, url)->
+cloneOrPull = (name, url, branch)->
   if !fs.existsSync(rootDir+name+"/")
     cloneRepo name, url
   else
     rep = git rootDir+name+"/"
     Async.runSync (done)->
-      rep.remote_fetch "origin master", (err, res)->
-        rep.git "pull", {}, ["origin", "master"], (err, stdout, stderr) ->
+      rep.git "fetch", {}, ["--all"], (err, stdout, stderr)->
+        if err?
+          log.info "Problem fetching: "+stderr
+        rep.git "checkout", {}, [branch], (err, stdout, stderr)->
           done((if err? then stderr else null), stdout)
+        #rep.git "pull", {}, ["", ""], (err, stdout, stderr) ->
+        #  done((if err? then stderr else null), stdout)
 
 cloneRepo = (name, url)->
   Async.runSync (done)->
@@ -52,22 +58,25 @@ _.matches = (attrs) ->
     true
 isValidMod = _.matches defaultMod
 
-registerMod = (fetch)->
+@registerMod = (fetch)->
   info = fetch.info
   info = _.pick info, _.keys defaultMod
   return {error: "You are missing one or more fields in info.json."} if !isValidMod info
   info.bundle = info.name+".zip"
+  info.fetch = fetch._id
+  info.user = fetch.user
   servAddon =
     name: info.name
     version: info.version
     bundle: "serv_#{info.name}.zip"
+    fetch: fetch._id
   mods.remove {name: info.name}
   ServerAddons.remove {name: info.name}
   mods.insert info
   ServerAddons.insert servAddon
   log.info "Registered mod #{info.name} in the database."
 
-bundleMod = (fetch)->
+@bundleMod = (fetch)->
   log.info "Bundling mod..."
   clientname = fetch.info.name+".zip"
   servname = "serv_"+clientname
@@ -105,15 +114,18 @@ bundleMod = (fetch)->
   fs.unlinkSync servPath
   fs.unlinkSync clientPath
 
-fetchAndBundle = (fmod)->
+@clearExistingRepo = (id)->
+  rmdir rootDir+id+"/"
+
+@fetchAndBundle = (fmod)->
   fetch = fetchMod fmod
   return fetch if fetch.error?
   bundleMod fetch
   fetch
 
 # fmod: modfetch object
-fetchMod = (fmod)->
-  res = cloneOrPull fmod._id, fmod.git
+@fetchMod = (fmod)->
+  res = cloneOrPull fmod._id, fmod.git, fmod.ref
   return res if res.error?
   path = rootDir+fmod._id+"/"
   infoP = path+"info.json"

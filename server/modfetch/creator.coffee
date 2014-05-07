@@ -7,6 +7,54 @@ gitRegex = new RegExp "((git|ssh|http(s)?)|(git@[\\w.]+))(:(//)?)([\\w.@\\:/-~]+
 Meteor.startup ->
   matchesFetch = _.matches defaultFetch
 Meteor.methods
+  'doFetch': (id)->
+    user = Meteor.users.findOne {_id: @userId}
+    if !AuthManager.userIsInRole @userId, "developer"
+      throw new Meteor.Error 403, "You are not a developer."
+    fetch = modfetch.findOne
+      _id: id
+      user: @userId
+    if !fetch?
+      throw new Meteor.Error 404, "Can't find that fetch."
+    if fetch.status isnt 0
+      throw new Meteor.Error 403, "The server is already working on this fetch."
+    @unblock()
+    modfetch.update {_id: id}, {$set: {status: 1, error: "Fetching repository..."}}
+    fmod = fetchMod fetch
+    if fmod.error?
+      modfetch.update {_id: id}, {$set: {status: 0, error: "Problem fetching: #{fmod.error}"}}
+      return
+    modfetch.update {_id: id}, {$set: {error: "Bundling mod..."}}
+    bundleMod fmod
+    fmod._id = id
+    fmod.user = @userId
+    res = registerMod fmod
+    if res? && res.error?
+      modfetch.update {_id: id}, {$set: {status: 0, error: "Problem fetching: #{res.error}"}}
+      return
+    modfetch.update {_id: id}, {$set: {status: 0, error: "Deployed successfully."}}
+  'updateModFetch': (id,fetch)->
+    user = Meteor.users.findOne {_id: @userId}
+    if !AuthManager.userIsInRole @userId, "developer"
+      throw new Meteor.Error 403, "You are not a developer."
+    exist = modfetch.findOne {_id: id, user: @userId}
+    if !exist?
+      throw new Meteor.Error 404, "Can't find that mod fetch."
+    if !matchesFetch fetch
+      throw new Meteor.Error 403, "Your fetch info is invalid."
+    if !gitRegex.test fetch.git
+      throw new Meteor.Error 403, "Your git URL is not valid."
+    if fetch.name.length > 30 || fetch.name.length < 4
+      throw new Meteor.Error 403, "Your name must be 4 < characters < 30."
+    if fetch.ref.length > 25 || fetch.ref.length < 3
+      throw new Meteor.Error 403, "Your ref must be 25 > characters > 3."
+    fetch = _.pick fetch, _.keys defaultFetch
+    fetch.status = 0
+    fetch.error = "You have not performed the initial fetch after the update."
+    fetch.user = @userId
+    fetch._id = id
+    clearExistingRepo id
+    modfetch.update {_id: id}, fetch
   'createModFetch': (fetch)->
     user = Meteor.users.findOne {_id: @userId}
     if !AuthManager.userIsInRole @userId, "developer"
