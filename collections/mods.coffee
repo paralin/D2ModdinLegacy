@@ -7,7 +7,8 @@
 #
 #name: Nice name used for the publish UI
 #git: git url for the repo
-#branch: branch to fetch from
+#ref: ref to checkout
 #status: 0=Unfetched, 1=Fetching, 2=OK, 3=Problems
 #error: error message (if any)
+#user: userid of developer
 @modfetch = new Meteor.Collection "modfetch"

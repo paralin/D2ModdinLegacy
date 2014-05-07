@@ -6,3 +6,5 @@ Template.navbar.helpers
     return "navActiveB" if(route.route.name == path)
 Template.navbar.isAdmin = ->
   AuthManager.userIsInRole(Meteor.userId(), "admin")
+Template.navbar.isDeveloper = ->
+  AuthManager.userIsInRole(Meteor.userId(), "developer")

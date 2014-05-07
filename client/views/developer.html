@@ -1,0 +1,29 @@
+<template name="developer">
+<div id="wrapper">
+  <section class="container text-center" style="margin-top: 30px">
+    <h1 class="text-center">
+      <strong>Developer</strong> Panel<br/>
+      <span class="subtitle" style="margin-top:10px">Set up and manage your mods on the D2Moddin network.</span>
+    </h1>
+  </section>
+
+  <div class="adminRow">
+    <div class="col-sm-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Mod Fetches
+      </div>
+      <table class="table table-striped">
+        <tbody class="servt">
+        {{#each fetches}}
+        <tr><td>{{name}}</td></tr>
+        {{/each}}
+        {{#unless fetches}}
+        You have no git fetches set up.
+        {{/unless}}
+        </tbody>
+      </table>
+      <a href={{pathFor 'newFetch'}} class="btn btn-info">Add New</a>
+    </div>
+  </div>
+</div>
+</template>
