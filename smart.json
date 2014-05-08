@@ -17,6 +17,7 @@
     "sitemaps": {},
     "authorization": {},
     "buzz.js": {},
-    "Bootstrap-Validator": {}
+    "Bootstrap-Validator": {},
+    "bootboxjs": {}
   }
 }

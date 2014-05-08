@@ -23,6 +23,7 @@ cloneOrPull = (name, url, branch)->
       rep.git "fetch", {}, ["--all"], (err, stdout, stderr)->
         if err?
           log.info "Problem fetching: "+stderr
+        log.info "checking out #{branch}"
         rep.git "checkout", {}, [branch], (err, stdout, stderr)->
           done((if err? then stderr else null), stdout)
         #rep.git "pull", {}, ["", ""], (err, stdout, stderr) ->

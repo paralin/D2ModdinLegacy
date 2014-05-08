@@ -3,6 +3,7 @@
 Meteor.publish "modDetails", (name) ->
   mods.find
     name: name
+    public: true
   ,
     fields:
       name: 1

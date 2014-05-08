@@ -55,6 +55,18 @@ Meteor.methods
     fetch._id = id
     clearExistingRepo id
     modfetch.update {_id: id}, fetch
+  'delMod': (id)->
+    user = Meteor.users.findOne {_id: @userId}
+    if !AuthManager.userIsInRole @userId, "developer"
+      throw new Meteor.Error 403, "You are not a developer."
+    fetch = modfetch.findOne({_id: id})
+    if !fetch?
+      throw new Meteor.Error 404, "Can't find that mod."
+    clearExistingRepo id
+    modfetch.remove({_id: id})
+    mods.remove({fetch: id})
+    serverAddons.remove {fetch: id}
+    true
   'createModFetch': (fetch)->
     user = Meteor.users.findOne {_id: @userId}
     if !AuthManager.userIsInRole @userId, "developer"
