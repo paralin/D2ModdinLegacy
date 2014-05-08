@@ -66,7 +66,7 @@ Meteor.methods
     clearExistingRepo id
     modfetch.remove({_id: id})
     mods.remove({fetch: id})
-    serverAddons.remove {fetch: id}
+    ServerAddons.remove {fetch: id}
     true
   'createModFetch': (fetch)->
     user = Meteor.users.findOne {_id: @userId}
