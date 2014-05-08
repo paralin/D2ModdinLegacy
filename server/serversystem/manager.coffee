@@ -21,6 +21,7 @@ Meteor.startup ->
     added: (id, fields)->
       queueProc()
   ServerAddons.find().observeChanges
+    _suppress_initial: true
     added: sendReinit
     changed: sendReinit
     removed: sendReinit
