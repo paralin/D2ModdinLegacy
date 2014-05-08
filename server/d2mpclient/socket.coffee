@@ -19,7 +19,6 @@ clientSockets = {}
 @installMod = (client, mod)->
   sock = clientSockets[client._id]
   return false if !sock?
-  #TODO write generateModDownloadURL from amazon
   command = "installmod:"+mod.name+"="+mod.version+":"+generateModDownloadURL(mod)
   console.log "Install mod: "+command
   sock.send command

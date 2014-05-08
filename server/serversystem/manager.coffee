@@ -11,6 +11,7 @@ pendingInstances = new Meteor.Collection "pendingInstances"
 @activeInstances = new Meteor.Collection "activeInstances"
 
 Meteor.startup ->
+  sockets = {}
   servers.remove({})
   pendingInstances.remove({})
   activeInstances.remove({})
@@ -26,9 +27,11 @@ Meteor.startup ->
     changed: sendReinit
     removed: sendReinit
 
-sendReinit = ->
+sendReinit = _.debounce(->
   for id, socket of sockets
+    log.info "re-init #{id}"
     socket.send "reinit"
+, 1000)
 
 @shutdownLobby = (id)->
   lob = lobbies.findOne {_id: id}

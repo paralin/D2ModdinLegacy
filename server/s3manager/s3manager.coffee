@@ -1,9 +1,11 @@
-AWS = Meteor.require 'aws-sdk'
-AWS.config.update
-  'accessKeyId'     : "AKIAJ4QROL3BSAMJTI7Q",
-  'secretAccessKey' : "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",
-  'region'          : "us-west-2"
-s3 = new AWS.S3()
+Fiber = Meteor.require "fibers"
+S3 = Meteor.require 's3'
+knox = Meteor.require 'knox'
+kn = knox.createClient
+  'key'     : "AKIAJ4QROL3BSAMJTI7Q",
+  'secret' : "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",
+  'bucket': 'd2mpclient'
+s3 = S3.fromKnox kn
 ###
 Meteor.startup ->
   s3.listBuckets {}, (err, data)->
@@ -15,17 +17,20 @@ Meteor.startup ->
       for bucket, i in data.Buckets
         console.log "  --> "+bucket.Name
 ###
-@putObject = (file, data)->
+headers =
+  'Content-Type': 'application/octet-stream'
+@upload = (lfile, rfile)->
   Async.runSync (done)->
-    params =
-      Bucket: 'd2mpclient'
-      Key: file
-      Body: data
-      StorageClass: 'REDUCED_REDUNDANCY'
-    s3.putObject params, done
+    uploader = s3.upload lfile, rfile, headers
+    uploader.on 'error', (err)->
+      done(err)
+    uploader.on 'end', (url)->
+      done(null, url)
+
+
 @generateModDownloadURL = (mod)->
-  s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: mod.bundle}
+  getBundleDownloadURL mod.bundle
 @getBundleDownloadURL = (file)->
-  response = Async.runSync (done)->
-    done null, s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: file}
-  response.result
+  expiration = new Date()
+  expiration.setMinutes(expiration.getMinutes() + 5)
+  kn.signedUrl(file, expiration)

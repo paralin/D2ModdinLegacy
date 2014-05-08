@@ -4,6 +4,7 @@ fs = Meteor.require "fs"
 ncp = Async.wrap((Meteor.require "ncp").ncp)
 rmdir = Async.wrap(Meteor.require "rimraf")
 archiver = Meteor.require "archiver"
+Fiber = Meteor.require "fibers"
 
 Meteor.startup ->
   modfetch.update {status: 1}, {$set: {status: 0, error: "Your fetch was interrupted. Please try it again."}}, {multi: true}
@@ -79,43 +80,61 @@ isValidMod = _.matches defaultMod
   log.info "Registered mod #{info.name} in the database."
 
 @bundleMod = (fetch)->
-  log.info "Bundling mod..."
-  clientname = fetch.info.name+".zip"
-  servname = "serv_"+clientname
-  #Copy all but .git to a staging dir
-  stage = "#{os.tmpdir()}/d2mpstaging/"
-  mkdirp stage
-  stagem = stage+fetch.info.name+"/"
-  rmdir stagem if fs.existsSync stagem
-  mkdirp stagem
-  ncp fetch.path, stagem
-  #files in place, clean
-  rmdir stagem+".git/"
-  fs.unlinkSync stagem+'info.json'
-  fs.writeFileSync stagem+"addoninfo.txt", generateAddonInfo fetch.info, fetch.steamid
-  #now bundle
-  log.info "Creating server bundle #{servname}..."
-  clientPath = stage+clientname
-  servPath = stage+servname
-  fs.unlinkSync servPath if fs.existsSync servPath
-  servzip = archiver 'zip'
-  stream = fs.createWriteStream servPath
-  servzip.pipe stream
-  servzip.bulk [{expand: true, cwd: stage, src: fetch.info.name+'/**'}]
-  servzip.finalize()
-  log.info "Creating client bundle #{clientname}..."
-  clizip = archiver 'zip'
-  stream = fs.createWriteStream clientPath
-  clizip.pipe stream
-  clizip.bulk [{expand: true, cwd: stagem, src: '**'}]
-  clizip.finalize()
-  log.info "Bundles complete, uploading to AWS..."
-  putObject servname, fs.readFileSync servPath
-  putObject clientname, fs.readFileSync clientPath
-  log.info "Files uploaded, cleaning up..."
-  rmdir stagem
-  fs.unlinkSync servPath
-  fs.unlinkSync clientPath
+  Async.runSync (done)->
+    log.info "Bundling mod..."
+    clientname = fetch.info.name+".zip"
+    servname = "serv_"+clientname
+    #Copy all but .git to a staging dir
+    stage = "#{os.tmpdir()}/d2mpstaging/"
+    mkdirp stage
+    stagem = stage+fetch.info.name+"/"
+    rmdir stagem if fs.existsSync stagem
+    mkdirp stagem
+    ncp fetch.path, stagem
+    #files in place, clean
+    rmdir stagem+".git/"
+    fs.unlinkSync stagem+'info.json'
+    addonInfo = generateAddonInfo fetch.info, fetch.steamid
+    fs.writeFileSync stagem+"addoninfo.txt", addonInfo
+    console.log addonInfo
+    #now bundle
+    log.info "Creating server bundle #{servname}..."
+    clientPath = stage+clientname
+    servPath = stage+servname
+    fs.unlinkSync servPath if fs.existsSync servPath
+    servzip = archiver 'zip'
+    servFinished = false
+    clientFinished = false
+    stream = fs.createWriteStream servPath
+    servzip.pipe stream
+    servzip.bulk [{expand: true, cwd: stage, src: fetch.info.name+'/**'}]
+    log.info "Creating client bundle #{clientname}..."
+    clizip = archiver 'zip'
+    stream = fs.createWriteStream clientPath
+    clizip.pipe stream
+    clizip.bulk [{expand: true, cwd: stagem, src: '**'}]
+    finished = ->
+      return if !servFinished || !clientFinished
+      log.info "Bundles complete, uploading to AWS..."
+      res = upload servPath, servname
+      console.log res
+      res = upload clientPath, clientname
+      console.log res
+      log.info "Files uploaded, cleaning up..."
+      rmdir stagem
+      fs.unlinkSync servPath
+      fs.unlinkSync clientPath
+      new Fiber(->
+        done(null, null)
+      ).run()
+    servzip.on 'finish', ->
+      servFinished = true
+      new Fiber(finished).run()
+    clizip.on 'finish', ->
+      clientFinished = true
+      new Fiber(finished).run()
+    servzip.finalize()
+    clizip.finalize()
 
 @clearExistingRepo = (id)->
   rmdir rootDir+id+"/"
