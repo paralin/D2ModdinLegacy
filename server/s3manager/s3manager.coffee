@@ -24,7 +24,7 @@ Meteor.startup ->
       StorageClass: 'REDUCED_REDUNDANCY'
     s3.putObject params, done
 @generateModDownloadURL = (mod)->
-  s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: mod.bundlepath}
+  s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: mod.bundle}
 @getBundleDownloadURL = (file)->
   response = Async.runSync (done)->
     done null, s3.getSignedUrl 'getObject', {Bucket: "d2mpclient", Key: file}

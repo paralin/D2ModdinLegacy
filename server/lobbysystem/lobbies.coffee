@@ -195,7 +195,7 @@ Meteor.methods
     mod = mods.findOne({name: lobby.mod})
     if !mod?
       throw new Meteor.Error 404, "Can't seem to find the mod in the database."
-    if mod.bundlepath?
+    if mod.bundle?
       user = Meteor.users.findOne({_id: @userId})
       client = clients.findOne({steamIDs: user.services.steam.id})
       if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
@@ -218,7 +218,7 @@ Meteor.methods
     if !name?
       name = user.profile.name+"'s Lobby"
     mod = mods.findOne({name: mod})
-    if mod.bundlepath?
+    if mod.bundle?
       #Find their client
       user = Meteor.users.findOne({_id: @userId})
       client = clients.findOne({steamIDs: user.services.steam.id})
