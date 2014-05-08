@@ -23,6 +23,7 @@ Meteor.methods
     fmod = fetchMod fetch
     fmod._id = id
     fmod.user = @userId
+    fmod.steamid = user.services.steam.id
     if fmod.error?
       modfetch.update {_id: id}, {$set: {status: 0, error: "Problem fetching: #{fmod.error}"}}
       return
