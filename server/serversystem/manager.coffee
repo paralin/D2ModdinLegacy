@@ -20,6 +20,14 @@ Meteor.startup ->
   servers.find().observeChanges
     added: (id, fields)->
       queueProc()
+  ServerAddons.find().observeChanges
+    added: sendReinit
+    changed: sendReinit
+    removed: sendReinit
+
+sendReinit = ->
+  for id, socket of sockets
+    socket.send "reinit"
 
 @shutdownLobby = (id)->
   lob = lobbies.findOne {_id: id}
@@ -244,7 +252,6 @@ hostServer.on 'connection', (ws)->
             console.log " -> out of date ("+splitMsg[4]+") updating to "+serverVersion
             ws.send 'outOfDate|'+getBundleDownloadURL("s"+serverVersion+".zip")
             return
-
           serverObj.maxLobbies = parseInt(splitMsg[2])
           serverObj.ip = ws.upgradeReq.connection.remoteAddress
           versions = splitMsg[3].split ','
@@ -253,9 +260,11 @@ hostServer.on 'connection', (ws)->
           serverObj.portRangeStart = parseInt prange[0]
           serverObj.portRangeEnd = parseInt prange[1]
           if installStr is "|"
-            console.log "new server init "+serverObj.ip
-            ourID = servers.insert serverObj
-            sockets[ourID] = ws
+            console.log "server init "+serverObj.ip
+            if !serverObj._id?
+              ourID = servers.insert serverObj
+              serverObj._id = ourID
+              sockets[ourID] = ws
           else
             console.log "told host to perform ops: "+installStr
             ws.send 'addonOps|'+installStr
