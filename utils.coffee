@@ -1,4 +1,4 @@
 @findUserLobby = (userId)->
   lobbies.findOne
     $or: [{creatorid: userId}, {"radiant._id": userId}, {"dire._id": userId}]
-    status: {$lt: 3}
+    status: {$lt: 4}
