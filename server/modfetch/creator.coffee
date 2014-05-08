@@ -21,13 +21,13 @@ Meteor.methods
     @unblock()
     modfetch.update {_id: id}, {$set: {status: 1, error: "Fetching repository..."}}
     fmod = fetchMod fetch
+    fmod._id = id
+    fmod.user = @userId
     if fmod.error?
       modfetch.update {_id: id}, {$set: {status: 0, error: "Problem fetching: #{fmod.error}"}}
       return
     modfetch.update {_id: id}, {$set: {error: "Bundling mod..."}}
     bundleMod fmod
-    fmod._id = id
-    fmod.user = @userId
     res = registerMod fmod
     if res? && res.error?
       modfetch.update {_id: id}, {$set: {status: 0, error: "Problem fetching: #{res.error}"}}

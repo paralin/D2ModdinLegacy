@@ -91,6 +91,7 @@ isValidMod = _.matches defaultMod
   #files in place, clean
   rmdir stagem+".git/"
   fs.unlinkSync stagem+'info.json'
+  fs.writeFileSync stagem+"addoninfo.txt", generateAddonInfo fetch.info, fetch.steamid
   #now bundle
   log.info "Creating server bundle #{servname}..."
   clientPath = stage+clientname
@@ -137,3 +138,19 @@ isValidMod = _.matches defaultMod
   catch e
     return {error: "Issue parsing info.json #{e}"}
   {path: path, info: info}
+generateAddonInfo = (info, steamid)->
+  """
+  \"AddonInfo\"
+  {
+       addonSteamAppID 186
+       addontitle      \"#{info.fullname}\"
+       addonversion    #{info.version}
+       addontagline    \"#{info.subtitle}\"
+       addonauthor     \"#{info.author}\"
+       addonSteamGroupName \"D2Moddin\"
+       addonauthorSteamID  \"#{steamid}\"
+       addonContent_Campaign 0
+       addonURL0       \"#{info.website}\"
+       addonDescription \"#{info.subtitle}\"
+  }
+  """
