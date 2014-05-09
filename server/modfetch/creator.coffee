@@ -52,7 +52,6 @@ Meteor.methods
     fetch = _.pick fetch, _.keys defaultFetch
     fetch.status = 0
     fetch.error = "You have not performed the initial fetch after the update."
-    fetch.user = @userId
     fetch._id = id
     clearExistingRepo id
     modfetch.update {_id: id}, fetch
