@@ -120,15 +120,17 @@ isValidMod = _.matches defaultMod
       new Fiber(->
         done(null, null)
       ).run()
-    servstream.on 'finish', new Fiber(->
-      log.info "Creating client bundle #{clientname}..."
-      stream = fs.createWriteStream clientPath
-      rmdir stagem+"scripts/vscripts/"
-      clizip.pipe stream
-      clizip.bulk [{expand: true, cwd: stagem, src: '**'}]
-      clizip.finalize()
-      stream.on 'finish', new Fiber(finished).run
-    ).run
+    servstream.on 'finish', ->
+      new Fiber(->
+        log.info "Creating client bundle #{clientname}..."
+        stream = fs.createWriteStream clientPath
+        rmdir stagem+"scripts/vscripts/"
+        clizip.pipe stream
+        clizip.bulk [{expand: true, cwd: stagem, src: '**'}]
+        clizip.finalize()
+        stream.on 'finish', ->
+          new Fiber(finished).run()
+      ).run()
     servzip.finalize()
 
 @clearExistingRepo = (id)->
