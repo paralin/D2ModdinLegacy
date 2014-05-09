@@ -103,7 +103,7 @@ startGame = (lobby)->
   return if !creatorId?
   console.log creatorId+" created lobby"
   user = Meteor.users.findOne({_id: creatorId})
-  setMod user, mod.name
+  setMod user, mod.name+"="+mod.version
   return lobbies.insert
     name: name
     hasPassword: false
@@ -142,7 +142,8 @@ startGame = (lobby)->
   updateObj  = {}
   updateObj[team] = lobby[team]
   lobbies.update {_id: lobby._id}, {$set: updateObj}
-  setMod user, lobby.mod
+  mod = mods.findOne {name: lobby.mod}
+  setMod user, lobby.mod+"="+mod.version
 
 stopFinding = (lobby)->
   return if lobby.status != 1 && lobby.status != 2
