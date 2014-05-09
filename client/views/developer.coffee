@@ -22,7 +22,7 @@ Template.fetchDetail.parsedInfo = ->
   kv
 Template.fetchDetail.events
   "click .delBtn": ->
-    bootbox.confirm "Are you sure you want to delete this mod?", (res)->
+    bootbox.confirm "Are you sure you want to delete this mod?", (res)=>
       return if !res
       Meteor.call "delMod", @_id, (err, res)->
         if err?
