@@ -103,18 +103,10 @@ isValidMod = _.matches defaultMod
     servPath = stage+servname
     fs.unlinkSync servPath if fs.existsSync servPath
     servzip = archiver 'zip'
-    servFinished = false
-    clientFinished = false
     stream = fs.createWriteStream servPath
     servzip.pipe stream
     servzip.bulk [{expand: true, cwd: stage, src: fetch.info.name+'/**'}]
-    log.info "Creating client bundle #{clientname}..."
-    clizip = archiver 'zip'
-    stream = fs.createWriteStream clientPath
-    clizip.pipe stream
-    clizip.bulk [{expand: true, cwd: stagem, src: '**'}]
     finished = ->
-      return if !servFinished || !clientFinished
       log.info "Bundles complete, uploading to AWS..."
       res = upload servPath, servname
       console.log res
@@ -128,13 +120,16 @@ isValidMod = _.matches defaultMod
         done(null, null)
       ).run()
     servzip.on 'finish', ->
-      servFinished = true
-      new Fiber(finished).run()
+      log.info "Creating client bundle #{clientname}..."
+      clizip = archiver 'zip'
+      stream = fs.createWriteStream clientPath
+      rmdir stagem+"scripts/vscripts/"
+      clizip.pipe stream
+      clizip.bulk [{expand: true, cwd: stagem, src: '**'}]
+      clizip.finalize()
     clizip.on 'finish', ->
-      clientFinished = true
       new Fiber(finished).run()
     servzip.finalize()
-    clizip.finalize()
 
 @clearExistingRepo = (id)->
   rmdir rootDir+id+"/"
