@@ -88,7 +88,7 @@ maybeStopMatchmaking = (userId, l)->
 @leaveLobby = (userId)->
   lobby = lobbies.find
     $or: [{creatorid: userId}, {"radiant._id": userId}, {"dire._id": userId}]
-    status: {$lt: 3}
+    status: {$lt: 2}
   lobby.forEach (l)->
     internalRemoveFromLobby(userId, l)
     maybeStopMatchmaking(userId, l)
