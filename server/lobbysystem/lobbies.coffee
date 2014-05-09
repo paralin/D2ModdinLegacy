@@ -219,6 +219,8 @@ Meteor.methods
     if !name?
       name = user.profile.name+"'s Lobby"
     mod = mods.findOne({name: mod})
+    if !mod?
+      throw new Meteor.Error 404, "Can't find the mod you want in the db."
     if mod.bundle?
       #Find their client
       user = Meteor.users.findOne({_id: @userId})
