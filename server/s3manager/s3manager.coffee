@@ -19,6 +19,7 @@ Meteor.startup ->
 ###
 headers =
   'Content-Type': 'application/octet-stream'
+  'x-amz-storage-class': 'REDUCED_REDUNDANCY'
 @upload = (lfile, rfile)->
   Async.runSync (done)->
     uploader = s3.upload lfile, rfile, headers
