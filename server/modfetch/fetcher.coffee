@@ -106,6 +106,7 @@ isValidMod = _.matches defaultMod
     stream = fs.createWriteStream servPath
     servzip.pipe stream
     servzip.bulk [{expand: true, cwd: stage, src: fetch.info.name+'/**'}]
+    clizip = archiver 'zip'
     finished = ->
       log.info "Bundles complete, uploading to AWS..."
       res = upload servPath, servname
@@ -121,7 +122,6 @@ isValidMod = _.matches defaultMod
       ).run()
     servzip.on 'finish', ->
       log.info "Creating client bundle #{clientname}..."
-      clizip = archiver 'zip'
       stream = fs.createWriteStream clientPath
       rmdir stagem+"scripts/vscripts/"
       clizip.pipe stream
