@@ -103,8 +103,8 @@ isValidMod = _.matches defaultMod
     servPath = stage+servname
     fs.unlinkSync servPath if fs.existsSync servPath
     servzip = archiver 'zip'
-    stream = fs.createWriteStream servPath
-    servzip.pipe stream
+    servstream = fs.createWriteStream servPath
+    servzip.pipe servstream
     servzip.bulk [{expand: true, cwd: stage, src: fetch.info.name+'/**'}]
     clizip = archiver 'zip'
     finished = ->
@@ -120,15 +120,14 @@ isValidMod = _.matches defaultMod
       new Fiber(->
         done(null, null)
       ).run()
-    servzip.on 'finish', ->
+    servstream.on 'finish', ->
       log.info "Creating client bundle #{clientname}..."
       stream = fs.createWriteStream clientPath
       rmdir stagem+"scripts/vscripts/"
       clizip.pipe stream
       clizip.bulk [{expand: true, cwd: stagem, src: '**'}]
       clizip.finalize()
-    clizip.on 'finish', ->
-      new Fiber(finished).run()
+      stream.on 'finish', new Fiber(finished).run
     servzip.finalize()
 
 @clearExistingRepo = (id)->
