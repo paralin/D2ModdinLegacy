@@ -65,8 +65,12 @@ Meteor.methods
       throw new Meteor.Error 404, "Can't find that mod."
     clearExistingRepo id
     modfetch.remove({_id: id})
-    mods.remove({fetch: id})
     ServerAddons.remove {fetch: id}
+    mod = mods.findOne(fetch: id)
+    if mod?
+      mods.remove({fetch: id})
+      deleteObject mod.bundle
+      deleteObject "serv_"+mod.bundle
     true
   'createModFetch': (fetch)->
     user = Meteor.users.findOne {_id: @userId}

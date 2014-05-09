@@ -34,3 +34,7 @@ headers =
   expiration = new Date()
   expiration.setMinutes(expiration.getMinutes() + 5)
   kn.signedUrl(file, expiration)
+@deleteObject = (file)->
+  Async.runSync (done)->
+    kn.deleteFile file, (err,res)->
+      done(err, res)
