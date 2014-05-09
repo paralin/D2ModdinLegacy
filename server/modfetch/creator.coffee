@@ -51,6 +51,7 @@ Meteor.methods
       throw new Meteor.Error 403, "Your ref must be 25 > characters > 3."
     fetch = _.pick fetch, _.keys defaultFetch
     fetch.status = 0
+    fetch.user = exist.user
     fetch.error = "You have not performed the initial fetch after the update."
     fetch._id = id
     clearExistingRepo id
