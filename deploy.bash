@@ -15,7 +15,10 @@ RUN apt-get install -y python-software-properties python g++ make
 
 USER app
 ENV HOME /home/app
-WORKDIR /home/app ADD bundle.tar.gz bundle.tar.gz RUN tar zxvf bundle.tar.gz RUN rm bundle.tar.gz
+WORKDIR /home/app 
+ADD bundle.tar.gz bundle.tar.gz 
+RUN tar zxvf bundle.tar.gz 
+RUN rm bundle.tar.gz
 
 EXPOSE 80
 EXPOSE 3005
