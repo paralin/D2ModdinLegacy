@@ -14,11 +14,8 @@ RUN npm install -g coffee-script
 RUN apt-get install -y python-software-properties python g++ make
 
 USER app
-WORKDIR /home/app
 ENV HOME /home/app
-ADD bundle.tar.gz bundle.tar.gz
-RUN tar zxvf bundle.tar.gz
-RUN rm bundle.tar.gz
+WORKDIR /home/app ADD bundle.tar.gz bundle.tar.gz RUN tar zxvf bundle.tar.gz RUN rm bundle.tar.gz
 
 EXPOSE 80
 EXPOSE 3005
@@ -27,7 +24,7 @@ EXPOSE 3006
 ENTRYPOINT cd bundle; PORT=80 node main.js
 "
 
-scp bundle.tar.gz $1:~/deploy/
+rsync -rav bundle.tar.gz $1:~/deploy/bundle.tar.gz
 echo "${DOCKERFILE}" | ssh $1 "cat - > deploy/Dockerfile"
-ssh $1 "cd bundle && docker build -t d2moddin ."
+ssh $1 "cd deploy && docker build -t d2moddin ."
 rm bundle.tar.gz
