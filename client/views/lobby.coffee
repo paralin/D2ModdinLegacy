@@ -154,6 +154,8 @@ Template.lobby.isHost = ->
   return if !lobby?
   user is lobby.creatorid
 
+Template.findDialog.isHost = Template.lobby.isHost
+
 Template.lobby.lobby = ->
   lobbies.findOne()
 
@@ -206,6 +208,5 @@ Template.findDialog.progBarClass = ->
     else
       "progress-striped active"
 Template.findDialog.isConfiguring = ->
-  lobby = lobbies.findOne()
-  !lobby? or lobby.status is 2
-
+  lobby = findUserLobby Meteor.userId()
+  lobby? and lobby.status is 2
