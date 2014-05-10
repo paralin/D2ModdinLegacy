@@ -23,5 +23,10 @@
   "name": "d2mpaddon",
   "version": "0.1.01",
   "bundle": "serv_d2mpaddon.zip"
+},
+{
+  "name": "scripttools",
+  "version": "0.1",
+  "bundle": "serv_scripttools.zip"
 }
 ]
