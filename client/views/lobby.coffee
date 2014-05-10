@@ -110,7 +110,7 @@ Template.findDialog.arePlaying = ->
 Template.findDialog.events
   'click .connectBtn': ->
     $(".connectBtn").prop 'disabled', true
-    Meteor.setTImeout ->
+    Meteor.setTimeout ->
       $(".connectBtn").prop 'disabled', false
     , 1500
   'click .stopFindingBtn': ->
