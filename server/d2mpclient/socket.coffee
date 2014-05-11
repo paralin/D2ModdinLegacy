@@ -1,6 +1,6 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
-clientVersion = "0.5.4"
+clientVersion = "0.5.5"
 
 clientSockets = {}
 @setMod = (client, mod)->
@@ -20,7 +20,7 @@ clientSockets = {}
   sock = clientSockets[client._id]
   return false if !sock?
   command = "installmod:"+mod.name+"="+mod.version+":"+generateModDownloadURL(mod)
-  console.log "Install mod: "+command
+  log.info "#{client._id} -> install #{mod.name}"
   sock.send command
   return true
 @shutdownClient = (userId)->
@@ -61,9 +61,9 @@ clientServer.on 'connection', (ws)->
       splitMsg = msg.split ':'
       if splitMsg.length < 2
         return
-
       switch splitMsg[0]
         when 'init'
+          splitMsg[2] = splitMsg[2].replace(/\s+/g, '')
           if splitMsg[2] != clientVersion
             clientObj.status = 1
             console.log "wrong version #{splitMsg[2]} != #{clientVersion}"
