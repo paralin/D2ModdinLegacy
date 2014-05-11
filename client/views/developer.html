@@ -49,6 +49,14 @@
       <div style="margin-top:15px">
         <button class="btn btn-info ftBtn" disabled={{disableUpdates}}>Fetch Updates</button>
         <button class="btn btn-info udBtn">Change Settings</button><br/>
+        <button class="btn btn-info dbBtn">
+          Set 
+          {{#if playable}}
+          Unplayable
+          {{else}}
+          Playable
+          {{/if}}
+        </button><br/>
         <button class="btn btn-danger delBtn">Delete Mod (!)</button>
       </div>
     </div>

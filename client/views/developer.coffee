@@ -3,6 +3,11 @@ Template.developer.fetches = ->
   if cursor.count() is 0
     return null
   cursor
+Template.fetchDetail.playable = ->
+  mod = mods.findOne fetch: @_id
+  return if !mod?
+  mod.playable
+Template.fetchDetail.pflip
 Template.fetchDetail.disableUpdates = ->
   fetch = modfetch.findOne
     _id: Router.current().options.params.id
@@ -35,6 +40,8 @@ Template.fetchDetail.events
             title: "Mod Deleted"
             text: "Mod has been deleted."
             type: "success"
+  "click .dbBtn": ->
+    Meteor.call "flipPlayable", @_id
   "click .udBtn": ->
     Router.go Router.routes["newFetch"].path({id: @_id})
   "click .ftBtn": ->
