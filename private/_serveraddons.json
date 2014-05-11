@@ -5,13 +5,13 @@
   "bundle": "serv_d2fixups.zip"
 },
 {
+  "name": "lobby",
+  "version": "0.3",
+  "bundle": "serv_lobby.zip"
+},
+{
   "name": "metamod",
   "version": "0.3.2",
   "bundle": "serv_metamod.zip"
-},
-{
-  "name": "lobby",
-  "version": "0.4",
-  "bundle": "serv_lobby.zip"
 }
 ]

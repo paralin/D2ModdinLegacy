@@ -67,6 +67,13 @@ sendReinit = _.debounce(->
   socket.send "restart"
 
 Meteor.methods
+  "toggleServerEnabled": (id)->
+    if !checkAdmin @userId
+      throw new Meteor.Error 403, "You're not an admin."
+    serv = servers.findOne {_id: id}
+    return if !serv?
+    enabled = (serv.enabled? && !serv.enabled)
+    servers.update {_id: id}, {$set: {enabled: enabled}}
   "restartHost": (id)->
     if !checkAdmin @userId
       throw new Meteor.Error 403, "You're not an admin."

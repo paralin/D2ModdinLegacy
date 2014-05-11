@@ -15,7 +15,7 @@
       <table class="table table-striped">
         <tbody class="servt">
         {{#each servers}}
-        <tr><td>{{ip}}</td></tr>
+        <tr class={{disabledClass}}><td>{{ip}}</td></tr>
         {{/each}}
         </tbody>
       </table>
@@ -80,6 +80,8 @@
       <div style="margin-top:15px;margin-bottom:15px">
         <button class="btn btn-info rsBtn">Kill Servers and Restart</button>
         <button class="btn btn-danger sdBtn" style="float:right">Shutdown</button>
+        <br/>
+        <button class="btn btn-success dbBtn">{{#if enabled}}Disable{{else}}Enable{{/if}}</button>
       </div>
     </div>
     <div class="col-sm-6 adminCol niceShadow" style="min-height: 92px;">

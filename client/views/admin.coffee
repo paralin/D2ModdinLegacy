@@ -39,7 +39,14 @@ showNiceNot = (err, res)->
       text: "Your command has completed without errors."
       type: "success"
 
+Template.admin.disabledClass = ->
+  enabled = @enabled
+  "disabled" if enabled? && !enabled
+  false
 Template.adminServer.events
+  "click .dbBtn": ->
+    id = @_id
+    Meteor.call "toggleServerEnabled", id
   "click .sdBtn": ->
     id = @_id
     if !confirm 'Are you sure you want to shut down '+@ip+"?"
