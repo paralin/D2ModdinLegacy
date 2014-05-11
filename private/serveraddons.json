@@ -11,22 +11,7 @@
 },
 {
   "name": "metamod",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "bundle": "serv_metamod.zip"
-},
-{
-  "name": "vscript_http",
-  "version": "0.1",
-  "bundle": "serv_vscript_http.zip"
-},
-{
-  "name": "d2mpaddon",
-  "version": "0.1.01",
-  "bundle": "serv_d2mpaddon.zip"
-},
-{
-  "name": "scripttools",
-  "version": "0.1",
-  "bundle": "serv_scripttools.zip"
 }
 ]

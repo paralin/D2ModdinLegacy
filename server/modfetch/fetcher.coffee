@@ -18,18 +18,19 @@ rootDir = "#{os.tmpdir()}/d2mprepo/"
 cloneOrPull = (name, url, branch)->
   if !fs.existsSync(rootDir+name+"/")
     cloneRepo name, url
-  else
-    rep = git rootDir+name+"/"
-    Async.runSync (done)->
-      rep.git "fetch", {}, ["--all"], (err, stdout, stderr)->
-        if err?
-          log.info "Problem fetching: "+stderr
-        log.info "checking out #{branch}"
-        rep.git "checkout", {}, [branch], (err, stdout, stderr)->
-          rep.git "pull", {}, [], (errb, stdoutb, stderrb)->
+  rep = git rootDir+name+"/"
+  Async.runSync (done)->
+    rep.git "fetch", {}, ["--all"], (err, stdout, stderr)->
+      if err?
+        log.info "Problem fetching: "+stderr
+      log.info "checking out #{branch}"
+      rep.git "checkout", {}, [branch], (err, stdout, stderr)->
+        rep.git "pull", {}, [], (errb, stdoutb, stderrb)->
+          rep.git "checkout", {}, [branch], (err, stdout, stderr)->
+            log.info stdout
             done((if err? then stderr else null), stdout)
-        #rep.git "pull", {}, ["", ""], (err, stdout, stderr) ->
-        #  done((if err? then stderr else null), stdout)
+      #rep.git "pull", {}, ["", ""], (err, stdout, stderr) ->
+      #  done((if err? then stderr else null), stdout)
 
 cloneRepo = (name, url)->
   Async.runSync (done)->

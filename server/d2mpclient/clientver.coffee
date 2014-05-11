@@ -3,8 +3,8 @@ Meteor.startup ->
   clientParams.remove({})
   clientParams.insert
     stype: "version"
-    version: "0.5.4"
-    url: "https://s3-us-west-2.amazonaws.com/d2mpclient/0.5.4.zip"
+    version: "0.5.5"
+    url: "https://s3-us-west-2.amazonaws.com/d2mpclient/0.5.5.zip"
 
 Router.map ->
   @route 'clientver',

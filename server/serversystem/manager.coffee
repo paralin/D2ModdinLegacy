@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.1.3"
+serverVersion = "1.1.4"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -190,6 +190,8 @@ launchServer = (serv, lobby)->
   console.log "server launched, id: "+id+" waiting for configure"
 
 handleFailConfigure = (serv, lobby, instance)->
+  instance = pendingInstances.findOne {id: instance.id}
+  return if !instance?
   console.log "failed to configure server, re-queuing lobby and disabling server"
   removeServerFromPool serv._id
   pendingInstances.remove {id: instance.id}
@@ -236,6 +238,11 @@ hostServer.on 'connection', (ws)->
   ws.on 'close', ->
     new Fiber(->
       if ourID?
+        servObj = servers.findOne {_id: serverObj._id}
+        for sess in pendingInstances.find({ip: servObj.ip})
+          lob = lobbies.findOne {_id: sess.lobby}
+          continue if !lob?
+          handleFailConfigure serverObj, lob, {id: sess.id}
         for sess in serverObj.activeLobbies
           lobbies.update {_id: sess.lobby}, {$set: {status: 4}}
         servers.remove({_id: ourID})
@@ -288,8 +295,12 @@ hostServer.on 'connection', (ws)->
           sess = serverObj.activeLobbies.splice serverObj.activeLobbies.indexOf(lobIdx), 1
           sess = sess[0]
           lob = lobbies.findOne {_id: sess.lobby}
-          return if !lob? || lob.status isnt 3
-          lobbies.update {_id: sess.lobby}, {$set: {status: 4}}
+          return if !lob?
+          status = if (lob.status is 3) then 4 else 1
+          if lob.status is 2
+            handleFailConfigure serverObj, lob, {id: sess.id}
+          else
+            lobbies.update {_id: sess.lobby}, {$set: {status: status}}
           servers.update {_id: ourID}, {$set: {activeLobbies: serverObj.activeLobbies}}
           queueProc()
     ).run()
