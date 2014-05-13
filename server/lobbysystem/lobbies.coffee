@@ -74,8 +74,9 @@ updateRPlayer = (result, id, props)->
       result = updateRPlayer result, eve.player, connected:true
     when EVENTS.PlayerDisconnect
       log.info "[EVENT] #{eve.player} disconnected"
-      lobby = updatePlayer lobby, eve.player, connected: false
-      result = updateRPlayer result, eve.player, connected:false
+      if lobby.state > GAMESTATE.WaitLoad
+        lobby = updatePlayer lobby, eve.player, connected: false
+        result = updateRPlayer result, eve.player, connected:false
     when EVENTS.HeroDeath
       [team, player] = locateRPlayer result, eve.player
       if player?
