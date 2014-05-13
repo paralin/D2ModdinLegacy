@@ -90,10 +90,15 @@ updateRPlayer = (result, id, props)->
   result = MatchResults.findOne {_id: id}
   for team in data.teams
     for player in team.players
+      player.account_id = toSteamID64 player.account_id
       [tid, lplay] = locatePlayer lobby, player.account_id
-      continue if !lplay?
+      if !lplay?
+        log.error "Can't find player #{player.account_id} to update name & avatar"
+        return
+      log.debug JSON.stringify lplay
       player.avatar = lplay.avatar.full
       player.name = lplay.name
+  data.status = "completed"
   if result?
     MatchResults.update {_id: id}, {$set: data}
   if lobby?

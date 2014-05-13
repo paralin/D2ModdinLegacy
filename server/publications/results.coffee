@@ -8,7 +8,7 @@ Meteor.publish "resultList",(skip, opts)->
     fields:
       date:1
       good_guys_win:1
-      inProgress: 1
+      status: 1
       mod: 1
       teams: 1
       match_id: 1
