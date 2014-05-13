@@ -1,4 +1,22 @@
 Meteor.methods
+  "spectateGame": (resid)->
+    if !@userId?
+      throw new Meteor.Error 403, "You must be logged in."
+    client = clients.findOne {steamIDs: user.services.steam.id}
+    if !client?
+      throw new Meteor.Error 404, "Your mod manager is not running."
+    result = MatchResults.findOne {_id: resid}
+    if !result?
+      throw new Meteor.Error 404, "Can't find that game."
+    mod = mods.findOne {name: result.mod, playable: true}
+    if !mod?
+      throw new Meteor.Error 404, "Mod #{result.mod} not found or not public/playable."
+    ver = mod.name+"="+mod.version
+    if _.contains(client.installedMods, ver)
+      setMod client, ver
+      dconnect client, result.spectate_addr
+    else
+      throw new Meteor.Error 503, ver
   "installMod": (modName)->
     mod = mods.findOne({name: modName, public: true, playable: true})
     if !mod?

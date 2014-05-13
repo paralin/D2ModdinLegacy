@@ -126,9 +126,18 @@ configureServer = (serverObj, lobby, instance)->
   srvr.connect()
   srvr.on('auth', ->
     connecting = false
-    srvr.send "d2lobby_gg_time "+(if lobby.enableGG then "5" else "-1")+";"
-    srvr.send "match_post_url \"http://d2modd.in/gdataapi/matchres\""
-    srvr.send "set_match_id #{lobby._id}"
+    srvr.send """
+    d2lobby_gg_time #{(if lobby.enableGG then "5" else "-1")};
+    match_post_url \"http://d2modd.in/gdataapi/matchres\";
+    set_match_id #{lobby._id};
+    sv_hibernate_when_empty 0;
+    tv_maxclients 16;
+    tv_name D2ModdinGame;
+    tv_delay 0;
+    tv_port #{instance.port+1000};
+    tv_autorecord 1;
+    tv_secret_code 0;
+    """
     for plyr in lobby.radiant
       cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\""
       srvr.send cmd
@@ -218,6 +227,7 @@ finalizeInstance = (serv, lobby, instance)->
     mod: lobby.mod
     num_players: [lobby.radiant.length, lobby.dire.length]
     server_addr: lobby.serverIP
+    spectate_addr: serv.ip+":"+(instance.port+1000)
     status: "loading"
   addPlayer = (team, lobP)->
     team.push

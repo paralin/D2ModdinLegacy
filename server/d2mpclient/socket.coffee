@@ -9,13 +9,19 @@ clientSockets = {}
   sock = clientSockets[sockid._id]
   return if !sock?
   console.log "#{client._id} set mod #{mod}"
-  sock.send "setmod:"+mod
+  sock.send "setmod:#{mod}"
 @launchDota = (client)->
   sockid = clients.findOne {steamIDs: client.services.steam.id}
   return if !sockid?
   sock = clientSockets[sockid._id]
   return if !sock?
   sock.send "launchdota"
+@dconnect = (client, addr)->
+  sockid = clients.findOne {steamIDs: client.services.steam.id}
+  return if !sockid?
+  sock = clientSockets[sockid._id]
+  return if !sock?
+  sock.send "dconnect:#{addr}"
 @installMod = (client, mod)->
   sock = clientSockets[client._id]
   return false if !sock?

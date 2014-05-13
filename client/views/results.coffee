@@ -1,9 +1,15 @@
 Template.resultList.results = ->
   MatchResults.find()
 Template.resultList.inProgress = ->
-  @status isnt "completed"
+  @status? && @status isnt "completed"
 Template.resultList.inProgressClass = ->
-  "info" if @status isnt "completed"
+  "info" if @status? && @status isnt "completed"
+Template.resultList.events
+  'click .specBtn': ->
+    cSpectateGame @_id
+Template.matchResult.events
+  'click .specBtn': ->
+    cSpectateGame @_id
 Template.resultList.thisMod = ->
   mod = mods.findOne {name: @mod}
   if !mod?
@@ -24,7 +30,8 @@ Template.gameTeamStats.playerClass = ->
   if @connected? && !@connected
     "danger"
 Template.gameTeamStats.isCompleted = Template.matchResult.isCompleted = ->
-  @status? && @status is "completed"
+  !@status? || @status is "completed"
+  
 Template.resultList.pagClass = ->
   cla = "pagBtn"
   if @selected
