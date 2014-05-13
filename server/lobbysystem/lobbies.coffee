@@ -4,7 +4,7 @@ disconnectTimeouts = {}
 disconnectLTimeouts = {}
 #Monitor user events
 Meteor.startup ->
-  #Delete temporary lobbies (not finished)
+  MatchResults.remove {status: {$ne: "completed"}}
   lobbies.remove {status: {$lt: 4}}
   Meteor.users.find({"status.online": false}).observeChanges
     removed: (id)->
@@ -24,6 +24,91 @@ Meteor.startup ->
       disconnectTimeouts[id] = Meteor.setTimeout ->
         shutdownClient(id)
       , 60000
+ 
+updatePlayer = (lobby, id, props)->
+  [team, player] = locatePlayer lobby, id
+  if !player?
+    log.error "Can't find player in #{lobby._id} to update"
+    return
+  _.extend player, props
+  lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire}}
+  lobby
+
+locateRPlayer = (result, id)->
+  #search dire
+  team = -1
+  player = null
+  for te in result.teams
+    team++
+    for pla in te.players
+      if pla.account_id is id
+        player = pla
+        break
+    break if player?
+  [team, player]
+
+updateRPlayer = (result, id, props)->
+  [team, player] = locateRPlayer result, id
+  if !player?
+    log.error "Can't find player #{id} in #{result._id} to update"
+    return
+  _.extend player, props
+  MatchResults.update {_id: result._id}, {$set: {teams: result.teams}}
+  result
+
+@handleEvent = (id, eve)->
+  lobby = lobbies.findOne {_id: id}
+  result = MatchResults.findOne {_id: id}
+  return if !lobby? || !result?
+  if eve.player?
+    eve.player = toSteamID64 eve.player
+  switch eve.event_type
+    when EVENTS.GameStateChange
+      states = GAMESTATEK[eve.new_state]
+      log.info "#{id} state is now #{states}"
+      lobby.state = eve.new_state
+      lobbies.update {_id: id}, {$set: {state: lobby.state}}
+    when EVENTS.PlayerConnect
+      log.info "[EVENT] #{eve.player} connected"
+      lobby = updatePlayer lobby, eve.player, connected: true
+      result = updateRPlayer result, eve.player, connected:true
+    when EVENTS.PlayerDisconnect
+      log.info "[EVENT] #{eve.player} disconnected"
+      lobby = updatePlayer lobby, eve.player, connected: false
+      result = updateRPlayer result, eve.player, connected:false
+    when EVENTS.HeroDeath
+      [team, player] = locateRPlayer result, eve.player
+      if player?
+        player.deaths++
+      for killer in eve.killers
+        [team, killd] = locateRPlayer result, killer
+        if killd?
+          killd.kills++
+      MatchResults.update {_id: id}, {$set: {teams: result.teams}}
+@handleMatchComplete = (id, data)->
+  lobby = lobbies.findOne {_id: id}
+  result = MatchResults.findOne {_id: id}
+  for team in data.teams
+    for player in team.players
+      [tid, lplay] = locatePlayer lobby, player.account_id
+      continue if !lplay?
+      player.avatar = lplay.avatar.full
+      player.name = lplay.name
+  if result?
+    MatchResults.update {_id: id}, {$set: data}
+  if lobby?
+    lobbies.update {_id: id}, {$set: {status: 4}}
+@handleLoadFail = (id)->
+  lobby = lobbies.findOne {_id: id}
+  MatchResults.remove {_id: id}
+  if lobby?
+    for player in lobby.radiant
+      if !player.connected?
+        player.connected = false
+    for player in lobby.dire
+      if !player.connected?
+        player.connected = false
+    lobbies.update {_id: id}, {$set: {status: 0, state: GAMESTATE.Init, radiant:lobby.radiant, dire:lobby.dire}}
 
 setPlayerTeam = (lobby, uid, tteam)->
   return if !lobby?
@@ -104,7 +189,11 @@ maybeStopMatchmaking = (userId, l)->
 
 startGame = (lobby)->
   startFindServer lobby._id
-  lobbies.update({_id: lobby._id}, {$set: {status: 1}})
+  for player in lobby.radiant
+    player.connected = undefined
+  for player in lobby.dire
+    player.connected = undefined
+  lobbies.update({_id: lobby._id}, {$set: {status: 1, radiant: lobby.radiant, dire: lobby.dire}})
 
 @createLobby = (creatorId, mod, name)->
   return if !creatorId?
@@ -128,6 +217,7 @@ startGame = (lobby)->
     requiresFullLobby: false
     devMode: false
     enableGG: true
+    state: GAMESTATE.Init
 
 @joinLobby = (lobby, userId)->
   #Check if already in 
@@ -164,6 +254,7 @@ Meteor.methods
     lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "Not the owner of this lobby."
+    console.log "stop finding #{lobby._id}"
     stopFinding(lobby)
   "startGame": ->
     if !@userId?

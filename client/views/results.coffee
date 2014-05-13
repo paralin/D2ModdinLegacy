@@ -1,26 +1,29 @@
 Template.resultList.results = ->
   MatchResults.find()
+Template.resultList.inProgress = ->
+  @status isnt "completed"
 Template.resultList.inProgressClass = ->
-  "info" if @inProgress
+  "info" if @status isnt "completed"
 Template.resultList.thisMod = ->
   mod = mods.findOne {name: @mod}
   if !mod?
     return {thumbnail: ""}
   mod
+Template.matchResult.getMod = Template.resultList.thisMod
 Template.resultList.resultURI = ->
   Router.routes["matchResult"].path {id: @_id}
-Template.matchResult.dire = ->
-  match = Session.get "thisMatch"
+Template.gameTeamStats.dire = ->
+  match = MatchResults.findOne()
   return if !match?
   match.teams[0].players
-Template.matchResult.radiant = ->
-  match = Session.get "thisMatch"
+Template.gameTeamStats.radiant = ->
+  match = MatchResults.findOne()
   return if !match?
   match.teams[1].players
-Template.matchResult.playerClass = ->
-  if @disconnected? && @disconnected
+Template.gameTeamStats.playerClass = ->
+  if @connected? && !@connected
     "danger"
-Template.matchResult.isCompleted = ->
+Template.gameTeamStats.isCompleted = Template.matchResult.isCompleted = ->
   @status? && @status is "completed"
 Template.resultList.pagClass = ->
   cla = "pagBtn"

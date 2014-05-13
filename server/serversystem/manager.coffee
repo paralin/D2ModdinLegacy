@@ -127,6 +127,8 @@ configureServer = (serverObj, lobby, instance)->
   srvr.on('auth', ->
     connecting = false
     srvr.send "d2lobby_gg_time "+(if lobby.enableGG then "5" else "-1")+";"
+    srvr.send "match_post_url \"http://d2modd.in/gdataapi/matchres\""
+    srvr.send "set_match_id #{lobby._id}"
     for plyr in lobby.radiant
       cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\""
       srvr.send cmd
@@ -156,9 +158,11 @@ configureServer = (serverObj, lobby, instance)->
     else if err.errno is 'ECONNRESET'
       console.log "rcon disconnected for "+instance.id
     else if err.errno is 'ECONNREFUSED'
-      console.log "rcon connection refused, trying again in 3 seconds"
-      srvr.disconnect()
       new Fiber(->
+        instance = pendingInstances.findOne {id: instance.id}
+        return if !instance?
+        console.log "rcon connection refused, trying again in 3 seconds"
+        srvr.disconnect()
         Meteor.setTimeout(->
           console.log 'rcon attempting connection again'
           srvr.connect()
@@ -207,6 +211,46 @@ handleFailConfigure = (serv, lobby, instance)->
 
 finalizeInstance = (serv, lobby, instance)->
   lobbies.update {_id: lobby._id}, {$set: {status: 3, serverIP: serv.ip+":"+instance.port, instance: instance.id}}
+  result =
+    _id: lobby._id
+    date: new Date().getTime()
+    match_id: lobby._id
+    mod: lobby.mod
+    num_players: [lobby.radiant.length, lobby.dire.length]
+    server_addr: lobby.serverIP
+    status: "loading"
+  addPlayer = (team, lobP)->
+    team.push
+      last_hits: 0
+      gold_per_min:0
+      account_id:lobP.steam
+      support_gold:0
+      deaths:0
+      kills:0
+      hero_id:0
+      last_time_seen:0
+      hero_damage:0
+      denies:0
+      items:[0,0,0,0,0,0]
+      level:1
+      gold:0
+      tower_damage:0
+      assists:0
+      hero_healing:0
+      leaver_status:0
+      gold_spent:0
+      misses:0
+      ability_upgrades:[]
+      name: lobP.name
+      avatar: lobP.avatar.full
+  radiant = []
+  dire = []
+  for player in lobby.radiant
+    addPlayer radiant, player
+  for player in lobby.dire
+    addPlayer dire, player
+  result.teams = [{players:dire},{players:radiant}]
+  MatchResults.insert result
   pendingInstances.remove {id: instance.id}
   activeInstances.insert instance
 
@@ -303,11 +347,10 @@ hostServer.on 'connection', (ws)->
           sess = sess[0]
           lob = lobbies.findOne {_id: sess.lobby}
           return if !lob?
-          status = if (lob.status is 3) then 4 else 1
           if lob.status is 2
             handleFailConfigure serverObj, lob, {id: sess.id}
-          else
-            lobbies.update {_id: sess.lobby}, {$set: {status: status}}
+          else if lob.state < GAMESTATE.PostGame
+            handleLoadFail lob._id
           servers.update {_id: ourID}, {$set: {activeLobbies: serverObj.activeLobbies}}
           queueProc()
     ).run()

@@ -30,7 +30,7 @@
             <td style="padding:3px"><img src={{thumbnail}} style="width:50px;height:50px;" /></td>
             {{/with}}
             <td>{{>inlineTeams teams}}</td>
-            <td style="text-align:right">{{#if inProgress}}<button class="btn btn-info specBtn">Spectate</button>{{/if}} <a href={{resultURI}} class="btn btn-success">Details</a></td>
+            <td style="text-align:right;min-width:180px">{{#if inProgress}}<button class="btn btn-info specBtn">Spectate</button>{{/if}} <a href={{resultURI}} class="btn btn-success">Details</a></td>
           </tr>
           {{/each}}
           </tbody>
@@ -56,6 +56,11 @@
   <section class="container text-center" style="margin-top: 30px;">
     <h1 class="text-center">
       <strong>Match</strong> Details<br/>
+      {{#with getMod}}
+      <div style="margin-left:auto;margin-right:auto;width:251px">
+        {{>modThumbnail}}
+      </div>
+      {{/with}}
       {{#if isCompleted}}
       <a href={{pathFor 'results'}} class="btn btn-link">Match List</a>
       {{else}}
@@ -63,31 +68,34 @@
       {{/if}}
     </h1>
   </section>
-  <div class="teamRow">
-    <div class="col-sm-6 teamCol niceShadow">
-      <div class="tileTitle">
-        Radiant
-      </div>
-      <table class="table table-striped">
-        <tbody>
-        {{#each dire}}
-        <tr class={{playerClass}}><td><img style="width:15px;height:15px" src={{avatar}} /> {{name}} <span style="float:right">{{kills}}/{{deaths}}/{{assists}} Lvl{{level}} {{gold_spent}}g</span></td></tr>
-        {{/each}}
-        </tbody>
-      </table>
+  {{>gameTeamStats}}
+</div>
+</template>
+<template name="gameTeamStats">
+<div class="teamRow">
+  <div class="col-sm-6 teamCol niceShadow">
+    <div class="tileTitle">
+      Radiant
     </div>
-    <div class="col-sm-6 teamCol niceShadow">
-      <div class="tileTitle">
-        Dire
-      </div>
-      <table class="table table-striped">
-        <tbody>
-        {{#each radiant}}
-        <tr class={{playerClass}}><td><img style="width:15px;height:15px" src={{avatar}} /> {{name}} <span style="float:right">{{kills}}/{{deaths}}/{{assists}} Lvl{{level}} {{gold_spent}}g</span></td></tr>
-        {{/each}}
-        </tbody>
-      </table>
+    <table class="table table-striped">
+      <tbody>
+      {{#each dire}}
+      <tr class={{playerClass}}><td><img style="width:15px;height:15px" src={{avatar}} /> {{name}} <span style="float:right"><b>{{kills}}/{{deaths}}/{{assists}}</b> {{#if isCompleted}}Lvl{{level}} {{gold_spent}}g{{/if}}</span></td></tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-sm-6 teamCol niceShadow">
+    <div class="tileTitle">
+      Dire
     </div>
+    <table class="table table-striped">
+      <tbody>
+      {{#each radiant}}
+      <tr class={{playerClass}}><td><img style="width:15px;height:15px" src={{avatar}} /> {{name}} <span style="float:right"><b>{{kills}}/{{deaths}}/{{assists}}</b> {{#if isCompleted}}Lvl{{level}} {{gold_spent}}g{{/if}}</span></td></tr>
+      {{/each}}
+      </tbody>
+    </table>
   </div>
 </div>
 </template>
