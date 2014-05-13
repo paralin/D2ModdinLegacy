@@ -7,5 +7,7 @@
   "archiver": "0.9.1",
   "winston": "0.7.3",
   "ncp": "0.5.1",
-  "rimraf": "2.2.8"
+  "rimraf": "2.2.8",
+  "steamidconvert": "0.2.2",
+  "bignumber.js": "1.4.0"
 }
