@@ -31,3 +31,4 @@ Meteor.publish "lobbyDetails", ->
       creatorid: 1
       radiant: 1
       dire: 1
+      state: 1

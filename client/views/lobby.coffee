@@ -105,7 +105,7 @@ Template.findDialog.servProgColor = ->
 Template.findDialog.arePlaying = ->
   lobby = lobbies.findOne()
   return false if !lobby?
-  lobby.status is 3
+  lobby.status is 3 and (lobby.state < GAMESTATE.PostGame)
 
 Template.findDialog.events
   'click .connectBtn': ->
@@ -162,6 +162,8 @@ Template.lobby.lobby = ->
 Template.lobby.status = Template.findDialog.status = ->
   lobby = lobbies.findOne()
   return if !lobby? or !lobby.status?
+  if lobby.status is 3 and lobby.state >= GAMESTATE.PostGame
+    return "Waiting for game results..."
   switch lobby.status
     when 0 then return "Waiting for players to be ready..."
     when 1 then return "Searching for a server..."
@@ -170,6 +172,14 @@ Template.lobby.status = Template.findDialog.status = ->
     when 4 then return "Game has ended."
 Template.lobby.mod = ->
   mods.findOne()
+
+Template.lobby.gameInProgress = ->
+  lobby = findUserLobby Meteor.userId()
+  return if !lobby?
+  prog = (lobby.state is GAMESTATE.Playing or lobby.state is GAMESTATE.PreGame)
+  [team, me] = locatePlayer lobby, Meteor.user().services.steam.id
+  prog && me.connected
+
 Template.lobby.emptySlotR = ->
   lobby = lobbies.findOne()
   return if !lobby? or !lobby.radiant?
@@ -197,16 +207,24 @@ Template.findDialog.connectURL = ->
 Template.findDialog.progress = ->
   Session.get("servProgress")
 
+Template.findDialog.gameOver = ->
+  lobby = findUserLobby Meteor.userId()
+  return if !lobby?
+  lobby.state >= GAMESTATE.PostGame
 Template.findDialog.timeElapsed = ->
   Session.get "servTimeElapsed"
 Template.findDialog.progBarClass = ->
   lobby = lobbies.findOne()
   return if !lobby?
-  switch lobby.status
-    when 3
-      "pbSmall"
-    else
-      "progress-striped active"
+  if Template.findDialog.arePlaying()
+    "pbSmall"
+  else
+    "progress-striped active"
 Template.findDialog.isConfiguring = ->
   lobby = findUserLobby Meteor.userId()
   lobby? and lobby.status is 2
+Template.lobby.playerClass = ->
+  cl = ""
+  if @connected? && !@connected
+    cl += "danger"
+  cl

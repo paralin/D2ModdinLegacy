@@ -124,6 +124,9 @@
         }
       }
     },
+    "bignumber.js": {
+      "version": "1.4.0"
+    },
     "gift": {
       "version": "0.4.1",
       "dependencies": {
@@ -225,6 +228,14 @@
               }
             }
           }
+        }
+      }
+    },
+    "steamidconvert": {
+      "version": "0.2.2",
+      "dependencies": {
+        "bignumber.js": {
+          "version": "1.0.1"
         }
       }
     },

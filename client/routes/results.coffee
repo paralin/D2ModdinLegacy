@@ -8,7 +8,7 @@ Router.map ->
     path: '/result/:id'
     template: 'matchResult'
     waitOn: ->
-      [Meteor.subscribe("matchResult", @params.id)]
+      [Meteor.subscribe("matchResult", @params.id), Meteor.subscribe("modThumbList")]
     data: ->
       match = MatchResults.findOne(_id: @params.id)
       if !match?

@@ -6,12 +6,12 @@
 },
 {
   "name": "metamod",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "bundle": "serv_metamod.zip"
 },
 {
   "name": "lobby",
-  "version": "0.4",
-  "bundle": "serv_lobby.zip"
+  "version": "0.58",
+  "bundle": "lobby.zip"
 }
 ]

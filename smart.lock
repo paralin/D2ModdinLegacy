@@ -20,7 +20,8 @@
       "authorization": {},
       "buzz.js": {},
       "Bootstrap-Validator": {},
-      "bootboxjs": {}
+      "bootboxjs": {},
+      "iron-router-progress": {}
     },
     "packages": {
       "streams": {
@@ -102,6 +103,11 @@
         "git": "https://github.com/TimHeckel/meteor-bootboxjs.git",
         "tag": "v4.2.0",
         "commit": "2b7d18ad028d9e7b37238ecf2a8a7970735cebd1"
+      },
+      "iron-router-progress": {
+        "git": "https://github.com/Multiply/iron-router-progress.git",
+        "tag": "v0.3.1",
+        "commit": "3f7900feb4bb70a1289b39a1fdcd1f438c0335b3"
       },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",

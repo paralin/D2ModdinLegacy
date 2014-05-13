@@ -14,7 +14,7 @@ Router.map ->
       name: 'loggingIn',
       shouldRoute: false
     waitOn: ->
-      Meteor.subscribe("modDetailsForLobby")
+      [Meteor.subscribe("modDetailsForLobby"), Meteor.subscribe("matchResult", @params.id)]
     load:->
       Meteor.subscribe("lobbyDetails")
       #Get chat stream

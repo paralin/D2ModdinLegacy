@@ -18,6 +18,7 @@
     "authorization": {},
     "buzz.js": {},
     "Bootstrap-Validator": {},
-    "bootboxjs": {}
+    "bootboxjs": {},
+    "iron-router-progress": {}
   }
 }
