@@ -1,6 +1,6 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
-clientVersion = "0.5.5"
+clientVersion = "0.5.8"
 
 clientSockets = {}
 @setMod = (client, mod)->
@@ -8,8 +8,14 @@ clientSockets = {}
   return if !sockid?
   sock = clientSockets[sockid._id]
   return if !sock?
-  console.log "#{client._id} set mod #{mod}"
   sock.send "setmod:#{mod}"
+@dspectate = (client, addr)->
+  sockid = clients.findOne {steamIDs: client.services.steam.id}
+  return if !sockid?
+  sock = clientSockets[sockid._id]
+  return if !sock?
+  log.info "#{client._id} -> spectate #{addr}"
+  sock.send "dspectate:#{addr}"
 @launchDota = (client)->
   sockid = clients.findOne {steamIDs: client.services.steam.id}
   return if !sockid?
@@ -21,6 +27,7 @@ clientSockets = {}
   return if !sockid?
   sock = clientSockets[sockid._id]
   return if !sock?
+  log.info "#{client._id} -> dconnect #{addr}"
   sock.send "dconnect:#{addr}"
 @installMod = (client, mod)->
   sock = clientSockets[client._id]

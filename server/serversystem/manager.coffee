@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.1.4"
+serverVersion = "1.1.6"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -130,19 +130,12 @@ configureServer = (serverObj, lobby, instance)->
     d2lobby_gg_time #{(if lobby.enableGG then "5" else "-1")};
     match_post_url \"http://d2modd.in/gdataapi/matchres\";
     set_match_id #{lobby._id};
-    sv_hibernate_when_empty 0;
-    tv_maxclients 16;
-    tv_name D2ModdinGame;
-    tv_delay 0;
-    tv_port #{instance.port+1000};
-    tv_autorecord 1;
-    tv_secret_code 0;
     """
     for plyr in lobby.radiant
-      cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\""
+      cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\";"
       srvr.send cmd
     for plyr in lobby.dire
-      cmd = "add_dire_player "+plyr.steam+" \""+plyr.name+"\""
+      cmd = "add_dire_player "+plyr.steam+" \""+plyr.name+"\";"
       srvr.send cmd
     console.log "server configured"
     new Fiber(->
