@@ -68,6 +68,14 @@ updateRPlayer = (result, id, props)->
       log.info "#{id} state is now #{states}"
       lobby.state = eve.new_state
       lobbies.update {_id: id}, {$set: {state: lobby.state}}
+      result = MatchResults.findOne {_id: id}
+      if result?
+        status = "loading"
+        if eve.new_state > GAMESTATE.HeroSelect && eve.new_state < GAMESTATE.PostGame
+          status = "playing"
+        else if eve.new_state > GAMESTATE.Playing
+          status = "ending"
+        MatchResults.update {_id: id}, {$set: {status: status}}
     when EVENTS.PlayerConnect
       log.info "[EVENT] #{eve.player} connected"
       lobby = updatePlayer lobby, eve.player, connected: true
@@ -107,13 +115,18 @@ updateRPlayer = (result, id, props)->
 @handleLoadFail = (id)->
   lobby = lobbies.findOne {_id: id}
   MatchResults.remove {_id: id}
+  log.info "[LOADFAIL] Players failed to load for #{id}"
   if lobby?
     for player in lobby.radiant
       if !player.connected?
         player.connected = false
+      if !player.connected
+        log.info " -X- #{player.name}"
     for player in lobby.dire
       if !player.connected?
         player.connected = false
+      if !player.connected
+        log.info " -X- #{player.name}"
     lobbies.update {_id: id}, {$set: {status: 0, state: GAMESTATE.Init, radiant:lobby.radiant, dire:lobby.dire}}
 
 setPlayerTeam = (lobby, uid, tteam)->
@@ -142,21 +155,20 @@ setPlayerTeam = (lobby, uid, tteam)->
       lobbies.remove({_id: lobbyId})
 
 internalRemoveFromLobby = (userId, lobby)->
-  index = _.findWhere(lobby.radiant, {_id: userId})
-  team = null
-  if index?
-    team = "radiant"
-  else
-    index = _.findWhere(lobby.dire, {_id: userId})
-    team = "dire"
-  if index?
-    updateObj = {}
-    lobby[team].splice(index, 1)
-    updateObj[team] = lobby[team]
-    lobbies.update {_id: lobby._id},
-      $set: updateObj
   if lobby.creatorid is userId and lobby.status < 2
     lobbies.remove({_id: lobby._id})
+    return
+  teams = [lobby.radiant, lobby.dire]
+  player = null
+  for tea in teams
+    player = _.findWhere tea, {_id: userId}
+    if player?
+      tea.splice tea.indexOf(player), 1
+      break
+  if !player?
+    log.error "Can't find player #{userId} in lobby #{lobby._id} to remove"
+    return
+  lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire}}
 
 @leaveInProgressLobby = (userId)->
   return if !userId?
