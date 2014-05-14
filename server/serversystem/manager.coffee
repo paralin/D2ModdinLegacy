@@ -222,6 +222,7 @@ finalizeInstance = (serv, lobby, instance)->
     server_addr: lobby.serverIP
     spectate_addr: serv.ip+":"+(instance.port+1000)
     status: "loading"
+    uids: []
   addPlayer = (team, lobP)->
     team.push
       last_hits: 0
@@ -250,8 +251,10 @@ finalizeInstance = (serv, lobby, instance)->
   dire = []
   for player in lobby.radiant
     addPlayer radiant, player
+    result.uids.push player._id
   for player in lobby.dire
     addPlayer dire, player
+    result.uids.push player._id
   result.teams = [{players:dire},{players:radiant}]
   MatchResults.insert result
   pendingInstances.remove {id: instance.id}
