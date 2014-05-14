@@ -1,5 +1,5 @@
 Template.resultList.results = ->
-  MatchResults.find()
+  MatchResults.find({}, {sort: {date:-1}})
 Template.resultList.inProgress = ->
   @status? && @status isnt "completed"
 Template.resultList.inProgressClass = ->
