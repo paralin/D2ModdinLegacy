@@ -16,11 +16,10 @@ Meteor.startup ->
   pendingInstances.remove({})
   activeInstances.remove({})
   lobbyQueue.find().observeChanges
-    added: (id, fields)->
-      queueProc()
+    added: queueProc
   servers.find().observeChanges
-    added: (id, fields)->
-      queueProc()
+    added: queueProc
+    changed: queueProc
   ServerAddons.find().observeChanges
     _suppress_initial: true
     added: sendReinit
@@ -260,7 +259,7 @@ finalizeInstance = (serv, lobby, instance)->
   pendingInstances.remove {id: instance.id}
   activeInstances.insert instance
 
-queueProc = ->
+queueProcR = ->
   #Find elegible servers
   nextGame = lobbyQueue.findOne({}, {started: 1})
   return if !nextGame?
@@ -274,6 +273,9 @@ queueProc = ->
   return if !chosen?
   launchServer(chosen, nextGame.lobby)
   lobbyQueue.remove({_id: nextGame._id})
+queueProc = _.debounce ->
+  new Fiber(queueProcR).run()
+, 150
 
 removeServerFromPool = (id)->
   serv = servers.findOne {_id: id}
@@ -296,6 +298,7 @@ hostServer.on 'connection', (ws)->
     new Fiber(->
       if ourID?
         servObj = servers.findOne {_id: serverObj._id}
+        return if !servObj?
         for sess in pendingInstances.find({ip: servObj.ip})
           lob = lobbies.findOne {_id: sess.lobby}
           continue if !lob?

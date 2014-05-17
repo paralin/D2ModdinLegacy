@@ -114,6 +114,7 @@ updateRPlayer = (result, id, props)->
     lobbies.update {_id: id}, {$set: {status: 4}}
 @handleLoadFail = (id)->
   lobby = lobbies.findOne {_id: id}
+  return if !MatchResults.findOne({_id: id})?
   MatchResults.remove {_id: id}
   log.info "[LOADFAIL] Players failed to load for #{id}"
   if lobby?
@@ -232,7 +233,7 @@ startGame = (lobby)->
     mmid: null
     public: true
     status: 0
-    requiresFullLobby: false
+    requiresFullLobby: !(AuthManager.userIsInRole(creatorId, "admin") or AuthManager.userIsInRole(creatorId, "developer"))
     devMode: false
     enableGG: true
     state: GAMESTATE.Init
