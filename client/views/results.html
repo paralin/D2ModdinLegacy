@@ -5,11 +5,11 @@
       <strong>Match</strong> History<br/>
     </h1>
     <ul class="pagination">
-      <li><a class="lpBtn">&laquo;</a></li>
+      <li class={{leftClass}}><a href={{leftPath}} class="lpBtn">&laquo;</a></li>
       {{#each pages}}
-      <li><a class={{pagClass}}>{{num}}</a></li>
+      <li class={{pagClass}}><a href="/results/{{num}}">{{num}}</a></li>
       {{/each}}
-      <li><a class="rpBtn">&raquo;</a></li>
+      <li class={{rightClass}}><a href={{rightPath}} class="rpBtn">&raquo;</a></li>
     </ul>
   </section>
   <div id="mods" class="resultsTable">

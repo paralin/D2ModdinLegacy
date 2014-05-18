@@ -11,6 +11,7 @@ pushChatMessage = (msg)->
   box.scrollTop(box[0].scrollHeight)
 
 wasInLobby = false
+wasLobbyID = 0
 targetFindTime = 30000 #30 seconds average?
 Meteor.startup ->
   Session.set "servProgress", 50
@@ -70,6 +71,7 @@ Meteor.startup ->
     streamSetup = true
     stream.on "message", pushChatMessage
     wasInLobby = true
+    wasLobbyID = lobby._id
   Deps.autorun -> #Leave when game is over
     route = Router.current()
     return if !route?
@@ -78,7 +80,7 @@ Meteor.startup ->
       return
     lobby = lobbies.findOne({status: {$ne: null}})
     if !lobby? and wasInLobby
-      Router.go Router.routes["lobbyList"].path()
+      Router.go Router.routes["matchResult"].path({id: wasLobbyID})
       $.pnotify
         title: "Lobby Finished"
         text: "The lobby has closed."

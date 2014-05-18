@@ -4,13 +4,6 @@ Template.createLobby.events
     if lobbyName is ""
       lobbyName = null
     mod = @.name
-    $.pnotify
-      title: "Creating lobby..."
-      text: "Requesting a new lobby..."
-      type: "info"
-      delay: 500
-      closer: false
-      sticker: false
     Meteor.call "createLobby", mod, lobbyName, (err, res)->
       if err?
         if err.error is 401
