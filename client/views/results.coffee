@@ -1,3 +1,26 @@
+Template.resultList.rightClass = ->
+  page = Session.get("resultPage")
+  return if !page?
+  totalMatches = (Metrics.findOne({_id: "matches"}) || {count: 0}).count
+  totalPages = Math.ceil(totalMatches/10)
+  return "disabled" if page is totalPages
+  ""
+Template.resultList.leftClass = ->
+  page = Session.get("resultPage")
+  return if !page?
+  return "disabled" if page is 1
+  ""
+Template.resultList.leftPath = ->
+  page = Session.get("resultPage")
+  return if !page? or page is 1
+  Router.routes["results"].path page: parseInt(page)-1
+Template.resultList.rightPath = ->
+  page = Session.get("resultPage")
+  return if !page?
+  totalMatches = (Metrics.findOne({_id: "matches"}) || {count: 0}).count
+  totalPages = Math.ceil(totalMatches/10)
+  return if page is totalPages
+  Router.routes["results"].path page: parseInt(page)+1
 Template.resultList.results = ->
   MatchResults.find({}, {sort: {date:-1}})
 Template.resultList.inProgress = ->
@@ -42,8 +65,9 @@ Template.resultList.pagClass = ->
 Template.resultList.pages = ->
   totalMatches = (Metrics.findOne({_id: "matches"}) || {count: 0}).count
   totalPages = Math.ceil(totalMatches/10)+1
+  page = Session.get "resultPage"
   while totalPages-=1
     {
-      selected: false
+      selected: parseInt(page) is totalPages
       num: totalPages
     }

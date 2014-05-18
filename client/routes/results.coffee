@@ -1,9 +1,11 @@
 Router.map ->
   @route 'results',
-    path: '/results'
+    path: '/results/:page?'
     waitOn: ->
-      [Meteor.subscribe("resultList"), Meteor.subscribe("modThumbList")]
-    template: 'resultList'
+      [Meteor.subscribe("resultList", Session.get('resultPage')), Meteor.subscribe("modThumbList")]
+    action: ->
+      @render "resultList"
+      Session.set "resultPage", parseInt(@params.page) || 1
   @route 'matchResult',
     path: '/result/:id'
     template: 'matchResult'
