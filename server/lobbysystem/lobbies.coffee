@@ -90,6 +90,7 @@ updateRPlayer = (result, id, props)->
       if player?
         player.deaths++
       for killer in eve.killers
+        killer = toSteamID64 killer
         [team, killd] = locateRPlayer result, killer
         if killd?
           killd.kills++
@@ -245,7 +246,7 @@ startGame = (lobby)->
   return if (_.findWhere(lobby.radiant, {_id: userId}))?
   user = Meteor.users.findOne({_id: userId})
   team = null
-  if lobby.dire.length >= lobby.radiant.length && lobby.dire.length < 5
+  if lobby.dire.length <= lobby.radiant.length && lobby.dire.length < 5
     team = "dire"
   else
     team = "radiant"
