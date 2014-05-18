@@ -31,7 +31,8 @@ Template.resultList.events
   'click .specBtn': ->
     cSpectateGame @_id
 Template.matchResult.canSpectate = Template.resultList.canSpectate = ->
-  @status? && @status is "playing"
+  false
+  #@status? && @status is "playing"
 Template.matchResult.events
   'click .specBtn': ->
     cSpectateGame @_id

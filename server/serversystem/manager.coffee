@@ -10,13 +10,22 @@ sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
 @activeInstances = new Meteor.Collection "activeInstances"
 
+
 Meteor.startup ->
   sockets = {}
   servers.remove({})
   pendingInstances.remove({})
   activeInstances.remove({})
-  lobbyQueue.find().observeChanges
-    added: queueProc
+  Metrics.remove({_id: 'queue'})
+  Metrics.insert {_id: 'queue', count: 0}
+  cursor = lobbyQueue.find()
+  updateLobbyMetric = ->
+    Metrics.update {_id: 'queue'}, {$set: {count: cursor.count()}}
+  cursor.observeChanges
+    added: ->
+      queueProc()
+      updateLobbyMetric()
+    removed: updateLobbyMetric
   servers.find().observeChanges
     added: queueProc
     changed: queueProc
