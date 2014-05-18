@@ -43,7 +43,7 @@ Meteor.startup ->
     return if !lobby?
     route = Router.current()
     return if !route?
-    if route.route.name isnt "lobby"
+    if route.route.name isnt "lobby" and lobby.state < GAMESTATE.PostGame
       Router.go Router.routes["lobby"].path({id: lobby._id})
   Deps.autorun -> #Server status change
     lobby = lobbies.findOne({status: {$ne: null}})
@@ -125,6 +125,8 @@ Template.findDialog.events
           type: "error"
           delay: 5000
 Template.lobby.events
+  "click .kickBtn": ->
+    Meteor.call "kickPlayer", @_id
   'click .startBtn': ->
     Meteor.call "startGame", (err, res)->
       if err?

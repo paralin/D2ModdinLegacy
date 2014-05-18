@@ -26,7 +26,7 @@
       <table class="table table-striped">
         <tbody>
         {{#each lobby.radiant}}
-        <tr class={{playerClass}}><td>{{name}}</td></tr>
+        <tr class={{playerClass}}><td>{{#if isHost}}<i class="fa fa-ban kickBtn"></i>{{/if}}{{name}}</td></tr>
         {{/each}}
         {{#each emptySlotR}}
         <tr><td><a class="joinBtn">Take Slot</a></td></tr>
@@ -41,7 +41,7 @@
       <table class="table table-striped">
         <tbody>
         {{#each lobby.dire}}
-        <tr class={{playerClass}}><td>{{name}}</td></tr>
+        <tr class={{playerClass}}><td>{{#if isHost}}<i class="fa fa-ban kickBtn"></i>{{/if}}{{name}}</td></tr>
         {{/each}}
         {{#each emptySlotD}}
         <tr><td><a class="joinBtn">Take Slot</a></td></tr>

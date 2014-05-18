@@ -197,6 +197,22 @@ maybeStopMatchmaking = (userId, l)->
     lobbies.update {_id: l._id}, {$set: {status: 0}}
     cancelFindServer l._id
 
+@kickPlayer = (lobbyId, userId)->
+  lobby = lobbies.find
+    $or: [{"radiant._id": userId}, {"dire._id": userId}]
+    status: {$lt: 2}
+    _id: lobbyId
+  lobby.forEach (l)->
+    internalRemoveFromLobby(userId, l)
+    maybeStopMatchmaking(userId, l)
+    stopFinding(l)
+    if !lobby.banned?
+      lobby.banned = [userId]
+    else
+      lobby.banned.push userId
+    lobbies.update {_id: l._id}, {$set: {banned: lobby.banned}}
+    console.log userId+" banned from lobby "+lobbyId
+
 @leaveLobby = (userId)->
   lobby = lobbies.find
     $or: [{creatorid: userId}, {"radiant._id": userId}, {"dire._id": userId}]
@@ -223,6 +239,7 @@ startGame = (lobby)->
   return lobbies.insert
     name: name
     hasPassword: false
+    banned: []
     creator: user.profile.name
     creatorid: creatorId
     radiant: [{_id: creatorId, name: user.profile.name, avatar: user.services.steam.avatar, steam: user.services.steam.id}]
@@ -322,8 +339,20 @@ Meteor.methods
         console.log "  -> client = "+JSON.stringify client
         console.log "  -> mod needed = "+lobby.mod+"="+mod.version
         throw new Meteor.Error 401, lobby.mod
+    if _.contains lobby.banned, @userId
+      throw new Meteor.Error 403, "You have been kicked from this lobby."
     joinLobby lobby, @userId
     console.log @userId+" joined lobby "+lobby.name
+  "kickPlayer": (id)->
+    check(id, String)
+    user = Meteor.users.findOne({_id: @userId})
+    if !@userId?
+      throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
+    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    if !lobby?
+      throw new Meteor.Error 403, "You don't own any lobbies."
+    kickPlayer(lobby._id, id)
+    leaveLobby(id)
   "leaveLobby": ->
     return if !@userId?
     leaveLobby(@userId)
