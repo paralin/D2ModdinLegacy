@@ -203,6 +203,11 @@ Template.lobby.emptySlotD = ->
     i++
   slots
 
+Template.findDialog.lobbyCount = ->
+  metric = Metrics.findOne {_id: 'queue'}
+  return if !metric?
+  metric.count
+
 Template.findDialog.connectURL = ->
   lobby = lobbies.findOne()
   return if !lobby? or !lobby.serverIP?

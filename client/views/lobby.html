@@ -81,7 +81,10 @@
     </div>
   </div>
   <div class="loadingBarSubtitle" style="position:relative;top:-10px">
-    {{#unless arePlaying}}<b>Elapsed:</b> {{timeElapsed}} sec{{/unless}}
+    {{#unless arePlaying}}
+    <b>Elapsed:</b> {{timeElapsed}} sec<br/>
+    <b>Lobbies Waiting:</b> {{lobbyCount}}<br/>
+    {{/unless}}
   </div>
   {{#if arePlaying}}
   <span class="ensureD2" style="padding-top:15px"><b>Please ensure Dota 2 is running before connecting.</b></span>
