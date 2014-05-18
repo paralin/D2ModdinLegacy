@@ -1,0 +1,82 @@
+<template name="about">
+<div id="wrapper">
+  <section class="container aboutc">
+    <h2>About <strong>D2Moddin</strong></h2>
+    <p class="lead">D2Moddin was created as an unofficial platform for playing Dota 2 custom game modes. <br/>Developed by <a href="http://steamcommunity.com/id/kidovate">ＱUΛИТUM</a> during early 2014.</p>
+
+    <div class="divider"><!-- divider -->
+      <i class="fa fa-star"></i>
+    </div>
+    <div class="toogle toogle-accordion">
+      <div class="toggle active">
+        <label>Who hosts D2Moddin game servers?</label>
+        <div class="toggle-content">
+          <a class="img-thumbnail lightbox pull-left inner">
+            <img src="http://i.imgur.com/KwGphvc.png" height="110" alt="" />
+          </a>
+          <p><b>Masters of Development</b> provides the Colonge and Australia servers to host D2Moddin in Australia and Europe. They are the developers of Fight or Flight, Element TD, and many other upcoming game modes.</p>
+          <p><b>[gerG] Medowar</b> has provided D2Moddin with two Europe West servers.</p>
+          <div class="divider styleColor white">
+            <i class="fa fa-leaf"></i>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <h3>Donate a Server</h3>
+              <p class="justify">Want to help out D2Moddin? If you have an available Windows server, we would love to add it to the network. Contact us if you would like to help out the site!</p>
+            </div>
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-4"><!-- right -->
+              <h3>Donate Resources</h3>
+              <p class="justify">Donations will go towards future development costs and additional server capacity. We welcome donations to the site, and although they do not allow for any special privilege on the site, they are always appreciated.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="toggle">
+        <label>How does the manager work?</label>
+        <div class="toggle-content">
+          <div class="row">
+            <div class="col-md-4">
+              <h3>The Launcher</h3>
+              <p class="justify">D2MPLauncher downloads the D2Moddin manager to a temporary directory on your computer. The launcher then runs the D2Moddin manager, which minimizes to your Windows tray. It will either update your existing manager, launch it if it is up to date, or download it for the first time.</p>
+            </div>
+            <div class="col-md-4">
+              <h3>The Manager</h3>
+              <p class="justify">The D2Moddin manager downloads local files (models, textures, and UIs) to your Dota 2 addons directory. It does not modify any Dota 2 files in any way, does not require admin privileges, and is designed to be temporary.</p>
+            </div>
+            <div class="col-md-4"><!-- right -->
+              <h3>Uninstalling</h3>
+              <p class="justify">The manager will automatically close 60 seconds after you close D2Moddin. If you wish to remove the manager and all mods from your system, you can simply right click the icon in your system tray and click uninstall. This will delete the manager and all addons.</p>
+            </div>
+          </div>
+          <p class="lead padding30 text-center">The source code for the launcher and manager are on <a href="https://github.com/kidovate/d2moddinclient">GitHub</a>.</p>
+        </div>
+      </div>
+      <div class="toggle">
+        <label>How do custom game modes work?</label>
+        <div class="toggle-content">
+          <p>Dota 2 custom game modes are created in the same way the Dota 2 seasonal game modes were created. Frostivus, the Year Beast, etc were all created as Dota 2 addons. Dota 2 searches for addons in the "addons" directory in the Dota 2 install directory. Custom game mode files are thus installed simply by dropping the mod directory into the addons directory. The manager does this for you automatically.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="bs-callout text-center nomargin-bottom">
+      <div class="divider">
+        <i class="fa fa-chevron-down"></i>
+      </div>
+
+      <h3>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+          <input type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+          ">
+          <button class="btn btn-primary btn-lg" border="0" name="submit">Donate</button>
+          <a href="mailto:kidovate@gmail.com" style="margin-left:20px" class="btn btn-primary btn-lg">Contact Us</a>
+          <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
+      </h3>
+    </div>
+  </section>
+</div>
+</template>
