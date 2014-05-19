@@ -77,7 +77,7 @@
 <div class="teamRow">
   <div class="col-sm-6 teamCol niceShadow">
     <div class="tileTitle">
-      Radiant
+      Radiant {{#if isCompleted}}{{#if good_guys_win}}Victory{{/if}}{{/if}}
     </div>
     <table class="table table-striped">
       <tbody>
@@ -89,7 +89,7 @@
   </div>
   <div class="col-sm-6 teamCol niceShadow">
     <div class="tileTitle">
-      Dire
+      Dire {{#if isCompleted}}{{#unless good_guys_win}}Victory{{/unless}}{{/if}}
     </div>
     <table class="table table-striped">
       <tbody>
