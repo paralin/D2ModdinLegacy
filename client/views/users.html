@@ -12,9 +12,10 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>ID</th>
+              <th style="width:150px">ID</th>
               <th>Name</th>
               <th>SteamID</th>
+              <th>AuthGroups</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -23,7 +24,8 @@
           <tr>
             <td>{{_id}}</td>
             <td>{{profile.name}}</td>
-            <td>{{services.steam.id}}</td>
+            <td>{{#with services.steam.id}}<a target="_blank" href="https://steamrep.com/?id={{this}}">{{this}}</a>{{/with}}</td>
+            <td>{{#each authItems}}{{this}} {{/each}}</td>
             <td><a class="btn btn-danger delBtn">Delete</a></td>
           </tr>
           {{/each}}

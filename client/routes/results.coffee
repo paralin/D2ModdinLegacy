@@ -1,6 +1,7 @@
 Router.map ->
   @route 'results',
     path: '/results/:page?'
+    fastRender: true
     waitOn: ->
       [Meteor.subscribe("resultList", Session.get('resultPage')), Meteor.subscribe("modThumbList")]
     action: ->
@@ -9,6 +10,7 @@ Router.map ->
   @route 'matchResult',
     path: '/result/:id'
     template: 'matchResult'
+    fastRender: true
     waitOn: ->
       [Meteor.subscribe("matchResult", @params.id), Meteor.subscribe("modThumbList")]
     data: ->

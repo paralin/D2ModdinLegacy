@@ -17,7 +17,8 @@
       "buzz.js": {},
       "Bootstrap-Validator": {},
       "bootboxjs": {},
-      "iron-router-progress": {}
+      "iron-router-progress": {},
+      "fast-render": {}
     },
     "packages": {
       "streams": {
@@ -99,6 +100,11 @@
         "git": "https://github.com/Multiply/iron-router-progress.git",
         "tag": "v0.3.1",
         "commit": "3f7900feb4bb70a1289b39a1fdcd1f438c0335b3"
+      },
+      "fast-render": {
+        "git": "https://github.com/arunoda/meteor-fast-render.git",
+        "tag": "v0.2.5",
+        "commit": "93e2fb334e55fbe9b5ebb2a2e65964018658f43e"
       },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",
