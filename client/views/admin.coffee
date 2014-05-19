@@ -7,6 +7,8 @@ Template.admin.serverAddons = ->
 Template.admin.servers = ->
   servers.find()
 Template.admin.events
+  "click .disableSignups": ->
+    Meteor.call "toggleSignups", showNiceNot
   "click .servt tr": ->
     Router.go Router.routes["adminServer"].path {id: @_id}
   "click .plbSdn": ->
@@ -36,7 +38,7 @@ showNiceNot = (err, res)->
   else
     $.pnotify
       title: "Command Sent"
-      text: "Your command has completed without errors."
+      text: res || "Your command has completed without errors."
       type: "success"
 
 Template.admin.disabledClass = ->

@@ -1,3 +1,4 @@
 #Don't allow new accounts
 Accounts.validateNewUser ->
-  true
+  metric = Metrics.findOne {_id: 'login'}
+  !metric? || metric.enabled
