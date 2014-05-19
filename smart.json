@@ -15,6 +15,7 @@
     "buzz.js": {},
     "Bootstrap-Validator": {},
     "bootboxjs": {},
-    "iron-router-progress": {}
+    "iron-router-progress": {},
+    "fast-render": {}
   }
 }
