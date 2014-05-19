@@ -7,10 +7,6 @@
     "dota2": {},
     "font-awesome": {},
     "iron-router": {},
-    "accounts-ui-bootstrap-3": {
-      "git": "https://github.com/kidovate/meteor-accounts-ui-bootstrap-3.git",
-      "branch": "steam"
-    },
     "blaze-layout": {},
     "filter-collections": {},
     "ms-seo": {},
