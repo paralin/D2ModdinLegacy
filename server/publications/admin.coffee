@@ -13,5 +13,6 @@ Meteor.publish "adminData", ->
     fields:
       profile: 1
       services: 1
+      authItems: 1
   res.push ServerAddons.find()
   res
