@@ -1,0 +1,36 @@
+<template name="userList">
+<div id="wrapper">
+  <section class="container text-center" style="margin-top: 30px;">
+    <h1 class="text-center">
+      <strong>Users</strong> List<br/>
+      <a class="btn btn-link" href={{pathFor 'admin'}}>Admin Panel</a>
+    </h1>
+  </section>
+  <div id="mods" class="resultsTable">
+    <section class="container">
+      <div class="row">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>SteamID</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+          {{#each users}}
+          <tr>
+            <td>{{_id}}</td>
+            <td>{{profile.name}}</td>
+            <td>{{services.steam.id}}</td>
+            <td><a class="btn btn-danger delBtn">Delete</a></td>
+          </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+</template>

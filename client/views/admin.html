@@ -9,15 +9,10 @@
   <div class="adminRow">
     <div class="col-sm-6 adminCol niceShadow">
       <div class="tileTitle">
-        Servers
+        Settings
       </div>
-      <table class="table table-striped">
-        <tbody class="servt">
-        {{#each servers}}
-        <tr class={{disabledClass}}><td>{{ip}}</td></tr>
-        {{/each}}
-        </tbody>
-      </table>
+      <button class="btn btn-danger disableSignups">Disable/Enable Signups</button>
+      <a class="btn btn-primary" href={{pathFor 'users'}}>User List</a>
     </div>
     <div class="col-sm-6 adminCol niceShadow">
       <div class="tileTitle">
@@ -45,6 +40,18 @@
     </div>
     <div class="col-sm-6 adminCol niceShadow">
       <div class="tileTitle">
+        Servers
+      </div>
+      <table class="table table-striped">
+        <tbody class="servt">
+        {{#each servers}}
+        <tr class={{disabledClass}}><td>{{ip}}</td></tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-sm-6 adminCol niceShadow">
+      <div class="tileTitle">
         Server Addons
       </div>
       <table class="table table-striped">
@@ -54,12 +61,6 @@
         {{/each}}
         </tbody>
       </table>
-    </div>
-    <div class="col-sm-6 adminCol niceShadow">
-      <div class="tileTitle">
-        Settings
-      </div>
-      <button class="btn btn-danger disableSignups">Disable/Enable Signups</button>
     </div>
   </div>
 </div>
