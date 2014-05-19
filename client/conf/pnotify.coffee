@@ -1,6 +1,7 @@
 $.pnotify.defaults.styling = "bootstrap3"
 $.pnotify.defaults.history = false
-$.pnotify.defaults.stack = {"dir1": "down", "dir2": "left", "firstpos1": 90, "firstpos2": 25}
+$.pnotify.defaults.stack = {"dir1": "up", "dir2": "left", "push": "left"}
+$.pnotify.defaults.addclass = "stack-bottomright"
 $.pnotify.defaults.nonblock = {nonblock: true, nonblock_opacity: 0.2}
 $.pnotify.defaults.closer = false
 $.pnotify.defaults.sticker = false
