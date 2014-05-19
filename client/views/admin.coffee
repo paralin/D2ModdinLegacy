@@ -29,7 +29,7 @@ Template.admin.events
 Template.adminServer.resolvLob = ->
   lobbies.findOne({_id: @lobby})
 
-showNiceNot = (err, res)->
+@showNiceNot = (err, res)->
   if err?
     $.pnotify
       title: "Command Failed"

@@ -15,7 +15,11 @@ adminServer =
       @redirect "/admin"
       return
     serv
+users =
+  path: "/users"
+  template: "userList"
 
 Router.map ->
   @route "admin", _.extend admin, common
   @route "adminServer", _.extend adminServer, common
+  @route "users", _.extend users, common
