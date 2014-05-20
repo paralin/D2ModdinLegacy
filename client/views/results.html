@@ -2,7 +2,7 @@
 <div id="wrapper">
   <section class="container text-center" style="margin-top: 30px;">
     <h1 class="text-center">
-      <strong>Match</strong> History<br/>
+      <strong>{{#unless isCompleted}}LIVE {{/unless}}Match</strong> History<br/>
     </h1>
     <ul class="pagination" style="margin:0;margin-top:10px">
       <li class={{leftClass}}><a href={{leftPath}} class="lpBtn">&laquo;</a></li>
@@ -25,7 +25,7 @@
           </thead>
           <tbody>
           {{#each results}}
-          <tr style={{inProgressClass}}>
+          <tr class={{inProgressClass}}>
             {{#with thisMod}}
             <td style="padding:3px"><img src={{thumbnail}} style="width:50px;height:50px;" /></td>
             {{/with}}
