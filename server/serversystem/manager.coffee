@@ -299,7 +299,8 @@ hostServer.on 'connection', (ws)->
     portRangeStart: 3000
     portRangeStop: 3100
   ourID = null
-  console.log "new server connected"
+  serverObj.ip = ws.upgradeReq.connection.remoteAddress
+  log.info "[SERVER] New server #{serverObj.ip}"
   ws.on 'close', ->
     new Fiber(->
       if ourID?
@@ -330,7 +331,6 @@ hostServer.on 'connection', (ws)->
             ws.send 'outOfDate|'+getBundleDownloadURL("s"+serverVersion+".zip")
             return
           serverObj.maxLobbies = parseInt(splitMsg[2])
-          serverObj.ip = ws.upgradeReq.connection.remoteAddress
           versions = splitMsg[3].split ','
           installStr = getAddonInstalls(versions)
           prange = splitMsg[5].split '-'
