@@ -16,16 +16,18 @@
               <th>Name</th>
               <th>SteamID</th>
               <th>AuthGroups</th>
-              <th>Actions</th>
+              <th>Ban</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
           {{#each users}}
-          <tr>
+          <tr class={{userClass}}>
             <td>{{_id}}</td>
             <td>{{profile.name}}</td>
             <td>{{#with services.steam.id}}<a target="_blank" href="https://steamrep.com/?id={{this}}">{{this}}</a>{{/with}}</td>
             <td>{{#each authItems}}{{this}} {{/each}}</td>
+            <td><a class="btn btn-danger banBtn">Toggle Ban</a></td>
             <td><a class="btn btn-danger delBtn">Delete</a></td>
           </tr>
           {{/each}}
