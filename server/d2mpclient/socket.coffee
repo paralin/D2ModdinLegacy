@@ -84,7 +84,7 @@ clientServer.on 'connection', (ws)->
     clientObj._id = ourID
     clientSockets[ourID] = ws
   ).run()
-  console.log "new clientEXE connected"
+  log.debug "[Client] Connected, #{ws.upgradeReq.connection.remoteAddress}"
   ws.on 'message', (msg)->
     new Fiber(->
       splitMsg = msg.split ':'
