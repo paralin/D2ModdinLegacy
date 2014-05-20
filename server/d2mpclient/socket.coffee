@@ -43,7 +43,7 @@ clientSockets = {}
   sock = clientSockets[client._id]
   return if !sock?
   sock.send "close"
-  console.log "told client "+client._id+" to shutdown"
+  log.info "[Client] #{client._id} told to shutdown"
 @uninstallClient = (userId)->
   user = Meteor.users.findOne({_id: userId})
   client = clients.findOne({steamIDs: user.services.steam.id})
@@ -51,7 +51,7 @@ clientSockets = {}
   sock = clientSockets[client._id]
   return if !sock?
   sock.send "uninstall"
-  console.log "told client "+client._id+" to uninstall"
+  log.info "[Client] #{client._id} told to uninstall"
 
 Meteor.startup ->
   clients.remove({})
@@ -80,11 +80,12 @@ clientServer.on 'connection', (ws)->
     installedMods: []
     status: 0
   new Fiber(->
+    clientObj.ip = ws.upgradeReq.connection.remoteAddress
     ourID = clients.insert clientObj
     clientObj._id = ourID
     clientSockets[ourID] = ws
+    log.debug "[Client] Connected, #{clientObj.ip}"
   ).run()
-  log.debug "[Client] Connected, #{ws.upgradeReq.connection.remoteAddress}"
   ws.on 'message', (msg)->
     new Fiber(->
       splitMsg = msg.split ':'
@@ -126,7 +127,7 @@ clientServer.on 'connection', (ws)->
           clients.update {_id: ourID}, clientObj
     ).run()
   ws.on 'close', ->
-    console.log "client disconnected"
+    log.info "[Client] Disconnected #{clientObj.ip}"
     new Fiber(->
       clients.remove {_id: ourID}
       delete clientSockets[ourID]
