@@ -16,6 +16,7 @@ Meteor.publish "modDetails", (name) ->
       thumbnail: 1
       features: 1
       description: 1
+      spreadvideo: 1
       playable: 1
 Meteor.publish "modDetailsForLobby", ->
   user = null

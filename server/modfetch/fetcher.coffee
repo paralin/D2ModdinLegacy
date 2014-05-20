@@ -53,6 +53,7 @@ defaultMod =
   public: false
   playable: false
   requirements: {}
+  spreadvideo: null
 _.matches = (attrs) ->
   (obj) ->
     return _.isEmpty(attrs)  unless obj?
