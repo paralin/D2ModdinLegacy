@@ -251,7 +251,7 @@ startGame = (lobby)->
     mmid: null
     public: true
     status: 0
-    requiresFullLobby: !(AuthManager.userIsInRole(creatorId, "admin") or AuthManager.userIsInRole(creatorId, "developer"))
+    requiresFullLobby: !(AuthManager.userIsInRole(creatorId, ["admin", "developer", "moderator"]))
     devMode: false
     enableGG: true
     state: GAMESTATE.Init

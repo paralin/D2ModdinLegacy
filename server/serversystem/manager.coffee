@@ -8,14 +8,12 @@ serverVersion = "1.1.7"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
-@activeInstances = new Meteor.Collection "activeInstances"
 
 
 Meteor.startup ->
   sockets = {}
   servers.remove({})
   pendingInstances.remove({})
-  activeInstances.remove({})
   Metrics.remove({_id: 'queue'})
   Metrics.insert {_id: 'queue', count: 0}
   cursor = lobbyQueue.find()
@@ -266,7 +264,6 @@ finalizeInstance = (serv, lobby, instance)->
   result.teams = [{players:dire},{players:radiant}]
   MatchResults.insert result
   pendingInstances.remove {id: instance.id}
-  activeInstances.insert instance
 
 queueProcR = ->
   #Find elegible servers
