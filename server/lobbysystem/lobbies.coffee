@@ -233,7 +233,7 @@ startGame = (lobby)->
 
 @createLobby = (creatorId, mod, name)->
   return if !creatorId?
-  console.log creatorId+" created lobby"
+  log.info creatorId+" created lobby"
   user = Meteor.users.findOne({_id: creatorId})
   setMod user, mod.name+"="+mod.version
   return lobbies.insert
@@ -318,6 +318,8 @@ Meteor.methods
   "joinLobby": (id)->
     if !@userId?
       throw new Meteor.Error 403, "You must be logged in to join a lobby."
+    if AuthManager.userIsInRole @userId, "banned"
+      throw new Meteor.Error 403 ,"You are banned from joining/creating lobbies."
     lobby = lobbies.findOne
       _id: id
       status: 0
@@ -359,6 +361,8 @@ Meteor.methods
   "createLobby": (mod, name) ->
     if !@userId?
       throw new Meteor.Error 403, "You must be logged in to make a lobby."
+    if AuthManager.userIsInRole @userId, "banned"
+      throw new Meteor.Error 403 ,"You are banned from joining/creating lobbies."
     user = Meteor.users.findOne({_id: @userId})
     leaveLobby(@userId)
     if isIngame(@userId)
