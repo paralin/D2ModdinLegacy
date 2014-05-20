@@ -336,7 +336,6 @@ hostServer.on 'connection', (ws)->
           serverObj.portRangeStart = parseInt prange[0]
           serverObj.portRangeEnd = parseInt prange[1]
           if installStr is "|"
-            console.log "server init "+serverObj.ip
             log.info "[SERVER] #{serverObj.ip} Initialized"
             if !serverObj._id?
               ourID = servers.insert serverObj
