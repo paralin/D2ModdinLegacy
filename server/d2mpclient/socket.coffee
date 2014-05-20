@@ -44,7 +44,7 @@ clientSockets = {}
   return if !sock?
   sock.send "close"
   console.log "told client "+client._id+" to shutdown"
-@uninstallClient = (userid)->
+@uninstallClient = (userId)->
   user = Meteor.users.findOne({_id: userId})
   client = clients.findOne({steamIDs: user.services.steam.id})
   return if !user? or !client?
