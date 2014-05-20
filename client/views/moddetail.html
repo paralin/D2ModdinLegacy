@@ -1,7 +1,12 @@
 <template name="modDetail">
 {{#with mod}}
+{{#if spreadvideo}}
 <video id="modDetail" src={{spreadvideo}} style="background:url('{{spreadimage}}') no-repeat" autoplay loop>
 </video>
+{{else}}
+<div id="modDetail" style="background:url('{{spreadimage}}') no-repeat">
+</div>
+{{/if}}
 <div class="container titleContainer">
   <div class="row-fluid">
     <div class="span12">
