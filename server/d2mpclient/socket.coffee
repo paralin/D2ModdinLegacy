@@ -44,6 +44,14 @@ clientSockets = {}
   return if !sock?
   sock.send "close"
   console.log "told client "+client._id+" to shutdown"
+@uninstallClient = (userid)->
+  user = Meteor.users.findOne({_id: userId})
+  client = clients.findOne({steamIDs: user.services.steam.id})
+  return if !user? or !client?
+  sock = clientSockets[client._id]
+  return if !sock?
+  sock.send "uninstall"
+  console.log "told client "+client._id+" to uninstall"
 
 Meteor.startup ->
   clients.remove({})
@@ -55,6 +63,14 @@ Meteor.publish "clientProgram", ->
   steamID = user.services.steam.id
   clients.find({steamIDs: steamID})
   
+checkBannedClient = (ws, clientObj)->
+  for sid in clientObj.steamIDs
+    user = Meteor.users.findOne {'services.steam.id': sid}
+    continue if !user?
+    if AuthManager.userIsInRole user._id, "banned"
+      log.info "[BANNEDCLIENT] #{user.profile.name} is banned, uninstall client"
+      uninstallClient user._id
+      return
 
 @clientServer = new ws({port: 3005})
 clientServer.on 'connection', (ws)->
@@ -85,11 +101,12 @@ clientServer.on 'connection', (ws)->
             if steamID.length != 17
               #ws.send 'invalidid'
               return
-            console.log "client steamID: "+steamID
+            #console.log "client steamID: "+steamID
             if clientObj.steamIDs.indexOf(steamID) is -1
               clientObj.steamIDs.push(steamID)
           clientObj.installedMods = splitMsg[3].split ","
           clients.update {_id: ourID}, clientObj
+          checkBannedClient ws, clientObj
         when 'installedMod'
           modname = splitMsg[1]
           mod = mods.findOne({name: modname})
