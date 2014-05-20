@@ -368,6 +368,8 @@ Meteor.methods
     mod = mods.findOne({name: mod})
     if !mod?
       throw new Meteor.Error 404, "Can't find the mod you want in the db."
+    if !mod.playable
+      throw new Meteor.Error 403, "This mod is not playable yet."
     if mod.bundle?
       #Find their client
       user = Meteor.users.findOne({_id: @userId})

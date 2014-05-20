@@ -56,3 +56,4 @@ Meteor.publish "modThumbList", ->
       author: 1
       thumbnail: 1
       subtitle: 1
+      playable: true

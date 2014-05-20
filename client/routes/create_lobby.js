@@ -11,7 +11,7 @@ Router.map(function () {
       shouldRoute: false
     },
     data: function(){
-      return {mods: mods.find()}
+      return {mods: mods.find({playable: true})}
     }
   });
 });
