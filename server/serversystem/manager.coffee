@@ -101,7 +101,6 @@ getAddonInstalls = (versions)->
   for ver in versions
     p = ver.split '='
     currAddons[p[0]] = p[1]
-  console.log currAddons
   #check against server versions
   latestAddons =ServerAddons.find().fetch()
   for addon in latestAddons
@@ -323,11 +322,11 @@ hostServer.on 'connection', (ws)->
       switch splitMsg[0]
         when "init"
           if splitMsg[1] isnt serverPassword
-            console.log " -> auth fail"
+            log.info "[SERVER] #{serverObj.ip} failed auth"
             ws.send 'authFail'
             return
           if splitMsg[4] isnt serverVersion
-            console.log " -> out of date ("+splitMsg[4]+") updating to "+serverVersion
+            log.info "[SERVER] #{serverObj.ip} Old version (#{splitMsg[4]}) updating (#{serverVersion})"
             ws.send 'outOfDate|'+getBundleDownloadURL("s"+serverVersion+".zip")
             return
           serverObj.maxLobbies = parseInt(splitMsg[2])
@@ -338,6 +337,7 @@ hostServer.on 'connection', (ws)->
           serverObj.portRangeEnd = parseInt prange[1]
           if installStr is "|"
             console.log "server init "+serverObj.ip
+            log.info "[SERVER] #{serverObj.ip} Initialized"
             if !serverObj._id?
               ourID = servers.insert serverObj
               serverObj._id = ourID
