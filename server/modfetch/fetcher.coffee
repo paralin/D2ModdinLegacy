@@ -54,6 +54,7 @@ defaultMod =
   playable: false
   requirements: {}
   spreadvideo: null
+  exclude: []
 _.matches = (attrs) ->
   (obj) ->
     return _.isEmpty(attrs)  unless obj?
@@ -98,7 +99,10 @@ isValidMod = _.matches defaultMod
     fs.unlinkSync stagem+'info.json'
     addonInfo = generateAddonInfo fetch.info, fetch.steamid
     fs.writeFileSync stagem+"addoninfo.txt", addonInfo
-    console.log addonInfo
+    exclude = fetch.info.exclude
+    if exclude?
+      for dir in exclude
+        rmdir stagem+dir
     #now bundle
     log.info "Creating server bundle #{servname}..."
     clientPath = stage+clientname
