@@ -28,9 +28,9 @@ clientSockets = {}
   return if !sock?
   log.info "#{client._id} -> dconnect #{addr}"
   sock.send "dconnect:#{addr}"
-@deleteMod = (sock, mod)->
+@deleteMod = (sock, modname)->
   return if !sock?
-  command = "deletemod:"+mod.name
+  command = "deletemod:"+modname
   sock.send command
 @installMod = (client, mod)->
   sock = clientSockets[client._id]
@@ -87,7 +87,7 @@ clientServer.on 'connection', (ws)->
     ourID = clients.insert clientObj
     clientObj._id = ourID
     clientSockets[ourID] = ws
-    log.debug "[Client] Connected, #{clientObj.ip}"
+    log.info "[Client] Connected, #{clientObj.ip}"
   ).run()
   ws.on 'message', (msg)->
     new Fiber(->
