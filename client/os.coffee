@@ -17,4 +17,16 @@ Template.osmessage.rendered = ->
       sticker: false
       hide: false
       closer: false
+      stack:
+        addpos2: 0
+        animation: true
+        dir1: "down"
+        dir2: "left"
+        firstpos1: 25
+        firstpos2: 25
+        nextpos1: 25
+        nextpos2: 25
+        push: "bottom"
+        spacing1: 25
+        spacing2: 25
     $.pnotify notification

@@ -8,5 +8,5 @@ Template.userList.events
     Meteor.call "setBannedUser", @_id, showNiceNot
 Template.userList.userClass = ->
   if AuthManager.userIsInRole @_id, "banned"
-    return "banned"
+    return "danger"
   ""

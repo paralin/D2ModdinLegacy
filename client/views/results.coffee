@@ -67,8 +67,9 @@ Template.resultList.pages = ->
   totalMatches = (Metrics.findOne({_id: "matches"}) || {count: 0}).count
   totalPages = Math.ceil(totalMatches/10)+1
   page = Session.get "resultPage"
-  while totalPages-=1
+  res = while totalPages-=1
     {
       selected: parseInt(page) is totalPages
       num: totalPages
     }
+  res.reverse()
