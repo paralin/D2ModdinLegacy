@@ -1,4 +1,4 @@
-@matchFoundSound = new buzz.sound('https://s3-us-west-2.amazonaws.com/d2solo/match_ready.ogg')
+@matchFoundSound = new buzz.sound('https://s3-us-west-2.amazonaws.com/d2mpclient/match_ready.ogg')
 
 soundPlayed = false
 Meteor.startup ->
