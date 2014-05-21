@@ -31,7 +31,6 @@ clientSockets = {}
 @deleteMod = (sock, mod)->
   return if !sock?
   command = "deletemod:"+mod.name
-  log.info "#{client._id} -> delete #{mod.name}"
   sock.send command
 @installMod = (client, mod)->
   sock = clientSockets[client._id]
