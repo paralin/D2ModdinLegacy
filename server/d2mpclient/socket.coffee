@@ -1,8 +1,5 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
-clientVersion = null
-Meteor.startup =>
-  @clientVersion = clientParams.findOne({stype: "version"}).version
 
 clientSockets = {}
 @setMod = (client, mod)->
@@ -96,9 +93,10 @@ clientServer.on 'connection', (ws)->
       switch splitMsg[0]
         when 'init'
           splitMsg[2] = splitMsg[2].replace(/\s+/g, '')
-          if splitMsg[2] != clientVersion
+          version = clientParams.findOne({stype: "version"}).version
+          if splitMsg[2] != version
             clientObj.status = 1
-            console.log "wrong version #{splitMsg[2]} != #{clientVersion}"
+            console.log "wrong version #{splitMsg[2]} != #{version}"
           for steamID in splitMsg[1].split(',')
             steamID = steamID.replace(/\D/g,'')
             if steamID.length != 17
