@@ -234,7 +234,7 @@ startGame = (lobby)->
 @createLobby = (creatorId, mod, name)->
   return if !creatorId?
   user = Meteor.users.findOne({_id: creatorId})
-  log.info "[Lobby] #{mod} - #{user.profile.name}"
+  log.info "[Lobby] #{mod.name} - #{user.profile.name}"
   setMod user, mod.name+"="+mod.version
   return lobbies.insert
     name: name
