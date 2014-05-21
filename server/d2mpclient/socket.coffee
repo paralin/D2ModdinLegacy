@@ -28,6 +28,11 @@ clientSockets = {}
   return if !sock?
   log.info "#{client._id} -> dconnect #{addr}"
   sock.send "dconnect:#{addr}"
+@deleteMod = (sock, mod)->
+  return if !sock?
+  command = "deletemod:"+mod.name
+  log.info "#{client._id} -> delete #{mod.name}"
+  sock.send command
 @installMod = (client, mod)->
   sock = clientSockets[client._id]
   return false if !sock?
@@ -106,6 +111,11 @@ clientServer.on 'connection', (ws)->
             if clientObj.steamIDs.indexOf(steamID) is -1
               clientObj.steamIDs.push(steamID)
           clientObj.installedMods = splitMsg[3].split ","
+          for mod in clientObj.installedMods
+            modname = (mod.split('='))[0]
+            themod = mods.findOne {name: modname}
+            if !themod?
+              deleteMod ws, modname
           clients.update {_id: ourID}, clientObj
           checkBannedClient ws, clientObj
         when 'installedMod'
