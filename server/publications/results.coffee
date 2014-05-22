@@ -18,4 +18,9 @@ Meteor.publish "resultList",(skip, opts)->
   delete qopts["skip"] if skip < 1
   MatchResults.find {}, qopts
 Meteor.publish "matchResult", (id)->
-  MatchResults.find {_id: id}
+  MatchResults.find {_id: id},
+    fields:
+      spectate_addr: 0
+      match_id: 0
+      num_players: 0
+      uids: 0
