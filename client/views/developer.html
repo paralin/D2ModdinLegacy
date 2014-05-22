@@ -73,7 +73,17 @@
         {{/each}}
         {{/unless}}
       </div>
+    </div> 
+    {{#if parsedInfo}}
+    <div class="col-sm-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Utilities
+      </div>
+      <div style="margin-top: 15px">
+        <button class="btn btn-success createLobBtn">Create Lobby</button>
+      </div>
     </div>
+    {{/if}}
   </div>
 </div>
 </template>
