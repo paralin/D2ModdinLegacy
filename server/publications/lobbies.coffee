@@ -5,12 +5,14 @@ Meteor.publish "lobbyList", ->
     public: true
     isMatchmaking: false
     status: {$lt: 1}
+    hasPassword: false
   ,
     fields:
       name: 1
-      hasPassword: 1
       mod: 1
       creator: 1
+      radiant:1
+      dire:1
 
 Meteor.publish "lobbyDetails", ->
   if !@userId
