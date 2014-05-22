@@ -46,6 +46,14 @@ Template.admin.disabledClass = ->
   "disabled" if enabled? && !enabled
   false
 Template.adminServer.events
+  "click .setLobC": ->
+    id = @_id
+    bootbox.prompt
+      title: "How many lobbies can this server handle?"
+      value: @maxLobbies
+      callback: (res)->
+        return if !res?
+        Meteor.call "setMaxLobbies", id, parseInt(res), showNiceNot
   "click .dbBtn": ->
     id = @_id
     Meteor.call "toggleServerEnabled", id
