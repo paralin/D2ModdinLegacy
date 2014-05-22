@@ -20,7 +20,12 @@ Meteor.methods
     else
       throw new Meteor.Error 503, mod.name
   "installMod": (modName)->
-    mod = mods.findOne({name: modName, public: true, playable: true})
+    filter =
+      name: modName
+      playable: true
+    if !AuthManager.userIsInRole @userId, ["admin", "developer", "moderator", "spectator"]
+      filter.public = true
+    mod = mods.findOne filter
     if !mod?
       throw new Meteor.Error 404, "Mod "+modName+" not found or not public/playable."
     if !@userId?
