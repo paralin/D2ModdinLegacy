@@ -8,7 +8,7 @@ Template.fetchDetail.disableUpdates = ->
   fetch = modfetch.findOne
     _id: Router.current().options.params.id
   return if !fetch?
-  fetch.status isnt 0
+  fetch.status isnt 1
 Template.developer.events
   "click .servt tr": ->
     Router.go Router.routes["fetchDetail"].path({id: @_id})
@@ -25,7 +25,7 @@ Template.fetchDetail.parsedInfo = ->
   kv
 Template.fetchDetail.events
   "click .createLobBtn": ->
-    Meteor.call "devCreateLobby", @_id, (err, res)->
+    Meteor.call "devCreateLobby", @fetch, (err, res)->
       if err?
         if err.error is 401
           Router.go "/install/#{err.reason}"
@@ -37,7 +37,7 @@ Template.fetchDetail.events
   "click .delBtn": ->
     bootbox.confirm "Are you sure you want to delete this mod?", (res)=>
       return if !res
-      Meteor.call "delMod", @_id, (err, res)->
+      Meteor.call "delMod", @fetch, (err, res)->
         if err?
           $.pnotify
             title: "Can't Delete"
@@ -49,9 +49,9 @@ Template.fetchDetail.events
             text: "Mod has been deleted."
             type: "success"
   "click .pubBtn": ->
-    Meteor.call "flipPublic", @_id
+    Meteor.call "flipPublic", @fetch
   "click .dbBtn": ->
-    Meteor.call "flipPlayable", @_id
+    Meteor.call "flipPlayable", @fetch
   "click .udBtn": ->
     Router.go Router.routes["newFetch"].path({id: @_id})
   "click .ftBtn": ->
