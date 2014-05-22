@@ -2,3 +2,6 @@
 @EVENTSK = _.invert EVENTS
 @GAMESTATE = {Init:0,WaitLoad:1,HeroSelect:2,StratTime:3,PreGame:4,Playing:5,PostGame:6,Disconnect:7}
 @GAMESTATEK = _.invert GAMESTATE
+@REGIONS = {UNKNOWN:0, NA:1, EU:2, AUS:3, CN: 4}
+@REGIONSK = _.invert REGIONS
+@REGIONSH = {0: "Unknown", 1: "North America", 2: "Europe", 3: "Australia", 4: "China"}
