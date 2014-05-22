@@ -4,8 +4,6 @@ disconnectTimeouts = {}
 disconnectLTimeouts = {}
 #Monitor user events
 Meteor.startup ->
-  MatchResults.remove {status: {$ne: "completed"}}
-  lobbies.remove {status: {$lt: 4}}
   Meteor.users.find({"status.online": false}).observeChanges
     removed: (id)->
       timeout = disconnectLTimeouts[id]

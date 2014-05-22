@@ -9,4 +9,6 @@ Template.userList.events
 Template.userList.userClass = ->
   if AuthManager.userIsInRole @_id, "banned"
     return "danger"
+  if @status? and @status.online
+    return "success"
   ""

@@ -2,7 +2,7 @@
 <div id="wrapper">
   <section class="container text-center" style="margin-top: 30px;">
     <h1 class="text-center">
-      <strong>{{#unless isCompleted}}LIVE {{/unless}}Match</strong> History<br/>
+      <strong>Match</strong> History<br/>
     </h1>
     <ul class="pagination" style="margin:0;margin-top:10px">
       <li class={{leftClass}}><a href={{leftPath}} class="lpBtn">&laquo;</a></li>
@@ -55,7 +55,7 @@
 <div id="wrapper">
   <section class="container text-center" style="margin-top: 30px;">
     <h1 class="text-center">
-      <strong>Match</strong> Details<br/>
+      <strong>{{#unless isCompleted}}LIVE {{/unless}}Match</strong> Details<br/>
       {{#with getMod}}
       <div style="margin-left:auto;margin-right:auto;width:251px">
         {{>modThumbnail}}

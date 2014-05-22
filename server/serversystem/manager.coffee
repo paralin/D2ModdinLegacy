@@ -207,6 +207,11 @@ launchServer = (serv, lobby)->
     started: new Date().getTime()
   console.log "server launched, id: "+id+" waiting for configure"
 
+handleResultFail = (lobb)->
+  lob = lobbies.findOne {_id: lobb}
+  lobbies.update {_id: lobb}, {$set: {status: 4}}
+  MatchResults.update {_id: lobb}, {$set: {status: "completed"}, $unset: {spectate_addr: ""}}
+
 handleFailConfigure = (serv, lobby, instance)->
   instance = pendingInstances.findOne {id: instance.id}
   return if !instance?
@@ -365,6 +370,8 @@ hostServer.on 'connection', (ws)->
             handleFailConfigure serverObj, lob, {id: sess.id}
           else if lob.state < GAMESTATE.PostGame
             handleLoadFail lob._id
+          else if lob.state >= GAMESTATE.PostGame
+            handleResultFail lob._id
           servers.update {_id: ourID}, {$set: {activeLobbies: serverObj.activeLobbies}}
           queueProc()
     ).run()
