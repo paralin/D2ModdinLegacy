@@ -292,7 +292,7 @@ Meteor.methods
       throw new Meteor.Error 404, "Can't find the mod."
     user = Meteor.users.findOne {_id: @userId}
     client = clients.findOne({steamIDs: user.services.steam.id})
-    if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
+    if !client? || !_.contains(client.installedMods, mod.name+"="+mod.version)
       throw new Meteor.Error 401, mod.name
     createLobby @userId, mod, "Test Lobby"
   "stopFinding": ->
