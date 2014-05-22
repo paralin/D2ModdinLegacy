@@ -108,7 +108,7 @@ updateRPlayer = (result, id, props)->
       player.name = lplay.name
   data.status = "completed"
   if result?
-    MatchResults.update {_id: id}, {$set: data}
+    MatchResults.update {_id: id}, {$set: data, $unset: {spectate_addr: ""}}
   if lobby?
     lobbies.update {_id: id}, {$set: {status: 4}}
 @handleLoadFail = (id)->
