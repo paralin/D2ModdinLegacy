@@ -8,7 +8,7 @@ Template.fetchDetail.disableUpdates = ->
   fetch = modfetch.findOne
     _id: Router.current().options.params.id
   return if !fetch?
-  fetch.status isnt 1
+  fetch.status isnt 0
 Template.developer.events
   "click .servt tr": ->
     Router.go Router.routes["fetchDetail"].path({id: @_id})
