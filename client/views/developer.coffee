@@ -3,10 +3,6 @@ Template.developer.fetches = ->
   if cursor.count() is 0
     return null
   cursor
-Template.fetchDetail.playable = ->
-  mod = mods.findOne fetch: @_id
-  return if !mod?
-  mod.playable
 Template.fetchDetail.pflip
 Template.fetchDetail.disableUpdates = ->
   fetch = modfetch.findOne
@@ -16,6 +12,8 @@ Template.fetchDetail.disableUpdates = ->
 Template.developer.events
   "click .servt tr": ->
     Router.go Router.routes["fetchDetail"].path({id: @_id})
+Template.fetchDetail.parsed = ->
+  mods.findOne fetch: @_id
 Template.fetchDetail.parsedInfo = ->
   mod = mods.findOne fetch: @_id
   return if !mod?

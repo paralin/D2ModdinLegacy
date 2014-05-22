@@ -42,7 +42,7 @@
     </h1>
   </section>
   <div class="adminRow">
-    <div class="col-sm-6 adminCol niceShadow">
+    <div class="col-sm-6 adminCol niceShadow" style="height:130px">
       <div class="tileTitle">
         Fetch Controls
       </div>
@@ -53,12 +53,13 @@
       </div>
     </div>
     {{#if parsedInfo}}
-    <div class="col-sm-6 adminCol niceShadow">
+    <div class="col-sm-6 adminCol niceShadow" style="height:130px">
       <div class="tileTitle">
         Utilities
       </div>
       <div style="margin-top: 15px">
         <button class="btn btn-success createLobBtn">Create Lobby</button>
+        {{#with parsed}}
         <button class="btn btn-info dbBtn">
           Set 
           {{#if playable}}
@@ -75,6 +76,7 @@
           Public
           {{/if}}
         </button>
+        {{/with}}
       </div>
     </div>
     {{/if}}
