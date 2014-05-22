@@ -43,7 +43,7 @@ Meteor.startup ->
     return if !lobby?
     route = Router.current()
     return if !route?
-    if route.route.name isnt "lobby" and lobby.state < GAMESTATE.PostGame
+    if (route.route.name isnt "lobby" and lobby.state < GAMESTATE.PostGame)# and !AuthManager.userIsInRole(Meteor.userId(), "admin")
       Router.go Router.routes["lobby"].path({id: lobby._id})
   Deps.autorun -> #Server status change
     lobby = lobbies.findOne({status: {$ne: null}})
