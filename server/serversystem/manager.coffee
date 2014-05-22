@@ -71,8 +71,26 @@ sendReinit = _.debounce(->
     return
   console.log "told host "+id+" to restart"
   socket.send "restart"
+@setMaxLobbies = (id, max)->
+  socket = sockets[id]
+  return if !socket?
+  log.info "[Server] #{id} set max lobbies to #{max}"
+  socket.send "setMaxLobbies|#{max}"
 
 Meteor.methods
+  "setMaxLobbies": (id, max)->
+    check max, Number
+    check id, String
+    if !checkAdmin @userId
+      throw new Meteor.Error 403, "You're not an admin."
+    serv = servers.findOne {_id: id}
+    if !serv?
+      throw new Meteor.Error 404, "Can't find that server."
+    if max < 0
+      max = 0
+    if max > 50
+      max = 50
+    setMaxLobbies id, max
   "toggleServerEnabled": (id)->
     if !checkAdmin @userId
       throw new Meteor.Error 403, "You're not an admin."
