@@ -3,4 +3,7 @@ Meteor.smartPublish "devData", ->
     return @stop()
   @addDependency "modfetch", "_id", (fetch)->
     mods.find {fetch: fetch._id}
-  modfetch.find({user: @userId})
+  if AuthManager.userIsInRole @userId, "admin"
+    modfetch.find({})
+  else
+    modfetch.find({user: @userId})
