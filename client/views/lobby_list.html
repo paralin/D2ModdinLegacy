@@ -20,20 +20,22 @@
         <table class="table">
           <thead>
             <tr>
-              <th style="width: 50px">Password</th>
-              <th>Name</th>
-              <th>Mod</th>
-              <th>Host</th>
-              <th>Join</th>
+              <th style="width:50px">Mod</th>
+              <th style="width:200px">Name</th>
+              <th style="width:200px">Host</th>
+              <th>Teams</th>
+              <th style="width:180px"></th>
             </tr>
           </thead>
           <tbody>
           {{#each lobbies}}
           <tr>
-            <td><input type="checkbox" checked={{hasPassword}} disabled/></td>
+            {{#with thisMod}}
+              <td style="padding:3px"><img src={{thumbnail}} style="width:50px;height:50px;" /></td>
+            {{/with}}
             <td>{{name}}</td>
-            <td>{{mod}}</td>
             <td>{{creator}}</td>
+            <td>{{>inlineLTeams}}</td>
             <td><button class="btn btn-success joinBtn">Join</button></td>
           </tr>
           {{/each}}
