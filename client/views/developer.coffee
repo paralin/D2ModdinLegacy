@@ -26,6 +26,16 @@ Template.fetchDetail.parsedInfo = ->
       value: value
   kv
 Template.fetchDetail.events
+  "click .createLobBtn": ->
+    Meteor.call "devCreateLobby", @_id, (err, res)->
+      if err?
+        if err.error is 401
+          Router.go "/install/#{err.reason}"
+        else
+          $.pnotify
+            title: "Error Creating Lobby"
+            text: err.reason
+            type: "error"
   "click .delBtn": ->
     bootbox.confirm "Are you sure you want to delete this mod?", (res)=>
       return if !res
@@ -40,6 +50,8 @@ Template.fetchDetail.events
             title: "Mod Deleted"
             text: "Mod has been deleted."
             type: "success"
+  "click .pubBtn": ->
+    Meteor.call "flipPublic", @_id
   "click .dbBtn": ->
     Meteor.call "flipPlayable", @_id
   "click .udBtn": ->

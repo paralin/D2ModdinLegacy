@@ -56,7 +56,7 @@ updateRPlayer = (result, id, props)->
 
 @handleEvent = (id, eve)->
   lobby = lobbies.findOne {_id: id}
-  result = MatchResults.findOne {_id: id}
+  result = MatchResults.findOne {_id: id} 
   return if !lobby? || !result?
   if eve.player?
     eve.player = toSteamID64 eve.player
@@ -146,13 +146,11 @@ setPlayerTeam = (lobby, uid, tteam)->
         dire: lobby.dire
 
 @checkIfDeleteLobby = (lobbyId)->
-  lobby = lobbies.find({_id: lobbyId})
+  lobby = lobbies.findOne({_id: lobbyId})
   return if !lobby?
   return if lobby.status is 2 or lobby.status is 3
   if !(_.contains(lobby.radiant, lobby.creatorid)) && !(_.contains(lobby.dire, lobby.creatorid))
-    if lobby.status < 4
-      #Game never started
-      lobbies.remove({_id: lobbyId})
+    lobbies.remove({_id: lobbyId}) if lobby.status < 4
 
 internalRemoveFromLobby = (userId, lobby)->
   if lobby.creatorid is userId and lobby.status < 2
@@ -283,6 +281,20 @@ stopFinding = (lobby)->
   lobbies.update {_id: lobby._id}, {$set: {status: 0}}
 
 Meteor.methods
+  "devCreateLobby": (fetchid) ->
+    if !@userId? || !AuthManager.userIsInRole @userId, "developer"
+      throw new Meteor.Error 403, "Not authorized."
+    fetch = modfetch.findOne {_id: fetchid}
+    if !fetch?
+      throw new Meteor.Error 404, "Can't find that fetch."
+    mod = mods.findOne {fetch: fetchid}
+    if !mod?
+      throw new Meteor.Error 404, "Can't find the mod."
+    user = Meteor.users.findOne {_id: @userId}
+    client = clients.findOne({steamIDs: user.services.steam.id})
+    if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
+      throw new Meteor.Error 401, mod.name
+    createLobby @userId, mod, "Test Lobby"
   "stopFinding": ->
     if !@userId?
       throw new Meteor.Error 404, "Not finding a match."
@@ -311,7 +323,6 @@ Meteor.methods
       throw new Meteor.Error 403, "You don't own any lobbies."
     if name.length > 40
       name = name.substring 0, 40
-    #name = name.replace(/\W+/g, " ")
     lobbies.update {_id: lobby._id}, {$set: {name: name}}
   "joinLobby": (id)->
     if !@userId?

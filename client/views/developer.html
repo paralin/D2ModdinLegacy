@@ -49,6 +49,16 @@
       <div style="margin-top:15px">
         <button class="btn btn-info ftBtn" disabled={{disableUpdates}}>Fetch Updates</button>
         <button class="btn btn-info udBtn">Change Settings</button>
+        <button class="btn btn-danger delBtn">Delete Mod (!)</button>
+      </div>
+    </div>
+    {{#if parsedInfo}}
+    <div class="col-sm-6 adminCol niceShadow">
+      <div class="tileTitle">
+        Utilities
+      </div>
+      <div style="margin-top: 15px">
+        <button class="btn btn-success createLobBtn">Create Lobby</button>
         <button class="btn btn-info dbBtn">
           Set 
           {{#if playable}}
@@ -57,9 +67,17 @@
           Playable
           {{/if}}
         </button>
-        <button class="btn btn-danger delBtn">Delete Mod (!)</button>
+        <button class="btn btn-info pubBtn">
+          Set 
+          {{#if public}}
+          Private
+          {{else}}
+          Public
+          {{/if}}
+        </button>
       </div>
     </div>
+    {{/if}}
     <div class="col-sm-6 adminCol niceShadow">
       <div class="tileTitle">
         Parsed Information
@@ -74,16 +92,6 @@
         {{/unless}}
       </div>
     </div> 
-    {{#if parsedInfo}}
-    <div class="col-sm-6 adminCol niceShadow">
-      <div class="tileTitle">
-        Utilities
-      </div>
-      <div style="margin-top: 15px">
-        <button class="btn btn-success createLobBtn">Create Lobby</button>
-      </div>
-    </div>
-    {{/if}}
   </div>
 </div>
 </template>

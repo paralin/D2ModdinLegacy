@@ -56,6 +56,16 @@ Meteor.methods
     fetch._id = id
     clearExistingRepo id
     modfetch.update {_id: id}, fetch
+  'flipPublic': (id)->
+    user = Meteor.users.findOne {_id: @userId}
+    if !AuthManager.userIsInRole @userId, "developer"
+      throw new Meteor.Error 403, "You are not a developer."
+    fetch = modfetch.findOne({_id: id})
+    if !fetch?
+      throw new Meteor.Error 404, "Can't find that mod."
+    mod = mods.findOne(fetch: id)
+    if mod?
+      mods.update({_id: mod._id}, {$set: {public: !mod.public}})
   'flipPlayable': (id)->
     user = Meteor.users.findOne {_id: @userId}
     if !AuthManager.userIsInRole @userId, "developer"
