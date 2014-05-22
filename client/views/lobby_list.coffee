@@ -1,3 +1,5 @@
+Template.lobbyList.thisMod = ->
+  mods.findOne {name: @mod}
 Template.lobbyList.events
   "click .joinBtn": ->
     Meteor.call "joinLobby", @_id, (err, res)->

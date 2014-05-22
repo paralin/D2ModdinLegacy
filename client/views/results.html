@@ -40,6 +40,18 @@
   </div>
 </div>
 </template>
+<template name="inlineLTeams">
+  <p>
+  {{#each radiant}}
+    <span class="avi"><img src={{avatar.small}} /> {{name}}</span>
+  {{/each}}
+  </p>
+  <p>
+  {{#each dire}}
+    <span class="avi"><img src={{avatar.small}} /> {{name}}</span>
+  {{/each}}
+  </p>
+</template>
 <template name="inlineTeams">
 <div class="ilteams">
   {{#each this}}
