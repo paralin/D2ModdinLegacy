@@ -18,7 +18,8 @@
       "Bootstrap-Validator": {},
       "bootboxjs": {},
       "iron-router-progress": {},
-      "fast-render": {}
+      "fast-render": {},
+      "smart-publish": {}
     },
     "packages": {
       "streams": {
@@ -105,6 +106,11 @@
         "git": "https://github.com/arunoda/meteor-fast-render.git",
         "tag": "v0.2.5",
         "commit": "93e2fb334e55fbe9b5ebb2a2e65964018658f43e"
+      },
+      "smart-publish": {
+        "git": "https://github.com/yeputons/meteor-smart-publish.git",
+        "tag": "v0.1.4",
+        "commit": "9b0279927fa4f8042f8f56ba475ce9737ceaa8cf"
       },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",
