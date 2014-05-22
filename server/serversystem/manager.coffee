@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.1.7"
+serverVersion = "1.2.3"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -320,6 +320,7 @@ hostServer.on 'connection', (ws)->
     enabled: true
     portRangeStart: 3000
     portRangeStop: 3100
+    region: 0
   ourID = null
   serverObj.ip = ws.upgradeReq.connection.remoteAddress
   log.info "[SERVER] New server #{serverObj.ip}"
@@ -353,13 +354,14 @@ hostServer.on 'connection', (ws)->
             ws.send 'outOfDate|'+getBundleDownloadURL("s"+serverVersion+".zip")
             return
           serverObj.maxLobbies = parseInt(splitMsg[2])
+          serverObj.region = parseInt splitMsg[6]
           versions = splitMsg[3].split ','
           installStr = getAddonInstalls(versions)
           prange = splitMsg[5].split '-'
           serverObj.portRangeStart = parseInt prange[0]
           serverObj.portRangeEnd = parseInt prange[1]
           if installStr is "|"
-            log.info "[SERVER] #{serverObj.ip} Initialized"
+            log.info "[SERVER] #{serverObj.ip} Initialized, region #{REGIONSH[serverObj.region]}."
             if !serverObj._id?
               ourID = servers.insert serverObj
               serverObj._id = ourID
