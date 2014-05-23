@@ -45,7 +45,7 @@
       <table class="table table-striped">
         <tbody class="servt">
         {{#each servers}}
-        <tr class={{disabledClass}}><td>{{ip}}</td></tr>
+          <tr class={{disabledClass}}><td>{{ip}} - {{name}}</td></tr>
         {{/each}}
         </tbody>
       </table>
@@ -69,7 +69,7 @@
 <div id="wrapper">
   <section class="container text-center" style="margin-top: 30px">
     <h1 class="text-center">
-      <strong>Server</strong> Controls<br/>
+      <strong>{{name}}</strong> Controls<br/>
       <span class="subtitle" style="margin-top:10px">Controls for the server {{ip}}</span>
       <a class="btn btn-link" href={{pathFor 'admin'}}>Admin Panel</a>
     </h1>
@@ -95,6 +95,7 @@
           <tr><td>Max Lobbies: {{maxLobbies}}</td></tr>
         </tbody>
         <button class="btn btn-primary setLobC">Set Max Lobbies</button>
+        <button class="btn btn-primary setSName">Set Server Name</button>
       </table>
     </div>
     <div class="col-sm-6 adminCol niceShadow" style="min-height: 92px;">
