@@ -96,7 +96,7 @@ Meteor.methods
     serv = servers.findOne {_id: id}
     if !serv?
       throw new Meteor.Error 404, "Can't find that server."
-    reg = REGIONSK[region]?
+    reg = REGIONSK[region]
     if !reg?
       throw new Meteor.Error 404, "That region ID is undefined."
     servers.update {_id: id}, {$set: {region: region}}
