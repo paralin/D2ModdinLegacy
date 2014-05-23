@@ -47,10 +47,10 @@ Template.admin.disabledClass = ->
   false
 Template.adminServer.events
   "click .setRegion": ->
-    id = @_id
     title = "IDs:"
     for id, name of REGIONSH
       title+=" #{id}=#{name}"
+    id = @_id
     bootbox.prompt
       title: title
       value: @region
