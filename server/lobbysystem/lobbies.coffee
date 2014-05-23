@@ -235,6 +235,7 @@ startGame = (lobby)->
   return lobbies.insert
     name: name
     hasPassword: false
+    password: ""
     banned: []
     creator: user.profile.name
     creatorid: creatorId
@@ -268,13 +269,11 @@ startGame = (lobby)->
     name: user.profile.name
     avatar: user.services.steam.avatar
     steam: user.services.steam.id
-  console.log userId+" joined lobby "+lobby.name
   updateObj  = {}
   updateObj[team] = lobby[team]
   lobbies.update {_id: lobby._id}, {$set: updateObj}
   mod = mods.findOne {name: lobby.mod}
   setMod user, lobby.mod+"="+mod.version
-
 stopFinding = (lobby)->
   return if lobby.status != 1 && lobby.status != 2
   cancelFindServer lobby._id
@@ -324,7 +323,36 @@ Meteor.methods
     if name.length > 40
       name = name.substring 0, 40
     lobbies.update {_id: lobby._id}, {$set: {name: name}}
+  "joinPassLobby": (pass)->
+    check pass, String
+    if !@userId?
+      throw new Meteor.Error 403, "You must be logged in to join a lobby."
+    if AuthManager.userIsInRole @userId, "banned"
+      throw new Meteor.Error 403 ,"You are banned from joining/creating lobbies."
+    lobby = lobbies.findOne
+      status: 0
+      hasPassword: true
+      password: pass
+    if !lobby?
+      throw new Meteor.Error 404, "Can't find a waiting lobby with that pass."
+    if (lobby.dire.length+lobby.radiant.length) is 10
+      throw new Meteor.Error 404, "Lobby is full."
+    if lobby.isMatchmaking
+      throw new Meteor.Error 403, "Can't join a matchmaking lobby directly."
+    mod = mods.findOne({name: lobby.mod})
+    if !mod?
+      throw new Meteor.Error 404, "Can't seem to find the mod in the database."
+    if mod.bundle?
+      user = Meteor.users.findOne({_id: @userId})
+      client = clients.findOne({steamIDs: user.services.steam.id})
+      if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
+        throw new Meteor.Error 401, lobby.mod
+    if _.contains lobby.banned, @userId
+      throw new Meteor.Error 403, "You have been kicked from this lobby."
+    joinLobby lobby, @userId
+    console.log @userId+" joined passworded lobby "+lobby.name
   "joinLobby": (id)->
+    check id, String
     if !@userId?
       throw new Meteor.Error 403, "You must be logged in to join a lobby."
     if AuthManager.userIsInRole @userId, "banned"

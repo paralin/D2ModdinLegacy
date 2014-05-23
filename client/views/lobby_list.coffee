@@ -1,13 +1,26 @@
 Template.lobbyList.thisMod = ->
   mods.findOne {name: @mod}
 Template.lobbyList.events
+  "click .enterLobPass": ->
+    bootbox.prompt
+      title: "What is the lobby password (case sensitive)?"
+      callback: (res)->
+        return if !res?
+        Meteor.call "joinPassLobby", res, (err, res)->
+          if err?
+            if err.error is 401
+              Router.go "/install/"+err.reason
+              return
+            $.pnotify
+              title: "Can't Join Lobby"
+              text: err.reason
+              type: "error"
   "click .joinBtn": ->
     Meteor.call "joinLobby", @_id, (err, res)->
       if err?
         if err.error is 401
           Router.go "/install/"+err.reason
           return
-        console.log err
         $.pnotify
           title: "Can't Join Lobby"
           type: "error"
