@@ -248,6 +248,7 @@ startGame = (lobby)->
     mmid: null
     public: true
     status: 0
+    region: 0
     requiresFullLobby: !(AuthManager.userIsInRole(creatorId, ["admin", "developer", "moderator"]))
     devMode: false
     enableGG: true

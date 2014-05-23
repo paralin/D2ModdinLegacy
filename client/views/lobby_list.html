@@ -23,6 +23,7 @@
             <tr>
               <th style="width:50px">Mod</th>
               <th style="width:200px">Name</th>
+              <th style="width:150px">Region</th>
               <th style="width:200px">Host</th>
               <th>Teams</th>
               <th style="width:180px"></th>
@@ -35,6 +36,7 @@
               <td style="padding:3px"><img src={{thumbnail}} style="width:50px;height:50px;" /></td>
             {{/with}}
             <td>{{name}}</td>
+            <td>{{regionName region}}</td>
             <td>{{creator}}</td>
             <td>{{>inlineLTeams}}</td>
             <td><button class="btn btn-success joinBtn">Join</button></td>

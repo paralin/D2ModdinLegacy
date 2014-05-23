@@ -13,6 +13,7 @@ Meteor.publish "lobbyList", ->
       creator: 1
       radiant:1
       dire:1
+      region: 1
 
 Meteor.publish "lobbyDetails", ->
   if !@userId
@@ -31,6 +32,7 @@ Meteor.publish "lobbyDetails", ->
       status: 1
       requiresFullLobby: 1
       creatorid: 1
+      region: 1
       radiant: 1
       dire: 1
       state: 1
