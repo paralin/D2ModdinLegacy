@@ -313,6 +313,16 @@ Meteor.methods
     if lobby.requiresFullLobby and (lobby.dire.length+lobby.radiant.length) isnt 10
       throw new Meteor.Error 403, "Lobby must be full to start."
     startGame(lobby)
+  "setLobbyPassword": (pass)->
+    check pass, String
+    if !@userId?
+      throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
+    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    if !lobby?
+      throw new Meteor.Error 403, "You don't own any lobbies."
+    if pass.length > 40
+      pass = pass.substring 0, 40
+    lobbies.update({_id: lobby._id}, {$set: {hasPassword: pass.length isnt 0, password: pass}})
   "setLobbyName": (name)->
     check(name, String)
     if !@userId?
