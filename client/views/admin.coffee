@@ -46,6 +46,17 @@ Template.admin.disabledClass = ->
   "disabled" if enabled? && !enabled
   false
 Template.adminServer.events
+  "click .setRegion": ->
+    id = @_id
+    title = "IDs:"
+    for id, name of REGIONSH
+      title+=" #{id}=#{name}"
+    bootbox.prompt
+      title: title
+      value: @region
+      callback: (res)->
+        return if !res?
+        Meteor.call "setServerRegion", id, parseInt(res), showNiceNot
   "click .setSName": ->
     id = @_id
     bootbox.prompt
