@@ -135,6 +135,12 @@ Template.lobby.events
           text: err.reason
           type: "error"
           delay: 5000
+  'keypress .passwordInput': (evt, template)->
+    if evt.which is 13
+      field = template.find('.passwordInput')
+      text = field.value
+      Meteor.call "setLobbyPassword", text
+      field.blur()
   'keypress .titleInput': (evt, template)->
     if evt.which is 13
       field = template.find(".titleInput")
