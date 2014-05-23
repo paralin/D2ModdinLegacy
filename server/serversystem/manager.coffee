@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.2.4"
+serverVersion = "1.2.5"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -81,8 +81,26 @@ sendReinit = _.debounce(->
   return if !socket?
   log.info "[Server] #{id} set max lobbies to #{max}"
   socket.send "setMaxLobbies|#{max}"
+@setServerRegion = (id, region)->
+  socket = sockets[id]
+  return if !socket?
+  log.info "[Server] #{id} set region to #{region}"
+  socket.send "setServerRegion|#{region}"
 
 Meteor.methods
+  "setServerRegion": (id, region)->
+    check id, String
+    check region, Number
+    if !checkAdmin @userId
+      throw new Meteor.Error 403, "You are not an admin."
+    serv = servers.findOne {_id: id}
+    if !serv?
+      throw new Meteor.Error 404, "Can't find that server."
+    reg = REGIONSK[region]?
+    if !reg?
+      throw new Meteor.Error 404, "That region ID is undefined."
+    servers.update {_id: id}, {$set: {region: region}}
+    setServerRegion id, region
   "setServerName": (id, name)->
     check name, String
     check id, String
