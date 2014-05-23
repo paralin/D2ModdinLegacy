@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.2.5"
+serverVersion = "1.2.6"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -121,8 +121,8 @@ Meteor.methods
       throw new Meteor.Error 404, "Can't find that server."
     if max < 0
       max = 0
-    if max > 50
-      max = 50
+    if max > 100
+      max = 100
     servers.update {_id: id}, {$set: {maxLobbies: max}}
     setMaxLobbies id, max
   "toggleServerEnabled": (id)->
