@@ -47,9 +47,7 @@ Meteor.publish "modList", ->
       playable: 1
 
 Meteor.publish "modThumbList", ->
-  mods.find
-    public: true
-  ,
+  mods.find {},
     fields:
       name: 1
       fullname: 1

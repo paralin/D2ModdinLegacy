@@ -324,6 +324,17 @@ Meteor.methods
     if pass.length > 40
       pass = pass.substring 0, 40
     lobbies.update({_id: lobby._id}, {$set: {hasPassword: pass.length isnt 0, password: pass}})
+  "setLobbyRegion": (region)->
+    check region, Number
+    if !@userId?
+      throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
+    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    if !lobby?
+      throw new Meteor.Error 403, "You don't own any lobbies."
+    reg = REGIONSK[region]
+    if !reg?
+      throw new Meteor.Error 404, "Can't find that region."
+    lobbies.update {_id: lobby._id}, {$set: {region: region}}
   "setLobbyName": (name)->
     check(name, String)
     if !@userId?

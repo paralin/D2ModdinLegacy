@@ -125,6 +125,14 @@ Template.findDialog.events
           type: "error"
           delay: 5000
 Template.lobby.events
+  "change .regionInput": (evt)->
+    newVal = parseInt $(evt.target).val()
+    Meteor.call "setLobbyRegion", newVal, (err, res)->
+      if err?
+        $.pnotify
+          title: "Can't Set Region"
+          text: err.reason
+          type: "error"
   "click .kickBtn": ->
     Meteor.call "kickPlayer", @_id
   'click .startBtn': ->

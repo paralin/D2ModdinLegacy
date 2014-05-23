@@ -9,7 +9,7 @@ Router.map(function () {
         modSub = Meteor.subscribe("modDetails", this.params.name);
       }else
       {
-        modSub = Meteor.subscribe("modList");
+        modSub = Meteor.subscribe("modThumbList");
       }
       return [Meteor.subscribe("lobbyList"), modSub];
     },
