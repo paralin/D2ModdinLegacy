@@ -1,7 +1,12 @@
 UI.registerHelper 'regionName', (id)->
   REGIONSH[id]
 UI.registerHelper 'regionNames', ->
-  REGIONSHK
+  res = []
+  for id, name of REGIONSH
+    res.push
+      key: id
+      value: name
+  res
 @cSpectateGame = (resid)->
   Meteor.call "spectateGame", resid, (err, res)->
     if err?

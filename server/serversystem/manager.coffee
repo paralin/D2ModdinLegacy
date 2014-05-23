@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.2.6"
+serverVersion = "1.2.7"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -210,7 +210,8 @@ configureServer = (serverObj, lobby, instance)->
   ).on 'error', (err)->
     if err.errno is 'ETIMEDOUT'
       console.log "RCON failed connection to server "+instance.ip+":"+instance.port
-      sockets[serverObj._id].send "shutdownServer|"+instance.id
+      if sockets[serverObj._id]?
+        sockets[serverObj._id].send "shutdownServer|"+instance.id
       new Fiber(->
         handleFailConfigure serverObj, lobby, instance
       ).run()
@@ -321,20 +322,35 @@ finalizeInstance = (serv, lobby, instance)->
   MatchResults.insert result
   pendingInstances.remove {id: instance.id}
 
-queueProcR = ->
-  #Find elegible servers
-  nextGame = lobbyQueue.findOne({}, {started: 1})
-  return if !nextGame?
-  servs = servers.find({enabled: true}).fetch()
-  maxLobbies = 9999999999
+findServerForLobby = (lobby)->
+  query =
+    enabled: true
+    $where: "this.activeLobbies.length<this.maxLobbies"
+  if lobby.region isnt 0
+    query.region = lobby.region
+  console.log JSON.stringify query
+  servs = servers.find(query).fetch()
+  maxLobbies = Number.MAX_VALUE
   chosen = null
   for serv in servs
-    if serv.activeLobbies.length < maxLobbies && serv.activeLobbies.length<serv.maxLobbies
+    if serv.activeLobbies.length < maxLobbies
       chosen = serv
       maxLobbies = serv.activeLobbies
   return if !chosen?
-  launchServer(chosen, nextGame.lobby)
-  lobbyQueue.remove({_id: nextGame._id})
+  chosen
+
+queueProcR = ->
+  #for each region try to find a server for the lobby
+  sortr = {sort: {started: 1}}
+  for name, id of REGIONS
+    que = lobbyQueue.findOne {region: id}, sortr
+    continue if !que?
+    lobby = lobbies.findOne {_id: que._id}
+    serv = findServerForLobby lobby
+    continue if !serv?
+    log.info "[QUEUE] Found server #{serv.ip} for #{lobby._id} region #{name}."
+    launchServer(serv, lobby._id)
+    lobbyQueue.remove({_id: que._id})
 queueProc = _.debounce ->
   new Fiber(queueProcR).run()
 , 150
