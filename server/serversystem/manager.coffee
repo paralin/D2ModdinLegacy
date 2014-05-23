@@ -89,10 +89,10 @@ sendReinit = _.debounce(->
 
 Meteor.methods
   "setServerRegion": (id, region)->
-    check id, String
     check region, Number
+    check id, String
     if !checkAdmin @userId
-      throw new Meteor.Error 403, "You are not an admin."
+      throw new Meteor.Error 403, "You're not an admin."
     serv = servers.findOne {_id: id}
     if !serv?
       throw new Meteor.Error 404, "Can't find that server."
