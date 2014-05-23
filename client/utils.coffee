@@ -1,5 +1,7 @@
 UI.registerHelper 'regionName', (id)->
   REGIONSH[id]
+UI.registerHelper 'regionNames', ->
+  REGIONSHK
 @cSpectateGame = (resid)->
   Meteor.call "spectateGame", resid, (err, res)->
     if err?

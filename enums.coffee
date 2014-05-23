@@ -5,3 +5,4 @@
 @REGIONS = {UNKNOWN:0, NA:1, EU:2, AUS:3, CN: 4}
 @REGIONSK = _.invert REGIONS
 @REGIONSH = {0: "Unknown", 1: "North America", 2: "Europe", 3: "Australia", 4: "China"}
+@REGIONSHK = _.invert REGIONSH
