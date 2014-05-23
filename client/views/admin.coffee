@@ -46,6 +46,14 @@ Template.admin.disabledClass = ->
   "disabled" if enabled? && !enabled
   false
 Template.adminServer.events
+  "click .setSName": ->
+    id = @_id
+    bootbox.prompt
+      title: "What should this server be named?"
+      value: @name
+      callback: (res)->
+        return if !res?
+        Meteor.call "setServerName", id, res, showNiceNot
   "click .setLobC": ->
     id = @_id
     bootbox.prompt

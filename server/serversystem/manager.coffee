@@ -71,6 +71,11 @@ sendReinit = _.debounce(->
     return
   console.log "told host "+id+" to restart"
   socket.send "restart"
+@setServerName = (id, name)->
+  socket = sockets[id]
+  return if !socket?
+  log.info "[Server] #{id} set name to #{name}"
+  socket.send "setServerName|#{name}"
 @setMaxLobbies = (id, max)->
   socket = sockets[id]
   return if !socket?
@@ -78,6 +83,16 @@ sendReinit = _.debounce(->
   socket.send "setMaxLobbies|#{max}"
 
 Meteor.methods
+  "setServerName": (id, name)->
+    check name, String
+    check id, String
+    if !checkAdmin @userId
+      throw new Meteor.Error 403, "You're not an admin."
+    serv = servers.findOne {_id: id}
+    if !serv?
+      throw new Meteor.Error 404, "Can't find that server."
+    servers.update {_id: id}, {$set: {name: name}}
+    setServerName id, name
   "setMaxLobbies": (id, max)->
     check max, Number
     check id, String
@@ -90,6 +105,7 @@ Meteor.methods
       max = 0
     if max > 50
       max = 50
+    servers.update {_id: id}, {$set: {maxLobbies: max}}
     setMaxLobbies id, max
   "toggleServerEnabled": (id)->
     if !checkAdmin @userId
@@ -321,6 +337,7 @@ hostServer.on 'connection', (ws)->
     portRangeStart: 3000
     portRangeStop: 3100
     region: 0
+    name: "Unknown"
   ourID = null
   serverObj.ip = ws.upgradeReq.connection.remoteAddress
   log.info "[SERVER] New server #{serverObj.ip}"
@@ -355,13 +372,14 @@ hostServer.on 'connection', (ws)->
             return
           serverObj.maxLobbies = parseInt(splitMsg[2])
           serverObj.region = parseInt splitMsg[6]
+          serverObj.name = splitMsg[7]
           versions = splitMsg[3].split ','
           installStr = getAddonInstalls(versions)
           prange = splitMsg[5].split '-'
           serverObj.portRangeStart = parseInt prange[0]
           serverObj.portRangeEnd = parseInt prange[1]
           if installStr is "|"
-            log.info "[SERVER] #{serverObj.ip} Initialized, region #{REGIONSH[serverObj.region]}."
+            log.info "[SERVER] #{serverObj.ip} Initialized, region #{REGIONSH[serverObj.region]} name #{serverObj.name}."
             if !serverObj._id?
               ourID = servers.insert serverObj
               serverObj._id = ourID
