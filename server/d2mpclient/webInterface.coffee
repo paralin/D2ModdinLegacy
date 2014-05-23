@@ -22,9 +22,9 @@ Meteor.methods
   "installMod": (modName)->
     filter =
       name: modName
-      playable: true
     if !AuthManager.userIsInRole @userId, ["admin", "developer", "moderator", "spectator"]
       filter.public = true
+      filter.playable = true
     mod = mods.findOne filter
     if !mod?
       throw new Meteor.Error 404, "Mod "+modName+" not found or not public/playable."
