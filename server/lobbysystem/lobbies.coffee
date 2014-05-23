@@ -129,21 +129,49 @@ updateRPlayer = (result, id, props)->
         log.info " -X- #{player.name}"
     lobbies.update {_id: id}, {$set: {status: 0, state: GAMESTATE.Init, radiant:lobby.radiant, dire:lobby.dire}}
 
-setPlayerTeam = (lobby, uid, tteam)->
+getPlayerTeam = (uid, lobby)->
   return if !lobby?
   index = _.findWhere(lobby.radiant, {_id: uid})
   team = "radiant"
   if !index?
     index = _.findWhere(lobby.dire, {_id: uid})
     team = "dire"
-  return if tteam is team
-  if index?
+  if !index?
+    ix = -1
+    for slot in lobby.spectator
+      ix++
+      index = _.findWhere(slot, {_id: uid})
+      team = "spectator"+ix
+      break if index?
+  [index, team]
+
+removeFromTeam = (uid, lobby)->
+  [index, team] = getPlayerTeam uid, lobby
+  return if !index?
+  if team is "radiant" or team is "dire"
     index = lobby[team].indexOf(index)
-    lobby[tteam].push(lobby[team].splice(index, 1)[0])
+    res = lobby[team].splice(index, 1)[0]
     lobbies.update {_id: lobby._id},
       $set:
         radiant: lobby.radiant
         dire: lobby.dire
+    return res
+  else
+    specIdx = parseInt team.substring(9)
+    res = lobby.spectator[specIdx].splice(index, 1)[0]
+    lobbies.update {_id: lobby._id}, {$set: {spectator: lobby.spectator}}
+    return res
+
+setPlayerTeam = (lobby, uid, tteam)->
+  return if !lobby?
+  res = removeFromTeam uid, lobby
+  lobby = lobbies.findOne {_id: lobby._id}
+  lobby[tteam].push(res)
+  lobbies.update {_id: lobby._id},
+    $set:
+      radiant: lobby.radiant
+      dire: lobby.dire
+      spectator: lobby.spectator
 
 @checkIfDeleteLobby = (lobbyId)->
   lobby = lobbies.findOne({_id: lobbyId})
@@ -241,9 +269,10 @@ startGame = (lobby)->
     creatorid: creatorId
     radiant: [{_id: creatorId, name: user.profile.name, avatar: user.services.steam.avatar, steam: user.services.steam.id}]
     dire: []
+    spectator: [[], [], [], []]
+    spectatorEnabled: AuthManager.userIsInRole creatorId, ["admin", "developer", "moderator"]
     isMatchmaking: false
     mod: mod.name
-    invitedPlayers: []
     serverIP: ""
     mmid: null
     public: true
@@ -440,6 +469,15 @@ Meteor.methods
       if !client? || !_.contains(client.installedMods, mod.name+"="+mod.version)
         throw new Meteor.Error 401, mod.name
     return createLobby(@userId, mod, name)
+  "joinBroadcaster": (slot)->
+    return if !@userId?
+    lobby = findUserLobby(@userId)
+    return if !lobby?
+    if !lobby.spectatorEnabled
+      throw new Meteor.Error 503, "Spectators are not enabled in this lobby."
+    if slot >= lobby.spectator.length
+      throw new Meteor.Error 503, "That spectator slot doesn't exist."
+    setPlayerTeam lobby, @userId, "spectator"+slot
   "switchTeam": (team)->
     return if !@userId?
     lobby = findUserLobby(@userId)
