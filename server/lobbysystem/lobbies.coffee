@@ -148,7 +148,6 @@ removeFromTeam = (uid, lobby)->
 setPlayerTeam = (lobby, uid, tteam)->
   return if !lobby?
   res = removeFromTeam uid, lobby
-  console.log res
   if tteam is "radiant" or tteam is "dire"
     lobby[tteam].push(res)
   else
@@ -250,7 +249,7 @@ startGame = (lobby)->
     creatorid: creatorId
     radiant: [{_id: creatorId, name: user.profile.name, avatar: user.services.steam.avatar, steam: user.services.steam.id}]
     dire: []
-    spectator: [[], [], [], []]
+    spectator: [[], []]
     spectatorEnabled: AuthManager.userIsInRole creatorId, ["admin", "developer", "moderator"]
     isMatchmaking: false
     mod: mod.name
@@ -286,7 +285,6 @@ startGame = (lobby)->
   mod = mods.findOne {name: lobby.mod}
   setMod user, lobby.mod+"="+mod.version
 stopFinding = (lobby)->
-  return if lobby.status != 1 && lobby.status != 2
   cancelFindServer lobby._id
   lobbies.update {_id: lobby._id}, {$set: {status: 0}}
 

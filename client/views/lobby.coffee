@@ -210,7 +210,7 @@ Template.lobby.spectatorSlots = ->
 Template.lobby.emptySlotS = ->
   slots = []
   i = 0
-  while i < (2-@slots.length)
+  while i < (4-@slots.length)
     slots.push ({team: @team})
     i++
   slots
