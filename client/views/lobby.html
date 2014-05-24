@@ -49,6 +49,27 @@
         </tbody>
       </table>
     </div>
+    {{#with lobby}}
+    {{#if spectatorEnabled}}
+    {{#each spectatorSlots}}
+    <div class="col-sm-6 teamCol niceShadow" style="height:125px">
+      <div class="tileTitle">
+        Broadcast #{{index}}
+      </div>
+      <table class="table table-striped">
+        <tbody>
+        {{#each slots}}
+        <tr class={{playerClass}}><td>{{#if isHost}}<i class="fa fa-ban kickBtn"></i>{{/if}}{{name}}</td></tr>
+        {{/each}}
+        {{#each emptySlotS}}
+        <tr><td><a class="joinBtn">Take Slot</a></td></tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+    {{/each}}
+    {{/if}}
+    {{/with}}
   </div>
   <div class="teamRow">
     <div class="col-sm-6 chatCol niceShadow">

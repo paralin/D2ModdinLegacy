@@ -24,7 +24,7 @@ Meteor.startup ->
       , 60000
  
 updatePlayer = (lobby, id, props)->
-  [team, player] = locatePlayer lobby, id
+  [team, player] = locatePlayerS lobby, id
   if !player?
     log.error "Can't find player in #{lobby._id} to update"
     return
@@ -48,7 +48,7 @@ locateRPlayer = (result, id)->
 updateRPlayer = (result, id, props)->
   [team, player] = locateRPlayer result, id
   if !player?
-    log.error "Can't find player #{id} in #{result._id} to update"
+    #log.error "Can't find player #{id} in #{result._id} to update"
     return
   _.extend player, props
   MatchResults.update {_id: result._id}, {$set: {teams: result.teams}}
@@ -130,19 +130,7 @@ updateRPlayer = (result, id, props)->
     lobbies.update {_id: id}, {$set: {status: 0, state: GAMESTATE.Init, radiant:lobby.radiant, dire:lobby.dire}}
 
 getPlayerTeam = (uid, lobby)->
-  return if !lobby?
-  index = _.findWhere(lobby.radiant, {_id: uid})
-  team = "radiant"
-  if !index?
-    index = _.findWhere(lobby.dire, {_id: uid})
-    team = "dire"
-  if !index?
-    ix = -1
-    for slot in lobby.spectator
-      ix++
-      index = _.findWhere(slot, {_id: uid})
-      team = "spectator"+ix
-      break if index?
+  [team, index] = locatePlayer lobby, uid
   [index, team]
 
 removeFromTeam = (uid, lobby)->
@@ -151,27 +139,22 @@ removeFromTeam = (uid, lobby)->
   if team is "radiant" or team is "dire"
     index = lobby[team].indexOf(index)
     res = lobby[team].splice(index, 1)[0]
-    lobbies.update {_id: lobby._id},
-      $set:
-        radiant: lobby.radiant
-        dire: lobby.dire
     return res
   else
     specIdx = parseInt team.substring(9)
     res = lobby.spectator[specIdx].splice(index, 1)[0]
-    lobbies.update {_id: lobby._id}, {$set: {spectator: lobby.spectator}}
     return res
 
 setPlayerTeam = (lobby, uid, tteam)->
   return if !lobby?
   res = removeFromTeam uid, lobby
-  lobby = lobbies.findOne {_id: lobby._id}
-  lobby[tteam].push(res)
-  lobbies.update {_id: lobby._id},
-    $set:
-      radiant: lobby.radiant
-      dire: lobby.dire
-      spectator: lobby.spectator
+  console.log res
+  if tteam is "radiant" or tteam is "dire"
+    lobby[tteam].push(res)
+  else
+    lobby.spectator[parseInt(tteam.substring(9))].push res
+  console.log lobby
+  lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire, spectator: lobby.spectator}}
 
 @checkIfDeleteLobby = (lobbyId)->
   lobby = lobbies.findOne({_id: lobbyId})
@@ -245,7 +228,6 @@ maybeStopMatchmaking = (userId, l)->
     internalRemoveFromLobby(userId, l)
     maybeStopMatchmaking(userId, l)
     stopFinding(l)
-    console.log userId+" left lobby "+l._id
 
 startGame = (lobby)->
   startFindServer lobby._id

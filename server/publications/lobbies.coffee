@@ -19,7 +19,7 @@ Meteor.publish "lobbyDetails", ->
   if !@userId
     return []
   lobbies.find
-    $or: [{"radiant._id": @userId}, {"dire._id": @userId}]
+    $or: [{"radiant._id": @userId}, {"dire._id": @userId}, {"spectator": {$elemMatch: {$elemMatch: {_id: @userId}}}}]
     status: {$ne: 4}
   ,
     fields:
@@ -36,3 +36,5 @@ Meteor.publish "lobbyDetails", ->
       radiant: 1
       dire: 1
       state: 1
+      spectator: 1
+      spectatorEnabled: 1
