@@ -1,3 +1,7 @@
+Template.resultList.hideLive = ->
+  Session.get "hideLive"
+Template.resultList.hideNotMe = ->
+  Session.get "hideNotMe"
 Template.resultList.rightClass = ->
   page = Session.get("resultPage")
   return if !page?
@@ -28,6 +32,14 @@ Template.resultList.inProgress = ->
 Template.resultList.inProgressClass = ->
   "info" if @status? && @status isnt "completed"
 Template.resultList.events
+  'click .hideNotMe': ->
+    curr = Session.get "hideNotMe"
+    curr = false if !curr?
+    Session.set "hideNotMe", !curr
+  'click .hideLive': ->
+    curr = Session.get "hideLive"
+    curr = false if !curr?
+    Session.set "hideLive", !curr
   'click .specBtn': ->
     cSpectateGame @_id
 Template.matchResult.canSpectate = Template.resultList.canSpectate = ->

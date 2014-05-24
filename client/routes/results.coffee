@@ -3,7 +3,8 @@ Router.map ->
     path: '/results/:page?'
     fastRender: true
     waitOn: ->
-      [Meteor.subscribe("resultList", Session.get('resultPage')), Meteor.subscribe("modThumbList")]
+      filter = {}
+      [Meteor.subscribe("resultList", Session.get('resultPage'), Session.get("hideLive"), Session.get("hideNotMe")), Meteor.subscribe("modThumbList")]
     action: ->
       @render "resultList"
       Session.set "resultPage", parseInt(@params.page) || 1

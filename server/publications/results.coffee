@@ -1,8 +1,9 @@
 #todo: add uid,name to players
-Meteor.publish "resultList",(skip, opts)->
+Meteor.publish "resultList", (skip, hideLive, hideOthers)->
   skip = 1 if !skip?
   skip--
   skip *= 10
+  filter = {}
   qopts = {
     sort: {date: -1}
     skip: skip
@@ -15,6 +16,8 @@ Meteor.publish "resultList",(skip, opts)->
       teams: 1
       match_id: 1
   }
+  filter["status"] = "completed" if hideLive
+  filter["uids"] = @userId if hideOthers
   delete qopts["skip"] if skip < 1
   MatchResults.find {}, qopts
 Meteor.publish "matchResult", (id)->
