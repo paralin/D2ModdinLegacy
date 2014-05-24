@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.3.0"
+serverVersion = "1.3.1"
 idCounter=100
 sockets = {}
 configureTimeouts = {}
@@ -436,6 +436,8 @@ hostServer.on 'connection', (ws)->
           prange = splitMsg[5].split '-'
           serverObj.portRangeStart = parseInt prange[0]
           serverObj.portRangeEnd = parseInt prange[1]
+          if splitMsg[8] isnt ""
+            serverObj.ip  = splitMsg[8]
           if installStr is "|"
             log.info "[SERVER] #{serverObj.ip} Initialized, region #{REGIONSH[serverObj.region]} name #{serverObj.name}."
             if !serverObj._id?
