@@ -179,9 +179,6 @@
     "ncp": {
       "version": "0.5.1"
     },
-    "rcon": {
-      "version": "0.2.1"
-    },
     "rimraf": {
       "version": "2.2.8"
     },

@@ -188,7 +188,7 @@ generateCommands = (lobby)->
     idx = 0
     for chan in lobby.spectator
       idx++
-      continue of chan.length is 0
+      continue if chan.length is 0
       cmd = "add_broadcast_channel US \"Broadcast #{idx}\""
       for plyr in chan
         cmd += " #{plyr.steam} \"#{plyr.name}\""
