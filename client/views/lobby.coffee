@@ -58,27 +58,14 @@ Meteor.startup ->
       wasInLobby = false
       if lobby.state < GAMESTATE.PostGame
         Router.go Router.routes["lobby"].path({id: lobby._id})
-  Deps.autorun -> #Server status change
-    lobby = lobbies.findOne({status: {$ne: nul}})
-    return if !lobby?
-    status = lobby.status
-    if status is 1
-      $.pnotify
-        title: "Finding a server"
-        text: "Waiting for an open server slot."
-        type: "info"
-        delay: 5000
-        closer: false
-        sticker: false
   Deps.autorun -> #Chat callbacks
-    lobby = lobbies.findOne({status: {$ne: null}})
+    lobby = findUserLobby Meteor.userId()
     if !lobby?
       streamSetup = false
       return
     return if streamSetup
     route = Router.current()
-    return if !route?
-    return if route.route.name isnt "lobby"
+    return if !route? || route.route.name isnt "lobby"
     stream = chatStream[lobby._id]
     return if !stream?
     streamSetup = true
