@@ -4,7 +4,7 @@ Fiber = Npm.require('fibers')
 Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.2.7"
+serverVersion = "1.2.9"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -194,6 +194,17 @@ configureServer = (serverObj, lobby, instance)->
     for plyr in lobby.dire
       cmd = "add_dire_player "+plyr.steam+" \""+plyr.name+"\";"
       srvr.send cmd
+    #Broadcast channels
+    if lobby.spectatorEnabled
+      idx = 0
+      for chan in lobby.spectator
+        idx++
+        continue if chan.length is 0
+        cmd = "add_broadcast_channel US \"Broadcast #{idx}\""
+        for plyr in chan
+          cmd += " #{plyr.steam} \"#{plyr.name}\""
+        console.log cmd
+        srvr.send cmd
     console.log "server configured"
     new Fiber(->
       launchClients(lobby)

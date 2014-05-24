@@ -39,14 +39,27 @@ Meteor.startup ->
       Session.set "servProgress", 100
       Session.set "servProgColor", "success"
   Deps.autorun -> #Detect if we're in a lobby
-    lobby = findUserLobby Meteor.userId()
-    return if !lobby?
     route = Router.current()
     return if !route?
-    if (route.route.name isnt "lobby" and lobby.state < GAMESTATE.PostGame)# and !AuthManager.userIsInRole(Meteor.userId(), "admin")
-      Router.go Router.routes["lobby"].path({id: lobby._id})
+    lobby = findUserLobby Meteor.userId()
+    if !lobby? and route.route.name is "lobby"
+      if wasInLobby
+        Router.go Router.routes["matchResult"].path({id: wasLobbyID})
+        $.pnotify
+          title: "Lobby Finished"
+          text: "The lobby has closed."
+          delay: 5000
+          closer: false
+          sticker: false
+      else
+        Router.go Router.routes["lobbyList"].path()
+      return
+    if route.route.name isnt "lobby"
+      wasInLobby = false
+      if lobby.state < GAMESTATE.PostGame
+        Router.go Router.routes["lobby"].path({id: lobby._id})
   Deps.autorun -> #Server status change
-    lobby = lobbies.findOne({status: {$ne: null}})
+    lobby = lobbies.findOne({status: {$ne: nul}})
     return if !lobby?
     status = lobby.status
     if status is 1
@@ -72,23 +85,7 @@ Meteor.startup ->
     stream.on "message", pushChatMessage
     wasInLobby = true
     wasLobbyID = lobby._id
-  Deps.autorun -> #Leave when game is over
-    route = Router.current()
-    return if !route?
-    if route.route.name isnt "lobby"
-      wasInLobby = false
-      return
-    lobby = lobbies.findOne({status: {$ne: null}})
-    if !lobby? and wasInLobby
-      Router.go Router.routes["matchResult"].path({id: wasLobbyID})
-      $.pnotify
-        title: "Lobby Finished"
-        text: "The lobby has closed."
-        delay: 5000
-        closer: false
-        sticker: false
-      return
-      
+
 Template.lobby.statusIs = (st)->
   lobby = lobbies.findOne()
   return false if !lobby?
@@ -198,6 +195,25 @@ Template.lobby.gameInProgress = ->
   [team, me] = locatePlayer lobby, Meteor.user().services.steam.id
   prog && me.connected
 
+Template.lobby.spectatorSlots = ->
+  slots = @spectator
+  res = []
+  idx = -1
+  for slot in slots
+    idx++
+    res.push
+      index: idx
+      team: "spectator"+idx
+      slots: slot
+  res
+
+Template.lobby.emptySlotS = ->
+  slots = []
+  i = 0
+  while i < (2-@slots.length)
+    slots.push ({team: @team})
+    i++
+  slots
 Template.lobby.emptySlotR = ->
   lobby = lobbies.findOne()
   return if !lobby? or !lobby.radiant?
