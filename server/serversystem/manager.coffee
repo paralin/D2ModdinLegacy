@@ -7,9 +7,14 @@ serverPassword = "kwxmMKDcuVjQNutZOwZy"
 serverVersion = "1.2.9"
 idCounter=100
 sockets = {}
+configureTimeouts = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
 
 
+clearConfigTimeout = (id)->
+  if configureTimeouts[id]?
+    Meteor.clearTimeout configureTimeouts[id]
+    delete configureTimeouts[id]
 Meteor.startup ->
   sockets = {}
   servers.remove({})
@@ -178,6 +183,11 @@ launchClients = (lobby)->
 configureServer = (serverObj, lobby, instance)->
   console.log "configuring server "+instance.ip+":"+instance.port+" rcon pass "+instance.rconPass
   srvr = new Rcon instance.ip, instance.port, instance.rconPass, {tcp: true, challenge: true}
+  configureTimeouts[lobby._id] = Meteor.setTimeout ->
+    console.log "configure timeout #{lobby._id}"
+    srvr.disconnect()
+    handleFailConfigure serverObj, lobby, instance
+  , 30000
   srvr.setTimeout 15000
   connecting = true
   srvr.connect()
@@ -206,6 +216,7 @@ configureServer = (serverObj, lobby, instance)->
         console.log cmd
         srvr.send cmd
     console.log "server configured"
+    clearConfigTimeout lobby._id
     new Fiber(->
       launchClients(lobby)
       finalizeInstance(serverObj, lobby, instance)
@@ -214,6 +225,7 @@ configureServer = (serverObj, lobby, instance)->
     console.log "rcon disconnected for "+instance.id
     if connecting
       console.log "configuring server failed!!!"
+      clearConfigTimeout lobby._id
       sockets[serverObj._id].send "shutdownServer|"+instance.id
       new Fiber(->
         handleFailConfigure serverObj, lobby, instance
@@ -221,6 +233,7 @@ configureServer = (serverObj, lobby, instance)->
   ).on 'error', (err)->
     if err.errno is 'ETIMEDOUT'
       console.log "RCON failed connection to server "+instance.ip+":"+instance.port
+      clearConfigTimeout lobby._id
       if sockets[serverObj._id]?
         sockets[serverObj._id].send "shutdownServer|"+instance.id
       new Fiber(->
