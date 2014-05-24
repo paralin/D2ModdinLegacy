@@ -3,11 +3,10 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.3.3"
+serverVersion = "1.3.5"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
-
 
 Meteor.startup ->
   sockets = {}
@@ -182,9 +181,9 @@ generateCommands = (lobby)->
     "set_match_id #{lobby._id}"
   ]
   for plyr in lobby.radiant
-    commands.push "add_radiant_player #{plyr.steam} \"#{plyr.name}\""
+    commands.push "add_radiant_player #{plyr.steam} \"#{plyr.name.replace(/\W/g, '')}\""
   for plyr in lobby.dire
-    commands.push "add_dire_player #{plyr.steam} \"#{plyr.name}\""
+    commands.push "add_dire_player #{plyr.steam} \"#{plyr.name.replace(/\W/g, '')}\""
   if lobby.spectatorEnabled
     idx = 0
     for chan in lobby.spectator
@@ -192,13 +191,15 @@ generateCommands = (lobby)->
       continue if chan.length is 0
       cmd = "add_broadcast_channel US \"Broadcast #{idx}\""
       for plyr in chan
-        cmd += " #{plyr.steam} \"#{plyr.name}\""
+        cmd += " #{plyr.steam} \"#{plyr.name.replace(/\W/g, '')}\""
       commands.push cmd
   (commands.join "&").replace /|/g, ''
 
 configureServer = (serverObj, lobby, instance)->
   console.log "bypass rcon configure "+instance.ip+":"+instance.port
-  finalizeInstance(serverObj, lobby, instance)
+  Meteor.setTimeout ->
+    finalizeInstance(serverObj, lobby, instance)
+  , 8000
 
 launchServer = (serv, lobby)->
   id = idCounter
