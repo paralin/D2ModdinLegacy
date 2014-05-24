@@ -175,6 +175,7 @@ launchClients = (lobby)->
     launchClient client
 
 generateCommands = (lobby)->
+  lobby = lobbies.findOne {_id: lobby}
   commands = [
     "d2lobby_gg_time #{(if lobby.enableGG then "5" else "-1")}"
     "match_post_url \"http://d2modd.in/gdataapi/matchres\""
