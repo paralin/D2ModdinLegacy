@@ -153,7 +153,6 @@ setPlayerTeam = (lobby, uid, tteam)->
     lobby[tteam].push(res)
   else
     lobby.spectator[parseInt(tteam.substring(9))].push res
-  console.log lobby
   lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire, spectator: lobby.spectator}}
 
 @checkIfDeleteLobby = (lobbyId)->
