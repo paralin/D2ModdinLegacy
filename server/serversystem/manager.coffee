@@ -1,20 +1,14 @@
 
 #Note this class cannot yet horizontally scale
 Fiber = Npm.require('fibers')
-Rcon = Meteor.require('rcon')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.3.1"
+serverVersion = "1.3.3"
 idCounter=100
 sockets = {}
-configureTimeouts = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
 
 
-clearConfigTimeout = (id)->
-  if configureTimeouts[id]?
-    Meteor.clearTimeout configureTimeouts[id]
-    delete configureTimeouts[id]
 Meteor.startup ->
   sockets = {}
   servers.remove({})
@@ -180,82 +174,30 @@ launchClients = (lobby)->
   for client in lobby.dire
     launchClient client
 
+generateCommands = (lobby)->
+  commands = [
+    "d2lobby_gg_time #{(if lobby.enableGG then "5" else "-1")}"
+    "match_post_url \"http://d2modd.in/gdataapi/matchres\""
+    "set_match_id #{lobby._id}"
+  ]
+  for plyr in lobby.radiant
+    commands.push "add_radiant_player #{plyr.steam} \"#{plyr.name}\""
+  for plyr in lobby.dire
+    commands.push "add_dire_player #{plyr.steam} \"#{plyr.name}\""
+  if lobby.spectatorEnabled
+    idx = 0
+    for chan in lobby.spectator
+      idx++
+      continue of chan.length is 0
+      cmd = "add_broadcast_channel US \"Broadcast #{idx}\""
+      for plyr in chan
+        cmd += " #{plyr.steam} \"#{plyr.name}\""
+      commands.push cmd
+  (commands.join "&").replace /|/g, ''
+
 configureServer = (serverObj, lobby, instance)->
-  console.log "configuring server "+instance.ip+":"+instance.port+" rcon pass "+instance.rconPass
-  srvr = new Rcon instance.ip, instance.port, instance.rconPass, {tcp: true, challenge: true}
-  configureTimeouts[lobby._id] = Meteor.setTimeout ->
-    console.log "configure timeout #{lobby._id}"
-    srvr.disconnect()
-    handleFailConfigure serverObj, lobby, instance
-  , 30000
-  srvr.setTimeout 15000
-  connecting = true
-  srvr.connect()
-  srvr.on('auth', ->
-    connecting = false
-    srvr.send """
-    d2lobby_gg_time #{(if lobby.enableGG then "5" else "-1")};
-    match_post_url \"http://d2modd.in/gdataapi/matchres\";
-    set_match_id #{lobby._id};
-    """
-    for plyr in lobby.radiant
-      cmd = "add_radiant_player "+plyr.steam+" \""+plyr.name+"\";"
-      srvr.send cmd
-    for plyr in lobby.dire
-      cmd = "add_dire_player "+plyr.steam+" \""+plyr.name+"\";"
-      srvr.send cmd
-    #Broadcast channels
-    if lobby.spectatorEnabled
-      idx = 0
-      for chan in lobby.spectator
-        idx++
-        continue if chan.length is 0
-        cmd = "add_broadcast_channel US \"Broadcast #{idx}\""
-        for plyr in chan
-          cmd += " #{plyr.steam} \"#{plyr.name}\""
-        console.log cmd
-        srvr.send cmd
-    console.log "server configured"
-    clearConfigTimeout lobby._id
-    new Fiber(->
-      launchClients(lobby)
-      finalizeInstance(serverObj, lobby, instance)
-    ).run()
-  ).on('end', ->
-    console.log "rcon disconnected for "+instance.id
-    if connecting
-      console.log "configuring server failed!!!"
-      clearConfigTimeout lobby._id
-      sockets[serverObj._id].send "shutdownServer|"+instance.id
-      new Fiber(->
-        handleFailConfigure serverObj, lobby, instance
-      ).run()
-  ).on 'error', (err)->
-    if err.errno is 'ETIMEDOUT'
-      console.log "RCON failed connection to server "+instance.ip+":"+instance.port
-      clearConfigTimeout lobby._id
-      if sockets[serverObj._id]?
-        sockets[serverObj._id].send "shutdownServer|"+instance.id
-      new Fiber(->
-        handleFailConfigure serverObj, lobby, instance
-      ).run()
-    else if err.errno is 'ECONNRESET'
-      console.log "rcon disconnected for "+instance.id
-    else if err.errno is 'ECONNREFUSED'
-      new Fiber(->
-        instance = pendingInstances.findOne {id: instance.id}
-        return if !instance?
-        console.log "rcon connection refused, trying again in 3 seconds"
-        srvr.disconnect()
-        Meteor.setTimeout(->
-          console.log 'rcon attempting connection again'
-          srvr.connect()
-        , 3000)
-      ).run()
-    else
-      console.log "Unknown error configuring server:"
-      console.log err
-      console.log "!!! The server is now in an unknown state!!!"
+  console.log "bypass rcon configure "+instance.ip+":"+instance.port
+  finalizeInstance(serverObj, lobby, instance)
 
 launchServer = (serv, lobby)->
   id = idCounter
@@ -274,7 +216,7 @@ launchServer = (serv, lobby)->
   theLob = lobbies.findOne({_id: lobby})
   servers.update {_id: serv._id}, {$set: {activeLobbies: serv.activeLobbies}}
   lobbies.update {_id: lobby}, {$set: {status: 2, serverIP: serv.ip+":"+port}}
-  sockets[serv._id].send "launchServer|"+id+"|"+port+"|"+(if theLob.devMode then "True" else "False")+"|"+theLob.mod+"|"+rconPass
+  sockets[serv._id].send "launchServer|"+id+"|"+port+"|"+(if theLob.devMode then "True" else "False")+"|"+theLob.mod+"|"+rconPass+"|"+generateCommands(lobby)
   pendingInstances.insert
     id: id
     port: port
