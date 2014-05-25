@@ -3,7 +3,7 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.3.5"
+serverVersion = "1.3.8"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
@@ -204,10 +204,9 @@ configureServer = (serverObj, lobby, instance)->
 launchServer = (serv, lobby)->
   id = idCounter
   idCounter+=1
-  port = Math.floor(Math.random()*(serv.portRangeEnd-serv.portRangeStart))+serv.portRangeStart
-  if process.env.FORCE_PORT?
-    port = process.env.FORCE_PORT
-    console.log "port forced to "+port+" by env variable"
+  while true
+    port = Math.floor(Math.random()*(serv.portRangeEnd-serv.portRangeStart))+serv.portRangeStart
+    break if !(_.findWhere(serv.activeLobbies, {port: port}))?
   rconPass = Random.id()
   serv.activeLobbies.push
     id: id
@@ -218,7 +217,8 @@ launchServer = (serv, lobby)->
   theLob = lobbies.findOne({_id: lobby})
   servers.update {_id: serv._id}, {$set: {activeLobbies: serv.activeLobbies}}
   lobbies.update {_id: lobby}, {$set: {status: 2, serverIP: serv.ip+":"+port}}
-  sockets[serv._id].send "launchServer|"+id+"|"+port+"|"+(if theLob.devMode then "True" else "False")+"|"+theLob.mod+"|"+rconPass+"|"+generateCommands(lobby)
+  mod = mods.findOne {name: theLob.mod}
+  sockets[serv._id].send "launchServer|"+id+"|"+port+"|"+(if theLob.devMode then "True" else "False")+"|"+theLob.mod+"="+mod.version+"|"+rconPass+"|"+generateCommands(lobby)
   pendingInstances.insert
     id: id
     port: port
