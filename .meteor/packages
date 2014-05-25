@@ -20,7 +20,6 @@ font-awesome
 iron-router
 blaze-layout
 random
-spiderable
 service-configuration
 authorization
 buzz.js

@@ -37,4 +37,4 @@ Meteor.methods
     ver = mod.name+"="+mod.version
     if _.contains(client.installedMods, ver)
       throw new Meteor.Error 410, "#{ver} is already installed and ready to play."
-    installMod client, mod
+    installMod user, mod

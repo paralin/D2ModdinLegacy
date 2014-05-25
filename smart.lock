@@ -5,7 +5,6 @@
       "streams": {},
       "bootstrap-3": {},
       "user-status": {},
-      "pnotify": {},
       "font-awesome": {},
       "iron-router": {},
       "blaze-layout": {},
@@ -32,11 +31,6 @@
         "git": "https://github.com/mizzao/meteor-user-status.git",
         "tag": "v0.4.0",
         "commit": "e2a1c7a4075f28b87b361387688e083a4b047a08"
-      },
-      "pnotify": {
-        "git": "https://github.com/kidovate/meteor-pnotify.git",
-        "tag": "v2.0.6",
-        "commit": "cbd0bb220d03b20b247e4a6a7bdfc3d2c8064216"
       },
       "font-awesome": {
         "git": "https://github.com/nate-strauser/meteor-font-awesome.git",

@@ -2,79 +2,48 @@ Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
 
 clientSockets = {}
+queueOperation = (clientid, message)->
+  CMsgQueue.insert
+    id: clientid
+    msg: message
 @setMod = (client, mod)->
   sockid = clients.findOne {steamIDs: client.services.steam.id}
   return if !sockid?
-  sock = clientSockets[sockid._id]
-  return if !sock?
-  sock.send "setmod:#{mod}"
+  queueOperation sockid, "setmod:#{mod}"
 @dspectate = (client, addr)->
   sockid = clients.findOne {steamIDs: client.services.steam.id}
   return if !sockid?
-  sock = clientSockets[sockid._id]
-  return if !sock?
-  log.info "#{client._id} -> spectate #{addr}"
-  sock.send "dspectate:#{addr}"
+  queueOperation sockid, "dspectate:#{addr}"
 @launchDota = (client)->
   sockid = clients.findOne {steamIDs: client.services.steam.id}
   return if !sockid?
-  sock = clientSockets[sockid._id]
-  return if !sock?
-  sock.send "launchdota"
+  queueOperation sockid, "launchdota"
 @dconnect = (client, addr)->
   sockid = clients.findOne {steamIDs: client.services.steam.id}
   return if !sockid?
-  sock = clientSockets[sockid._id]
-  return if !sock?
-  log.info "#{client._id} -> dconnect #{addr}"
-  sock.send "dconnect:#{addr}"
-@deleteMod = (sock, modname)->
-  return if !sock?
-  command = "deletemod:"+modname
-  sock.send command
+  queueOperation sockid, "dconnect:#{addr}"
 @installMod = (client, mod)->
-  sock = clientSockets[client._id]
-  return false if !sock?
-  command = "installmod:"+mod.name+"="+mod.version+":"+generateModDownloadURL(mod)
-  log.info "#{client._id} -> install #{mod.name}"
-  sock.send command
-  return true
-@shutdownClient = (userId)->
-  user = Meteor.users.findOne({_id: userId})
-  client = clients.findOne({steamIDs: user.services.steam.id})
-  return if !user? or !client?
-  sock = clientSockets[client._id]
+  sockid = clients.findOne {steamIDs: client.services.steam.id}
+  return if !sockid?
+  queueOperation sockid, "installmod:"+mod.name+"="+mod.version+":"+generateModDownloadURL(mod)
+
+processCommand = (id, fields)->
+  sock = clientSockets[fields.id]
   return if !sock?
-  sock.send "close"
-  log.info "[Client] #{client._id} told to shutdown"
-@uninstallClient = (userId)->
-  user = Meteor.users.findOne({_id: userId})
-  client = clients.findOne({steamIDs: user.services.steam.id})
-  return if !user? or !client?
-  sock = clientSockets[client._id]
-  return if !sock?
-  sock.send "uninstall"
-  log.info "[Client] #{client._id} told to uninstall"
+  sock.send fields.msg
+  CMsgQueue.remove {_id: id}
 
 Meteor.startup ->
-  clients.remove({})
+  CMsgQueue.observeChanges
+    added: processCommand
 
 Meteor.publish "clientProgram", ->
   if !@userId?
-    return []
+    @stop()
   user = Meteor.users.findOne({_id: @userId})
   steamID = user.services.steam.id
   clients.find({steamIDs: steamID})
   
-checkBannedClient = (ws, clientObj)->
-  for sid in clientObj.steamIDs
-    user = Meteor.users.findOne {'services.steam.id': sid}
-    continue if !user?
-    if AuthManager.userIsInRole user._id, "banned"
-      log.info "[BANNEDCLIENT] #{user.profile.name} is banned, uninstall client"
-      uninstallClient user._id
-      return
-
 @clientServer = new ws({port: 3005})
 clientServer.on 'connection', (ws)->
   ourID = null
@@ -111,7 +80,6 @@ clientServer.on 'connection', (ws)->
               clientObj.steamIDs.push(steamID)
           clientObj.installedMods = splitMsg[3].split ","
           clients.update {_id: ourID}, clientObj
-          checkBannedClient ws, clientObj
         when 'installedMod'
           modname = splitMsg[1]
           mod = mods.findOne({name: modname})

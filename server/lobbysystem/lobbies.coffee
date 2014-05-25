@@ -1,27 +1,7 @@
-
-#Not yet horizontally scalable (see disconnectTimeouts)
-disconnectTimeouts = {}
-disconnectLTimeouts = {}
-#Monitor user events
 Meteor.startup ->
   Meteor.users.find({"status.online": false}).observeChanges
-    removed: (id)->
-      timeout = disconnectLTimeouts[id]
-      if timeout?
-        Meteor.clearTimeout(timeout)
-        delete disconnectLTimeouts[id]
-      timeout = disconnectTimeouts[id]
-      if timeout?
-        Meteor.clearTimeout(timeout)
-        delete disconnectTimeouts[id]
     added: (id, fields)->
-      #Schedule leave lobby
-      disconnectLTimeouts[id] = Meteor.setTimeout ->
-        leaveLobby(id)
-      , 5000
-      disconnectTimeouts[id] = Meteor.setTimeout ->
-        shutdownClient(id)
-      , 60000
+      leaveLobby(id)
  
 updatePlayer = (lobby, id, props)->
   [team, player] = locatePlayerS lobby, id

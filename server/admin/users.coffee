@@ -23,7 +23,6 @@ Meteor.methods
     if banned
       leaveLobby id
       Meteor.users.update {_id: id}, {$set: {authItems: ["banned"]}}
-      uninstallClient id
     else if AuthManager.userIsInRole id, "banned"
       Meteor.users.update {_id: id}, {$unset: {authItems: ""}}
     "The user #{banu.profile.name} has been #{if banned then "banned" else "unbanned"}."
