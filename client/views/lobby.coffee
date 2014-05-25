@@ -56,7 +56,7 @@ Meteor.startup ->
       return
     if route.route.name isnt "lobby"
       wasInLobby = false
-      if lobby.state < GAMESTATE.PostGame
+      if lobby? && lobby.state? && lobby.state < GAMESTATE.PostGame
         Router.go Router.routes["lobby"].path({id: lobby._id})
   Deps.autorun -> #Chat callbacks
     lobby = findUserLobby Meteor.userId()

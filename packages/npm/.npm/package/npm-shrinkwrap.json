@@ -88,10 +88,21 @@
               "version": "2.2.8"
             },
             "glob": {
-              "version": "3.2.9",
+              "version": "3.2.11",
               "dependencies": {
                 "inherits": {
                   "version": "2.0.1"
+                },
+                "minimatch": {
+                  "version": "0.3.0",
+                  "dependencies": {
+                    "lru-cache": {
+                      "version": "2.5.0"
+                    },
+                    "sigmund": {
+                      "version": "1.0.0"
+                    }
+                  }
                 }
               }
             },
@@ -183,50 +194,7 @@
       "version": "2.2.8"
     },
     "s3": {
-      "version": "0.3.1",
-      "dependencies": {
-        "knox": {
-          "version": "0.8.9",
-          "dependencies": {
-            "mime": {
-              "version": "1.2.11"
-            },
-            "xml2js": {
-              "version": "0.2.8",
-              "dependencies": {
-                "sax": {
-                  "version": "0.5.8"
-                }
-              }
-            },
-            "debug": {
-              "version": "0.7.4"
-            },
-            "stream-counter": {
-              "version": "0.1.0",
-              "dependencies": {
-                "readable-stream": {
-                  "version": "1.0.27-1",
-                  "dependencies": {
-                    "core-util-is": {
-                      "version": "1.0.1"
-                    },
-                    "isarray": {
-                      "version": "0.0.1"
-                    },
-                    "string_decoder": {
-                      "version": "0.10.25-1"
-                    },
-                    "inherits": {
-                      "version": "2.0.1"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+      "version": "0.3.1"
     },
     "steamidconvert": {
       "version": "0.2.2",
