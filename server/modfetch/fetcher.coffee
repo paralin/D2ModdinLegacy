@@ -1,5 +1,4 @@
 git = Meteor.require "gift"
-os = Meteor.require "os"
 fs = Meteor.require "fs"
 ncp = Async.wrap((Meteor.require "ncp").ncp)
 rmdir = Async.wrap(Meteor.require "rimraf")
@@ -13,7 +12,7 @@ mkdirp = (path)->
   fs.mkdir path, (e)->
     return
 
-rootDir = "#{os.tmpdir()}/d2mprepo/"
+rootDir = "#{process.env.TEMP_DIR}/d2mprepo/"
 
 cloneOrPull = (name, url, branch)->
   if !fs.existsSync(rootDir+name+"/")
@@ -88,7 +87,7 @@ isValidMod = _.matches defaultMod
     clientname = fetch.info.name+".zip"
     servname = "serv_"+clientname
     #Copy all but .git to a staging dir
-    stage = "#{os.tmpdir()}/d2mpstaging/"
+    stage = "#{process.env.TEMP_DIR}/d2mpstaging/"
     mkdirp stage
     stagem = stage+fetch.info.name+"/"
     rmdir stagem if fs.existsSync stagem

@@ -5,9 +5,7 @@
       "streams": {},
       "bootstrap-3": {},
       "user-status": {},
-      "pnotify": {
-        "path": "../meteor-pnotify"
-      },
+      "pnotify": {},
       "font-awesome": {},
       "iron-router": {},
       "blaze-layout": {},
@@ -36,7 +34,9 @@
         "commit": "e2a1c7a4075f28b87b361387688e083a4b047a08"
       },
       "pnotify": {
-        "path": "../meteor-pnotify"
+        "git": "https://github.com/kidovate/meteor-pnotify.git",
+        "tag": "v2.0.6",
+        "commit": "cbd0bb220d03b20b247e4a6a7bdfc3d2c8064216"
       },
       "font-awesome": {
         "git": "https://github.com/nate-strauser/meteor-font-awesome.git",
