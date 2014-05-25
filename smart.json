@@ -4,20 +4,15 @@
     "bootstrap-3": {},
     "user-status": {},
     "pnotify": {},
-    "dota2": {},
     "font-awesome": {},
     "iron-router": {},
     "blaze-layout": {},
-    "filter-collections": {},
-    "ms-seo": {},
-    "sitemaps": {},
     "authorization": {},
     "buzz.js": {},
     "Bootstrap-Validator": {},
     "bootboxjs": {},
     "iron-router-progress": {},
     "smart-publish": {},
-    "iron-router-ga": {},
     "moment": {}
   }
 }
