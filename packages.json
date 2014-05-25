@@ -8,5 +8,6 @@
   "ncp": "0.5.1",
   "rimraf": "2.2.8",
   "steamidconvert": "0.2.2",
-  "bignumber.js": "1.4.0"
+  "bignumber.js": "1.4.0",
+  "phantomjs": "1.9.7-8"
 }
