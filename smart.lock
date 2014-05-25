@@ -18,7 +18,8 @@
       "Bootstrap-Validator": {},
       "bootboxjs": {},
       "iron-router-progress": {},
-      "smart-publish": {}
+      "smart-publish": {},
+      "iron-router-ga": {}
     },
     "packages": {
       "streams": {
@@ -105,6 +106,11 @@
         "git": "https://github.com/yeputons/meteor-smart-publish.git",
         "tag": "v0.1.4",
         "commit": "9b0279927fa4f8042f8f56ba475ce9737ceaa8cf"
+      },
+      "iron-router-ga": {
+        "git": "https://github.com/reywood/meteor-iron-router-ga.git",
+        "tag": "v0.1.4",
+        "commit": "033f5d0fda794ac913beb4ce0d30e8d36c253b5a"
       },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",

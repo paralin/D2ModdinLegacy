@@ -16,6 +16,7 @@
     "Bootstrap-Validator": {},
     "bootboxjs": {},
     "iron-router-progress": {},
-    "smart-publish": {}
+    "smart-publish": {},
+    "iron-router-ga": {}
   }
 }
