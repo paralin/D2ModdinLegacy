@@ -2,10 +2,10 @@
 urlBase = "https://s3-us-west-2.amazonaws.com/d2mpclient/"
 
 Meteor.startup ->
-  if !clientParams.findOne({stype: 'version'})?
-    clientParams.insert
-      stype: "version"
-      version: "0.6.0"
+  clientParams.remove {stype: "version"}
+  clientParams.insert
+    stype: "version"
+    version: "0.6.2"
 
 Router.map ->
   @route 'clientver',

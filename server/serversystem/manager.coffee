@@ -3,7 +3,7 @@
 Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
 serverPassword = "kwxmMKDcuVjQNutZOwZy"
-serverVersion = "1.3.8"
+serverVersion = "1.3.9"
 idCounter=100
 sockets = {}
 pendingInstances = new Meteor.Collection "pendingInstances"
