@@ -17,6 +17,7 @@
     "bootboxjs": {},
     "iron-router-progress": {},
     "smart-publish": {},
-    "iron-router-ga": {}
+    "iron-router-ga": {},
+    "moment": {}
   }
 }

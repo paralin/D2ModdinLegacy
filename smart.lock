@@ -19,7 +19,8 @@
       "bootboxjs": {},
       "iron-router-progress": {},
       "smart-publish": {},
-      "iron-router-ga": {}
+      "iron-router-ga": {},
+      "moment": {}
     },
     "packages": {
       "streams": {
@@ -111,6 +112,11 @@
         "git": "https://github.com/reywood/meteor-iron-router-ga.git",
         "tag": "v0.1.4",
         "commit": "033f5d0fda794ac913beb4ce0d30e8d36c253b5a"
+      },
+      "moment": {
+        "git": "https://github.com/acreeger/meteor-moment.git",
+        "tag": "v2.6.0",
+        "commit": "26156df681750fd6e6ed77043eef32b6653ebbdf"
       },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",
