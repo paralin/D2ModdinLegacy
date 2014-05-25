@@ -12,6 +12,7 @@ Meteor.startup ->
     return if !installingNot?
     for mod in client.installedMods
       if mod.split("=")[0] is route.params.mod
+        Session.set "isDownMod", false
         Router.go("/lobbies/"+route.params.mod)
         $.pnotify
           title: "Installed"
@@ -19,6 +20,9 @@ Meteor.startup ->
           delay: 5000
           type: "success"
         
+Template.installMod.isDownloading = ->
+  Session.get "isDownMod"
+
 Template.installMod.hasModManager = ->
   clients.findOne()?
 Template.installMod.destroyed = ->
@@ -28,8 +32,10 @@ Template.installMod.destroyed = ->
       
 Template.installMod.events
   "click .installBtn": ->
+    Session.set "isDownMod", true
     Meteor.call "installMod", Router.current().params.mod, (err,res)->
       if err?
+        Session.set "isDownMod", false
         if err.error is 410
           Router.go("/lobbies/")
           $.pnotify
