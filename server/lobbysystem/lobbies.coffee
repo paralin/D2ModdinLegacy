@@ -199,8 +199,7 @@ Meteor.methods
     mod = mods.findOne {fetch: fetchid}
     if !mod?
       throw new Meteor.Error 404, "Can't find the mod."
-    user = Meteor.users.findOne {_id: @userId}
-    client = clients.findOne({steamIDs: user.services.steam.id})
+    client = clients.findOne({uid: @userId})
     if !client? || !_.contains(client.installedMods, mod.name+"="+mod.version)
       throw new Meteor.Error 401, mod.name
     createLobby @userId, mod, "Test Lobby"
@@ -343,9 +342,7 @@ Meteor.methods
     if !mod.playable
       throw new Meteor.Error 403, "This mod is not playable yet."
     if mod.bundle?
-      #Find their client
-      user = Meteor.users.findOne({_id: @userId})
-      client = clients.findOne({steamIDs: user.services.steam.id})
+      client = clients.findOne({uid: @userId})
       if !client? || !_.contains(client.installedMods, mod.name+"="+mod.version)
         throw new Meteor.Error 401, mod.name
     return createLobby(@userId, mod, name)
