@@ -1,3 +1,6 @@
+Facts.setUserIdFilter (userId)->
+  AuthManager.userIsInRole userId, "admin"
+
 Meteor.publish "adminData", ->
   if !checkAdmin @userId
     @stop()
