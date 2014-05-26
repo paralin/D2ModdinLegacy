@@ -20,6 +20,4 @@ queueOperation = (client, command)->
 Meteor.publish "clientProgram", ->
   if !@userId?
     @stop()
-  user = Meteor.users.findOne({_id: @userId})
-  steamID = user.services.steam.id
-  clients.find({steamIDs: steamID})
+  clients.find({uid: @userId})
