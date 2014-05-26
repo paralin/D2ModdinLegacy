@@ -273,8 +273,7 @@ Meteor.methods
     if !mod?
       throw new Meteor.Error 404, "Can't seem to find the mod in the database."
     if mod.bundle?
-      user = Meteor.users.findOne({_id: @userId})
-      client = clients.findOne({steamIDs: user.services.steam.id})
+      client = clients.findOne({uid: @userId})
       if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
         throw new Meteor.Error 401, lobby.mod
     if _.contains lobby.banned, @userId
@@ -301,12 +300,8 @@ Meteor.methods
     if !mod?
       throw new Meteor.Error 404, "Can't seem to find the mod in the database."
     if mod.bundle?
-      user = Meteor.users.findOne({_id: @userId})
-      client = clients.findOne({steamIDs: user.services.steam.id})
+      client = clients.findOne({uid: @userId})
       if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
-        console.log "mod install needed: "
-        console.log "  -> client = "+JSON.stringify client
-        console.log "  -> mod needed = "+lobby.mod+"="+mod.version
         throw new Meteor.Error 401, lobby.mod
     if _.contains lobby.banned, @userId
       throw new Meteor.Error 403, "You have been kicked from this lobby."
