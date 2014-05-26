@@ -1,8 +1,3 @@
-Meteor.startup ->
-  Meteor.users.find({"status.online": false}).observeChanges
-    added: (id, fields)->
-      leaveLobby(id)
- 
 updatePlayer = (lobby, id, props)->
   [team, player] = locatePlayerS lobby, id
   if !player?
