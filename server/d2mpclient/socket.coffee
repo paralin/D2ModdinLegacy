@@ -2,7 +2,7 @@ Fiber = Npm.require('fibers')
 ws = Meteor.require('ws').Server
 
 queueOperation = (client, command)->
-  sockid = clients.findOne({steamIDs: client.services.steam.id}, {fields: {_id: 1}})
+  sockid = clients.findOne({uid: client._id}, {fields: {_id: 1}})
   return if !sockid?
   sockid = sockid._id
   CMsgQueue.insert {id: sockid, msg: command}
