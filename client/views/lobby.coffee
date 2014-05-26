@@ -44,7 +44,7 @@ Meteor.startup ->
     lobby = findUserLobby Meteor.userId()
     if !lobby? and route.route.name is "lobby"
       if wasInLobby
-        Router.go Router.routes["matchResult"].path({id: wasLobbyID})
+        Router.go Router.routes["lobbyList"].path()
         $.pnotify
           title: "Lobby Finished"
           text: "The lobby has closed."

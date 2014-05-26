@@ -1,5 +1,5 @@
 Meteor.publish "metrics", ->
-  Metrics.find({})
+  Metrics.findFaster({_id: "login"})
 Meteor.methods
   "toggleSignups": ->
     if !@userId?

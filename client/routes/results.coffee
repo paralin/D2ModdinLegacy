@@ -1,4 +1,4 @@
-Router.map ->
+###Router.map ->
   @route 'results',
     path: '/results/:page?'
     fastRender: true
@@ -19,3 +19,4 @@ Router.map ->
         return @redirect Router.routes["results"].path()
       Session.set "thisMatch", match
       match
+      ###

@@ -1,4 +1,4 @@
-#todo: add uid,name to players
+###todo: add uid,name to players
 Meteor.publish "resultList", (skip)->
   skip = 1 if !skip?
   skip--
@@ -25,3 +25,4 @@ Meteor.publish "matchResult", (id)->
       match_id: 0
       num_players: 0
       uids: 0
+    ###
