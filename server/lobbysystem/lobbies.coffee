@@ -110,7 +110,6 @@ isIngame = (userId)->
     uids: userId
   lobby.forEach (l)->
     internalRemoveFromLobby(userId, l)
-    maybeStopMatchmaking(userId, l)
     stopFinding(l)
 
 startGame = (lobby)->

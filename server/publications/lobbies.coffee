@@ -1,7 +1,7 @@
 
 #General mod info for the list
 Meteor.publish "lobbyList", ->
-  lobbies.find
+  lobbies.findFaster
     public: true
     isMatchmaking: false
     status: {$lt: 1}

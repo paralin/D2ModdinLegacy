@@ -1,9 +1,7 @@
 @findUserLobby = (userId)->
   lobbies.findOne
     uids: userId
-    status: {$lt: 4}
-#finds a player in (lobby) with (id)
-#returns [team(0,1), obj]
+
 @locatePlayer = (lobby, uid)->
   return if !lobby?
   index = _.findWhere(lobby.radiant, {_id: uid})

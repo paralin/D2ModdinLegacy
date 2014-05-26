@@ -57,6 +57,8 @@ Meteor.startup ->
     if route.route.name isnt "lobby"
       wasInLobby = false
       if lobby? && lobby.state? && lobby.state < GAMESTATE.PostGame
+        wasInLobby = true
+        wasLobbyID = lobby._id
         Router.go Router.routes["lobby"].path({id: lobby._id})
   Deps.autorun -> #Chat callbacks
     lobby = findUserLobby Meteor.userId()
@@ -70,8 +72,6 @@ Meteor.startup ->
     return if !stream?
     streamSetup = true
     stream.on "message", pushChatMessage
-    wasInLobby = true
-    wasLobbyID = lobby._id
 
 Template.lobby.statusIs = (st)->
   lobby = lobbies.findOne()

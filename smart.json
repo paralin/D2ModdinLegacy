@@ -12,6 +12,7 @@
     "bootboxjs": {},
     "iron-router-progress": {},
     "smart-publish": {},
-    "moment": {}
+    "moment": {},
+    "find-faster": {}
   }
 }

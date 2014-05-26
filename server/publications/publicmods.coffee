@@ -1,5 +1,5 @@
 Meteor.publish "modDetails", (name) ->
-  mods.find
+  mods.findFaster
     name: name
   ,
     fields:
@@ -21,7 +21,7 @@ Meteor.publish "modDetailsForLobby", ->
   @stop() if !@userId?
   lobby = findUserLobby @userId
   @stop() if !lobby?
-  mods.find
+  mods.findFaster
     name: lobby.mod
   ,
     fields:
@@ -32,7 +32,7 @@ Meteor.publish "modDetailsForLobby", ->
       subtitle: 1
 
 Meteor.publish "modList", ->
-  mods.find
+  mods.findFaster
     public: true
   ,
     fields:
@@ -45,7 +45,7 @@ Meteor.publish "modList", ->
       playable: 1
 
 Meteor.publish "modThumbList", ->
-  mods.find {},
+  mods.findFaster {},
     fields:
       name: 1
       fullname: 1
