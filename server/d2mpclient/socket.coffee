@@ -34,7 +34,7 @@ processCommand = (id, fields)->
   CMsgQueue.remove {_id: id}
 
 Meteor.startup ->
-  CMsgQueue.observeChanges
+  CMsgQueue.find().observeChanges
     added: processCommand
 
 Meteor.publish "clientProgram", ->

@@ -24,5 +24,4 @@ Meteor.startup ->
       streams[id] = stream
       setupFilters(stream, id)
     removed: (id)->
-      #rm chat stream
       delete streams[id]
