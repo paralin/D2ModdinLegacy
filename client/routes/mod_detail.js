@@ -7,7 +7,7 @@ Router.map(function () {
       return Meteor.subscribe('modDetails', this.params.name);
     },
     data: function(){
-      return {mod: mods.findOne()};
+      return {mod: mods.findOne({name: this.params.name})};
     }
   });
 });

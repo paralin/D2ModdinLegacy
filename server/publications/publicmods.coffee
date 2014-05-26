@@ -1,5 +1,3 @@
-
-#General mod info for the list
 Meteor.publish "modDetails", (name) ->
   mods.find
     name: name
