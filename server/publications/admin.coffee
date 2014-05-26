@@ -10,7 +10,7 @@ Meteor.publish "adminData", ->
 
   #Send out the server list
   res.push servers.find()
-  res.push lobbies.find({status: {$ne: 4}})
+  res.push lobbies.find({})
   res.push mods.find()
   res.push Meteor.users.find {},
     fields:

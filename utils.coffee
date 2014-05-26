@@ -1,6 +1,6 @@
 @findUserLobby = (userId)->
   lobbies.findOne
-    $or: [{creatorid: userId}, {"radiant._id": userId}, {"dire._id": userId}, {"spectator": {$elemMatch: {$elemMatch: {_id: userId}}}}]
+    uids: userId
     status: {$lt: 4}
 #finds a player in (lobby) with (id)
 #returns [team(0,1), obj]

@@ -29,81 +29,6 @@ updateRPlayer = (result, id, props)->
   MatchResults.update {_id: result._id}, {$set: {teams: result.teams}}
   result
 
-@handleEvent = (id, eve)->
-  lobby = lobbies.findOne {_id: id}
-  result = MatchResults.findOne {_id: id} 
-  return if !lobby? || !result?
-  if eve.player?
-    eve.player = toSteamID64 eve.player
-  switch eve.event_type
-    when EVENTS.GameStateChange
-      states = GAMESTATEK[eve.new_state]
-      log.info "#{id} state is now #{states}"
-      lobby.state = eve.new_state
-      lobbies.update {_id: id}, {$set: {state: lobby.state}}
-      result = MatchResults.findOne {_id: id}
-      if result?
-        status = "loading"
-        if eve.new_state > GAMESTATE.HeroSelect && eve.new_state < GAMESTATE.PostGame
-          status = "playing"
-        else if eve.new_state > GAMESTATE.Playing
-          status = "ending"
-        MatchResults.update {_id: id}, {$set: {status: status}}
-    when EVENTS.PlayerConnect
-      log.info "[EVENT] #{eve.player} connected"
-      lobby = updatePlayer lobby, eve.player, connected: true
-      result = updateRPlayer result, eve.player, connected:true
-    when EVENTS.PlayerDisconnect
-      log.info "[EVENT] #{eve.player} disconnected"
-      if lobby.state > GAMESTATE.WaitLoad
-        lobby = updatePlayer lobby, eve.player, connected: false
-        result = updateRPlayer result, eve.player, connected:false
-    when EVENTS.HeroDeath
-      [team, player] = locateRPlayer result, eve.player
-      if player?
-        player.deaths++
-      for killer in eve.killers
-        killer = toSteamID64 killer
-        [team, killd] = locateRPlayer result, killer
-        if killd?
-          killd.kills++
-      MatchResults.update {_id: id}, {$set: {teams: result.teams}}
-@handleMatchComplete = (id, data)->
-  lobby = lobbies.findOne {_id: id}
-  result = MatchResults.findOne {_id: id}
-  for team in data.teams
-    for player in team.players
-      player.account_id = toSteamID64 player.account_id
-      [tid, lplay] = locatePlayer lobby, player.account_id
-      if !lplay?
-        log.error "Can't find player #{player.account_id} to update name & avatar"
-        return
-      log.debug JSON.stringify lplay
-      player.avatar = lplay.avatar.full
-      player.name = lplay.name
-  data.status = "completed"
-  if result?
-    MatchResults.update {_id: id}, {$set: data, $unset: {spectate_addr: ""}}
-  if lobby?
-    lobbies.update {_id: id}, {$set: {status: 4}}
-@handleLoadFail = (id)->
-  lobby = lobbies.findOne {_id: id}
-  return if !MatchResults.findOne({_id: id})?
-  MatchResults.remove {_id: id}
-  log.info "[LOADFAIL] Players failed to load for #{id}"
-  if lobby?
-    for player in lobby.radiant
-      if !player.connected?
-        player.connected = false
-      if !player.connected
-        log.info " -X- #{player.name}"
-    for player in lobby.dire
-      if !player.connected?
-        player.connected = false
-      if !player.connected
-        log.info " -X- #{player.name}"
-    lobbies.update {_id: id}, {$set: {status: 0, state: GAMESTATE.Init, radiant:lobby.radiant, dire:lobby.dire}}
-
 getPlayerTeam = (uid, lobby)->
   [team, index] = locatePlayer lobby, uid
   [index, team]
@@ -133,8 +58,8 @@ setPlayerTeam = (lobby, uid, tteam)->
   lobby = lobbies.findOne({_id: lobbyId})
   return if !lobby?
   return if lobby.status is 2 or lobby.status is 3
-  if !(_.contains(lobby.radiant, lobby.creatorid)) && !(_.contains(lobby.dire, lobby.creatorid))
-    lobbies.remove({_id: lobbyId}) if lobby.status < 4
+  if !_.contains lobby.uids, lobby.creatorid
+    lobbies.remove {_id: lobbyId} if lobby.status < 4
 
 internalRemoveFromLobby = (userId, lobby)->
   if lobby.creatorid is userId and lobby.status < 2
@@ -150,16 +75,14 @@ internalRemoveFromLobby = (userId, lobby)->
   if !player?
     log.error "Can't find player #{userId} in lobby #{lobby._id} to remove"
     return
-  lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire}}
+  lobby.uids = _.without lobby.uids, userId
+  lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire, uids: lobby.uids}}
 
 @leaveInProgressLobby = (userId)->
   return if !userId?
   user = Meteor.users.findOne({_id: userId})
   return if !user?
   lobby = findUserLobby(userId)
-  if lobby.isMatchmaking
-    console.log "user abandoned matchmaking game: "+userId
-    #Various peanalties here
   kickPlayer(user.services.steam.id)
   internalRemoveFromLobby(userId, lobby)
   console.log "user removed from lobby in progress "+userId
@@ -195,8 +118,7 @@ maybeStopMatchmaking = (userId, l)->
 
 @leaveLobby = (userId)->
   lobby = lobbies.find
-    $or: [{creatorid: userId}, {"radiant._id": userId}, {"dire._id": userId}]
-    status: {$lt: 2}
+    uids: userId
   lobby.forEach (l)->
     internalRemoveFromLobby(userId, l)
     maybeStopMatchmaking(userId, l)
@@ -237,6 +159,7 @@ startGame = (lobby)->
     devMode: false
     enableGG: true
     state: GAMESTATE.Init
+    uids: [creatorId]
 
 @joinLobby = (lobby, userId)->
   #Check if already in 
@@ -256,9 +179,12 @@ startGame = (lobby)->
     steam: user.services.steam.id
   updateObj  = {}
   updateObj[team] = lobby[team]
+  lobby.uids.push userId
+  updateObj.uids = lobby.uids
   lobbies.update {_id: lobby._id}, {$set: updateObj}
   mod = mods.findOne {name: lobby.mod}
   setMod user, lobby.mod+"="+mod.version
+
 stopFinding = (lobby)->
   cancelFindServer lobby._id
   lobbies.update {_id: lobby._id}, {$set: {status: 0}}
@@ -289,7 +215,7 @@ Meteor.methods
   "startGame": ->
     if !@userId?
       throw new Meteor.Error 403, "Log in first."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$ne: 4}})
+    lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 404, "You are not the host of a lobby."
     if lobby.status isnt 0
@@ -301,7 +227,7 @@ Meteor.methods
     check pass, String
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     if pass.length > 40
@@ -311,7 +237,7 @@ Meteor.methods
     check region, Number
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     reg = REGIONSK[region]
@@ -322,7 +248,7 @@ Meteor.methods
     check(name, String)
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     if name.length > 40
@@ -392,7 +318,7 @@ Meteor.methods
     user = Meteor.users.findOne({_id: @userId})
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     kickPlayer(lobby._id, id)

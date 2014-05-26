@@ -3,7 +3,6 @@
 Meteor.publish "modDetails", (name) ->
   mods.find
     name: name
-    public: true
   ,
     fields:
       name: 1
@@ -18,6 +17,7 @@ Meteor.publish "modDetails", (name) ->
       description: 1
       spreadvideo: 1
       playable: 1
+    reactive: false
 Meteor.publish "modDetailsForLobby", ->
   user = null
   @stop() if !@userId?

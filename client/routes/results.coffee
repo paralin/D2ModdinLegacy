@@ -4,7 +4,7 @@ Router.map ->
     fastRender: true
     waitOn: ->
       filter = {}
-      [Meteor.subscribe("resultList", Session.get('resultPage'), Session.get("hideLive"), Session.get("hideNotMe")), Meteor.subscribe("modThumbList")]
+      [Meteor.subscribe("resultList")]
     action: ->
       @render "resultList"
       Session.set "resultPage", parseInt(@params.page) || 1
@@ -13,7 +13,7 @@ Router.map ->
     template: 'matchResult'
     fastRender: true
     waitOn: ->
-      [Meteor.subscribe("matchResult", @params.id), Meteor.subscribe("modThumbList")]
+      [Meteor.subscribe("matchResult", @params.id)]
     data: ->
       match = MatchResults.findOne(_id: @params.id)
       if !match?

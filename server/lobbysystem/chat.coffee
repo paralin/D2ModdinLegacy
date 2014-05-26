@@ -17,7 +17,7 @@ setupFilters = (stream, id)->
     
 streams = {}
 Meteor.startup ->
-  lobbies.find({status: {$lt: 4}}, {fields: {status: 1}}).observeChanges
+  lobbies.find({}, {fields: {status: 1}}).observeChanges
     added: (id, fields)->
       #create the chat stream
       stream = new Meteor.Stream(id)
