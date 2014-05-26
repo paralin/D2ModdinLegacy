@@ -1,5 +1,5 @@
 #todo: add uid,name to players
-Meteor.publish "resultList", ->
+Meteor.publish "resultList", (skip)->
   skip = 1 if !skip?
   skip--
   skip *= 10

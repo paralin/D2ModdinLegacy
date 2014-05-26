@@ -94,27 +94,16 @@ isIngame = (userId)->
   lobby = findUserLobby(userId)
   return lobby?
 
-maybeStopMatchmaking = (userId, l)->
-  if l.status is 1 or l.status is 2
-    console.log l._id+" cancel server search b/c user left"
-    lobbies.update {_id: l._id}, {$set: {status: 0}}
-    cancelFindServer l._id
-
 @kickPlayer = (lobbyId, userId)->
-  lobby = lobbies.find
-    $or: [{"radiant._id": userId}, {"dire._id": userId}]
-    status: {$lt: 2}
-    _id: lobbyId
-  lobby.forEach (l)->
-    internalRemoveFromLobby(userId, l)
-    maybeStopMatchmaking(userId, l)
-    stopFinding(l)
-    if !lobby.banned?
-      lobby.banned = [userId]
-    else
-      lobby.banned.push userId
-    lobbies.update {_id: l._id}, {$set: {banned: lobby.banned}}
-    console.log userId+" banned from lobby "+lobbyId
+  l = lobbies.findOne {_id: lobbyId}
+  return if !l?
+  stopFinding(l)
+  if !lobby.banned?
+    lobby.banned = [userId]
+  else
+    lobby.banned.push userId
+  lobbies.update {_id: l._id}, {$set: {banned: lobby.banned}}
+  console.log userId+" banned from lobby "+lobbyId
 
 @leaveLobby = (userId)->
   lobby = lobbies.find

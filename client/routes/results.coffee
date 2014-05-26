@@ -3,8 +3,7 @@ Router.map ->
     path: '/results/:page?'
     fastRender: true
     waitOn: ->
-      filter = {}
-      [Meteor.subscribe("resultList")]
+      [Meteor.subscribe("resultList"), Session.get("resultPage")]
     action: ->
       @render "resultList"
       Session.set "resultPage", parseInt(@params.page) || 1
