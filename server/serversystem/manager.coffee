@@ -177,7 +177,7 @@ generateCommands = (lobby)->
   lobby = lobbies.findOne {_id: lobby}
   commands = [
     "d2lobby_gg_time #{(if lobby.enableGG then "5" else "-1")}"
-    "match_post_url \"http://d2modd.in/gdataapi/matchres\""
+    "match_post_url \"http://ddp.d2modd.in/gdataapi/matchres\""
     "set_match_id #{lobby._id}"
   ]
   for plyr in lobby.radiant
