@@ -1,7 +1,7 @@
 #!/bin/bash
-tmux start-server
-tmux new-session -d -s server
-#tmux new-window -t server:1 -n bash
-tmux send-keys -t server:0 "bash" C-m
-sleep 1s
-tmux send-keys -t server:0 "cd /root/d2mp/ && ROOT_URL=http://d2modd.in/ /usr/local/bin/meteor --production --port 80" C-m
+export PORT=80
+export ROOT_URL="http://ddp.d2modd.in/"
+export MONGO_URL=mongodb://root:3s3msqKx7qDTpQNyfWem@candidate.20.mongolayer.com:10131/d2moddin
+export MONGO_OPLOG_URL=mongodb://root:3s3msqKx7qDTpQNyfWem@candidate.20.mongolayer.com:10131/local?authSource=d2moddin
+export TEMP_DIR=/tmp/
+meteor --production --port 80

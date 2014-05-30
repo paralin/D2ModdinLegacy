@@ -29,12 +29,12 @@ cloneOrPull = (name, url, branch)->
           rep.git "checkout", {}, [branch], (err, stdout, stderr)->
             log.info stdout
             done((if err? then stderr else null), stdout)
-      #rep.git "pull", {}, ["", ""], (err, stdout, stderr) ->
-      #  done((if err? then stderr else null), stdout)
 
 cloneRepo = (name, url)->
+  log.info "Cloning #{url} to #{rootDir+name}/"
   Async.runSync (done)->
-    git.clone url, rootDir+name+"/", (err, repo)->
+    git.clone url, "/"+rootDir+name+"/", (err, repo)->
+      console.log(err) if err?
       done(err, repo)
 
 # Procedures #
