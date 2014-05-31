@@ -276,6 +276,7 @@ startGame = (lobby)->
 
 @joinLobby = (lobby, userId)->
   return if !lobby? || !userId?
+  return if lobby.status > 0
   user = Meteor.users.findOneFaster {_id: userId}
   return if user.lobbyID?
   team = null
@@ -295,8 +296,9 @@ startGame = (lobby)->
   mod = mods.findOneFaster {name: lobby.mod}
   setMod user, lobby.mod+"="+mod.version
   Meteor.users.update {_id: userId}, {$set: {lobbyID: lobby._id}}
+
 stopFinding = (lobby)->
-  return if !lobby?
+  return if !lobby? || lobby.status > 1
   cancelFindServer lobby._id
   lobbies.update {_id: lobby._id}, {$set: {status: 0}}
 
