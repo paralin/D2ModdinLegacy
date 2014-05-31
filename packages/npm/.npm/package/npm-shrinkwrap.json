@@ -40,10 +40,13 @@
           }
         },
         "zip-stream": {
-          "version": "0.3.3",
+          "version": "0.3.4",
           "dependencies": {
             "crc32-stream": {
               "version": "0.2.0"
+            },
+            "deflate-crc32-stream": {
+              "version": "0.1.1"
             },
             "lodash.defaults": {
               "version": "2.4.1",
@@ -286,23 +289,6 @@
         },
         "stack-trace": {
           "version": "0.0.9"
-        }
-      }
-    },
-    "ws": {
-      "version": "0.4.31",
-      "dependencies": {
-        "commander": {
-          "version": "0.6.1"
-        },
-        "nan": {
-          "version": "0.3.2"
-        },
-        "tinycolor": {
-          "version": "0.0.1"
-        },
-        "options": {
-          "version": "0.0.5"
         }
       }
     }

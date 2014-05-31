@@ -1,5 +1,3 @@
-
-#General mod info for the list
 Meteor.publish "lobbyList", ->
   lobbies.find
     public: true
@@ -16,12 +14,13 @@ Meteor.publish "lobbyList", ->
       region: 1
 
 Meteor.publish "lobbyDetails", ->
-  if !@userId
+  user = Meteor.users.findOne {_id: @userId}
+  if !user? || !user.lobbyID?
     return []
   lobbies.find
-    $or: [{"radiant._id": @userId}, {"dire._id": @userId}, {"spectator": {$elemMatch: {$elemMatch: {_id: @userId}}}}]
-    status: {$ne: 4}
+    _id: user.lobbyID
   ,
+    limit: 1
     fields:
       name: 1
       mod: 1

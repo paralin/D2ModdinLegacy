@@ -1,16 +1,11 @@
 {
   "packages": {
-    "streams": {},
     "bootstrap-3": {},
     "user-status": {},
     "pnotify": {},
-    "dota2": {},
     "font-awesome": {},
     "iron-router": {},
     "blaze-layout": {},
-    "filter-collections": {},
-    "ms-seo": {},
-    "sitemaps": {},
     "authorization": {},
     "buzz.js": {},
     "Bootstrap-Validator": {},

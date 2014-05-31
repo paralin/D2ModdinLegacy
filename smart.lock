@@ -2,17 +2,12 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "streams": {},
       "bootstrap-3": {},
       "user-status": {},
       "pnotify": {},
-      "dota2": {},
       "font-awesome": {},
       "iron-router": {},
       "blaze-layout": {},
-      "filter-collections": {},
-      "ms-seo": {},
-      "sitemaps": {},
       "authorization": {},
       "buzz.js": {},
       "Bootstrap-Validator": {},
@@ -21,11 +16,6 @@
       "smart-publish": {}
     },
     "packages": {
-      "streams": {
-        "git": "https://github.com/arunoda/meteor-streams.git",
-        "tag": "v0.1.17",
-        "commit": "9fcbbc9b7bf542827babc92089c19e730892a22f"
-      },
       "bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
         "tag": "v3.1.1-1",
@@ -41,11 +31,6 @@
         "tag": "v2.0.6",
         "commit": "cbd0bb220d03b20b247e4a6a7bdfc3d2c8064216"
       },
-      "dota2": {
-        "git": "https://github.com/kidovate/meteor-dota2.git",
-        "tag": "v0.0.5",
-        "commit": "9d25efc0b0d25b8f01f769608f3582ebc8e3094a"
-      },
       "font-awesome": {
         "git": "https://github.com/nate-strauser/meteor-font-awesome.git",
         "tag": "v4.1.0",
@@ -60,21 +45,6 @@
         "git": "https://github.com/EventedMind/blaze-layout.git",
         "tag": "v0.2.5",
         "commit": "273e3ab7d005d91a1a59c71bd224533b4dae2fbd"
-      },
-      "filter-collections": {
-        "git": "https://github.com/julianmontagna/filter-collections.git",
-        "tag": "v0.1.4",
-        "commit": "87bc9cee7a23459e427d4613383be3f67f29245c"
-      },
-      "ms-seo": {
-        "git": "https://github.com/DerMambo/ms-seo",
-        "tag": "v0.2.6",
-        "commit": "1a4ba31a1f6f29009d3941e9dd883829ff4e4b8b"
-      },
-      "sitemaps": {
-        "git": "https://github.com/gadicohen/meteor-sitemaps.git",
-        "tag": "v0.0.16",
-        "commit": "ed4d908c581071d1302b37c6ba77dbce55333dd3"
       },
       "authorization": {
         "git": "https://github.com/deepwell/meteor-authorization.git",
@@ -110,11 +80,6 @@
         "git": "https://github.com/mizzao/meteor-timesync.git",
         "tag": "v0.1.6",
         "commit": "83067433f511bc13a11ae8c87e9a4d331256915e"
-      },
-      "robots-txt": {
-        "git": "https://github.com/gadicohen/meteor-robots.txt.git",
-        "tag": "v0.0.8",
-        "commit": "dc1be195b8c0cf7d6263235484218911e1bf27d9"
       }
     }
   }

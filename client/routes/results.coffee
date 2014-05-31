@@ -1,3 +1,4 @@
+###
 Router.map ->
   @route 'results',
     path: '/results/:page?'
@@ -20,3 +21,4 @@ Router.map ->
         return @redirect Router.routes["results"].path()
       Session.set "thisMatch", match
       match
+###

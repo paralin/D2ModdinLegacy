@@ -1,15 +1,6 @@
 #Constants
 radiantSlots = 5
 direSlots = 5
-stream = null
-streamSetup = false
-pushChatMessage = (msg)->
-  box = $(".chatBox")
-  box.val(box.val()+"\n"+msg)
-  console.log "chat message: "+msg
-  #scroll down
-  box.scrollTop(box[0].scrollHeight)
-
 wasInLobby = false
 wasLobbyID = 0
 targetFindTime = 30000 #30 seconds average?
@@ -43,33 +34,15 @@ Meteor.startup ->
     return if !route?
     lobby = findUserLobby Meteor.userId()
     if !lobby? and route.route.name is "lobby"
-      if wasInLobby
-        Router.go Router.routes["matchResult"].path({id: wasLobbyID})
-        $.pnotify
-          title: "Lobby Finished"
-          text: "The lobby has closed."
-          delay: 5000
-          closer: false
-          sticker: false
-      else
-        Router.go Router.routes["lobbyList"].path()
+      Router.go Router.routes["lobbyList"].path()
       return
     if route.route.name isnt "lobby"
-      wasInLobby = false
       if lobby? && lobby.state? && lobby.state < GAMESTATE.PostGame
         Router.go Router.routes["lobby"].path({id: lobby._id})
   Deps.autorun -> #Chat callbacks
     lobby = findUserLobby Meteor.userId()
-    if !lobby?
-      streamSetup = false
-      return
-    return if streamSetup
     route = Router.current()
     return if !route? || route.route.name isnt "lobby"
-    stream = chatStream[lobby._id]
-    return if !stream?
-    streamSetup = true
-    stream.on "message", pushChatMessage
     wasInLobby = true
     wasLobbyID = lobby._id
 
@@ -109,6 +82,8 @@ Template.findDialog.events
           type: "error"
           delay: 5000
 Template.lobby.events
+  "click .leaveLobby": ->
+    Meteor.call "leaveLobby"
   "change .regionInput": (evt)->
     newVal = parseInt $(evt.target).val()
     Meteor.call "setLobbyRegion", newVal, (err, res)->
@@ -139,13 +114,6 @@ Template.lobby.events
       text = field.value
       Meteor.call("setLobbyName", text)
       field.blur()
-  'keypress #chatInput': (evt, template)->
-    if evt.which is 13
-      text = template.find("#chatInput").value
-      template.find("#chatInput").value = ""
-      return if text is ""
-      stream.emit("message", text)
-      pushChatMessage Meteor.user().profile.name+": "+text
   "click .joinBtn": ->
     Meteor.call "switchTeam", @team
 

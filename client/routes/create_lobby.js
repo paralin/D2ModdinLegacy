@@ -3,9 +3,6 @@ Router.map(function () {
     path: "newlobby",
     fastRender: true,
     template: "createLobby",
-    waitOn: function(){
-      return Meteor.subscribe("modThumbList");
-    },
     loginRequired: {
       name: 'loggingIn',
       shouldRoute: false

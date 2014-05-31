@@ -4,7 +4,6 @@
 # but you can also edit it by hand.
 
 standard-app-packages
-streams
 coffeescript
 bootstrap-3
 accounts-ui-bootstrap-3
@@ -13,23 +12,17 @@ user-status
 underscore
 jquery
 pnotify
+steam
 accounts-steam
 iron-router-progress
-steam
-dota2
 npm
 font-awesome
 iron-router
 blaze-layout
 random
-filter-collections
-spiderable
-ms-seo
-sitemaps
 service-configuration
 authorization
 buzz.js
 Bootstrap-Validator
 bootboxjs
 smart-publish
-appcache
