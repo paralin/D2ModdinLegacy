@@ -264,8 +264,7 @@ startGame = (lobby)->
 @joinLobby = (lobby, userId)->
   return if !lobby? || !userId?
   user = Meteor.users.findOneFaster {_id: userId}
-  return if lobby._id is user.lobbyID
-  user = Meteor.users.findOneFaster({_id: userId})
+  return if user.lobbyID?
   team = null
   if lobby.dire.length <= lobby.radiant.length && lobby.dire.length < 5
     team = "dire"
@@ -357,6 +356,9 @@ Meteor.methods
       throw new Meteor.Error 403, "You must be logged in to join a lobby."
     if AuthManager.userIsInRole @userId, "banned"
       throw new Meteor.Error 403 ,"You are banned from joining/creating lobbies."
+    exist = findUserLobby @userId
+    if exist?
+      throw new Meteor.Error 403, "You are already in a lobby."
     lobby = lobbies.findOne
       status: 0
       hasPassword: true
@@ -385,6 +387,9 @@ Meteor.methods
       throw new Meteor.Error 403, "You must be logged in to join a lobby."
     if AuthManager.userIsInRole @userId, "banned"
       throw new Meteor.Error 403 ,"You are banned from joining/creating lobbies."
+    exist = findUserLobby @userId
+    if exist?
+      throw new Meteor.Error 403, "You are already in a lobby."
     lobby = lobbies.findOne
       _id: id
       status: 0

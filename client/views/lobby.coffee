@@ -32,13 +32,13 @@ Meteor.startup ->
   Deps.autorun -> #Detect if we're in a lobby
     route = Router.current()
     return if !route?
-    lobby = findUserLobby Meteor.userId()
-    if !lobby? and route.route.name is "lobby"
+    user = Meteor.user()
+    if !user.lobbyID? and route.route.name is "lobby"
       Router.go Router.routes["lobbyList"].path()
       return
     if route.route.name isnt "lobby"
-      if lobby? && lobby.state? && lobby.state < GAMESTATE.PostGame
-        Router.go Router.routes["lobby"].path({id: lobby._id})
+      if user.lobbyID?
+        Router.go Router.routes["lobby"].path({id: user.lobbyID})
   Deps.autorun -> #Chat callbacks
     lobby = findUserLobby Meteor.userId()
     route = Router.current()
