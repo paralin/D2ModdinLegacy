@@ -1,4 +1,11 @@
-
+Array::clean = (deleteValue) ->
+  i = 0
+  while i < @length
+    if this[i] is deleteValue
+      @splice i, 1
+      i--
+    i++
+  this
 #Not yet horizontally scalable (see disconnectTimeouts)
 disconnectTimeouts = {}
 disconnectLTimeouts = {}
@@ -166,15 +173,21 @@ internalRemoveFromLobby = (userId, lobby)->
   if (lobby.creatorid is userId and lobby.status < 2) or (lobby.dire.length+lobby.radiant.length)<2
     lobbies.remove({_id: lobby._id})
     return
+  lobby.radiant.clean(null);
+  lobby.dire.clean(null);
   teams = [lobby.radiant, lobby.dire]
   player = null
   for tea in teams
-    player = _.findWhere tea, {_id: userId}
+    for plyr in tea
+      continue if !plyr? || !plyr._id
+      if plyr._id is userId
+        player = plyr
+        break
     if player?
       tea.splice tea.indexOf(player), 1
       break
   if !player?
-    log.error "Can't findFaster player #{userId} in lobby #{lobby._id} to remove"
+    log.error "Can't find player #{userId} in lobby #{lobby._id} to remove"
     return
   lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire}}
 
@@ -275,6 +288,7 @@ startGame = (lobby)->
     name: user.profile.name
     avatar: user.services.steam.avatar
     steam: user.services.steam.id
+  lobby[team].clean(null);
   updateObj  = {}
   updateObj[team] = lobby[team]
   lobbies.update {_id: lobby._id}, {$set: updateObj}
@@ -397,7 +411,7 @@ Meteor.methods
       hasPassword: false
     if !lobby?
       throw new Meteor.Error 404, "Can't findFaster that lobby."
-    if (lobby.dire.length+lobby.radiant.length) is 10
+    if (lobby.dire.length+lobby.radiant.length) >= 10
       throw new Meteor.Error 404, "Lobby is full."
     if lobby.isMatchmaking
       throw new Meteor.Error 403, "Can't join a matchmaking lobby directly."
@@ -405,7 +419,7 @@ Meteor.methods
     if !mod?
       throw new Meteor.Error 404, "Can't seem to findFaster the mod in the database."
     if mod.bundle?
-      client = clients.findOneFaster({_id: @userId})
+      client = clients.findOne({_id: @userId})
       if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
         throw new Meteor.Error 401, lobby.mod
     if _.contains lobby.banned, @userId
