@@ -7,5 +7,4 @@ Meteor.publish "adminData", ->
   res.push servers.findFaster()
   res.push lobbies.findFaster()
   res.push ServerAddons.findFaster()
-  res.push users.findFaster({}, {fields: {authItems: 1, profile: 1, services: 1}})
   res
