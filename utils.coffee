@@ -8,10 +8,20 @@
 #returns [team(0,1), obj]
 @locatePlayer = (lobby, uid)->
   return if !lobby?
-  index = _.findWhere(lobby.radiant, {_id: uid})
+  index = null
+  for plyr in lobby.radiant
+    continue if !plyr._id?
+    if plyr._id is uid
+      index = plyr
+      break
   team = "radiant"
   if !index?
     index = _.findWhere(lobby.dire, {_id: uid})
+    for plyr in lobby.dire
+      continue if !plyr._id?
+      if plyr._id is uid
+        index = plyr
+        break
     team = "dire"
   if !index?
     ix = -1

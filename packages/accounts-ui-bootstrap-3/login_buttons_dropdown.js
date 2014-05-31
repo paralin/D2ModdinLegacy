@@ -160,6 +160,9 @@
         'keypress #login-username, keypress #login-email, keypress #login-username-or-email, keypress #login-password, keypress #login-password-again': function(event) {
             if (event.keyCode === 13)
                 loginOrSignup();
+        },
+        'click #login-buttons-joinqueue': function(){
+           window.location = "http://d2modd.in/";
         }
     });
 

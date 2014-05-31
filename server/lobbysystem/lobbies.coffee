@@ -216,9 +216,9 @@ maybeStopMatchmaking = (userId, l)->
   console.log userId+" banned from lobby "+lobbyId
 
 @leaveLobby = (userId)->
-  user = Meteor.users.findOneFaster {_id: userId}, {fields: {lobbyID: 1}}
+  user = Meteor.users.findOne {_id: userId}, {fields: {lobbyID: 1}}
   return if !user? || !user.lobbyID?
-  l = lobbies.findOneFaster {_id: user.lobbyID}
+  l = lobbies.findOne {_id: user.lobbyID}
   if !l?
     Meteor.users.update {_id: userId}, {$unset: {lobbyID: ""}}
     return
@@ -280,6 +280,7 @@ startGame = (lobby)->
   lobbies.update {_id: lobby._id}, {$set: updateObj}
   mod = mods.findOneFaster {name: lobby.mod}
   setMod user, lobby.mod+"="+mod.version
+  Meteor.users.update {_id: userId}, {$set: {lobbyID: lobby._id}}
 stopFinding = (lobby)->
   return if !lobby?
   cancelFindServer lobby._id
