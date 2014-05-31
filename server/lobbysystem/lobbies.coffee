@@ -110,7 +110,7 @@ updateRPlayer = (result, id, props)->
   if result?
     MatchResults.update {_id: id}, {$set: data, $unset: {spectate_addr: ""}}
   if lobby?
-    lobbies.update {_id: id}, {$set: {status: 4}}
+    lobbies.remove {_id: id}
 @handleLoadFail = (id)->
   lobby = lobbies.findOne {_id: id}
   return if !MatchResults.findOne({_id: id})?
@@ -162,7 +162,8 @@ setPlayerTeam = (lobby, uid, tteam)->
     lobbies.remove({_id: lobbyId}) if lobby.status < 4
 
 internalRemoveFromLobby = (userId, lobby)->
-  if lobby.creatorid is userId and lobby.status < 2
+  Meteor.users.update {_id: userId}, {$unset: {lobbyID: ""}}, {multi: true}
+  if (lobby.creatorid is userId and lobby.status < 2) or (lobby.dire.length+lobby.radiant.length)<2
     lobbies.remove({_id: lobby._id})
     return
   teams = [lobby.radiant, lobby.dire]
@@ -203,29 +204,26 @@ maybeStopMatchmaking = (userId, l)->
     cancelFindServer l._id
 
 @kickPlayer = (lobbyId, userId)->
-  lobby = lobbies.find
-    $or: [{"radiant._id": userId}, {"dire._id": userId}]
-    status: {$lt: 2}
-    _id: lobbyId
-  lobby.forEach (l)->
-    internalRemoveFromLobby(userId, l)
-    maybeStopMatchmaking(userId, l)
-    stopFinding(l)
-    if !lobby.banned?
-      lobby.banned = [userId]
-    else
-      lobby.banned.push userId
-    lobbies.update {_id: l._id}, {$set: {banned: lobby.banned}}
-    console.log userId+" banned from lobby "+lobbyId
+  l = lobbies.findOne {_id: lobbyId}
+  internalRemoveFromLobby(userId, l)
+  maybeStopMatchmaking(userId, l)
+  stopFinding(l)
+  if !lobby.banned?
+    lobby.banned = [userId]
+  else
+    lobby.banned.push userId
+  lobbies.update {_id: l._id}, {$set: {banned: lobby.banned}}
+  console.log userId+" banned from lobby "+lobbyId
 
 @leaveLobby = (userId)->
-  lobby = lobbies.find
-    $or: [{creatorid: userId}, {"radiant._id": userId}, {"dire._id": userId}]
-    status: {$lt: 2}
-  lobby.forEach (l)->
-    internalRemoveFromLobby(userId, l)
-    maybeStopMatchmaking(userId, l)
-    stopFinding(l)
+  user = Meteor.users.findOne {_id: userId}, {fields: {lobbyID: 1}}
+  return if !user? || !user.lobbyID?
+  l = lobbies.findOne {_id: user.lobbyID}
+  if !l?
+    Meteor.users.update {_id: userId}, {$unset: {lobbyID: ""}}
+    return
+  internalRemoveFromLobby(userId, l)
+  stopFinding(l)
 
 startGame = (lobby)->
   startFindServer lobby._id
@@ -264,10 +262,9 @@ startGame = (lobby)->
     state: GAMESTATE.Init
 
 @joinLobby = (lobby, userId)->
-  #Check if already in 
-  return if userId is lobby.creatorid
-  return if (_.findWhere(lobby.dire, {_id: userId}))?
-  return if (_.findWhere(lobby.radiant, {_id: userId}))?
+  return if !lobby? || !userId?
+  user = Meteor.users.findOne {_id: userId}
+  return if lobby._id is user.lobbyID
   user = Meteor.users.findOne({_id: userId})
   team = null
   if lobby.dire.length <= lobby.radiant.length && lobby.dire.length < 5
@@ -285,6 +282,7 @@ startGame = (lobby)->
   mod = mods.findOne {name: lobby.mod}
   setMod user, lobby.mod+"="+mod.version
 stopFinding = (lobby)->
+  return if !lobby?
   cancelFindServer lobby._id
   lobbies.update {_id: lobby._id}, {$set: {status: 0}}
 
@@ -314,7 +312,7 @@ Meteor.methods
   "startGame": ->
     if !@userId?
       throw new Meteor.Error 403, "Log in first."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$ne: 4}})
+    lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 404, "You are not the host of a lobby."
     if lobby.status isnt 0
@@ -326,7 +324,7 @@ Meteor.methods
     check pass, String
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     if pass.length > 40
@@ -336,7 +334,7 @@ Meteor.methods
     check region, Number
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     reg = REGIONSK[region]
@@ -347,7 +345,7 @@ Meteor.methods
     check(name, String)
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     if name.length > 40
@@ -401,12 +399,8 @@ Meteor.methods
     if !mod?
       throw new Meteor.Error 404, "Can't seem to find the mod in the database."
     if mod.bundle?
-      user = Meteor.users.findOne({_id: @userId})
-      client = clients.findOne({steamIDs: user.services.steam.id})
+      client = clients.findOne({_id: @userId})
       if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
-        console.log "mod install needed: "
-        console.log "  -> client = "+JSON.stringify client
-        console.log "  -> mod needed = "+lobby.mod+"="+mod.version
         throw new Meteor.Error 401, lobby.mod
     if _.contains lobby.banned, @userId
       throw new Meteor.Error 403, "You have been kicked from this lobby."
@@ -417,7 +411,7 @@ Meteor.methods
     user = Meteor.users.findOne({_id: @userId})
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId, status: {$lt: 4}})
+    lobby = lobbies.findOne({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     kickPlayer(lobby._id, id)
@@ -443,11 +437,12 @@ Meteor.methods
       throw new Meteor.Error 403, "This mod is not playable yet."
     if mod.bundle?
       #Find their client
-      user = Meteor.users.findOne({_id: @userId})
-      client = clients.findOne({steamIDs: user.services.steam.id})
+      client = clients.findOne({_id: @userId})
       if !client? || !_.contains(client.installedMods, mod.name+"="+mod.version)
         throw new Meteor.Error 401, mod.name
-    return createLobby(@userId, mod, name)
+    lobby = createLobby(@userId, mod, name)
+    Meteor.users.update {_id: @userId}, {$set: {lobbyID: lobby}}
+    lobby
   "joinBroadcaster": (slot)->
     return if !@userId?
     lobby = findUserLobby(@userId)

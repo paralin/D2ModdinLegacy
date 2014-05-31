@@ -1,7 +1,9 @@
 @findUserLobby = (userId)->
-  lobbies.findOne
-    $or: [{creatorid: userId}, {"radiant._id": userId}, {"dire._id": userId}, {"spectator": {$elemMatch: {$elemMatch: {_id: userId}}}}]
-    status: {$lt: 4}
+  return if !userId?
+  user = Meteor.users.findOne {_id: userId}
+  return if !user? || !user.lobbyID?
+  lobbies.findOne {_id: user.lobbyID}
+
 #finds a player in (lobby) with (id)
 #returns [team(0,1), obj]
 @locatePlayer = (lobby, uid)->

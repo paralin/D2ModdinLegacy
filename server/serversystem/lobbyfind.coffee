@@ -4,7 +4,6 @@ Meteor.startup ->
   lobbyQueue.remove({})
 
 @cancelFindServer = (lobbyId)->
-  console.log "canceling server search: "+lobbyId
   lobbyQueue.remove
     _id: lobbyId
 

@@ -1,7 +1,3 @@
-### Current Mods (ephemeral) ####
-#new field: fetch - ID in modfetch
-#new field: user: user that pushed
-@mods = new Meteor.Collection "mods"
 
 ### Publish Database (fetch mods) ###
 #Stores information about the source of the mods (for the compile system)

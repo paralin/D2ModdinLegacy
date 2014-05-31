@@ -10,6 +10,9 @@
   <div style="margin-left:auto;margin-right:auto;width:251px">
     {{>modThumbnail}}
   </div>
+  <div style="margin-left:auto;margin-right:auto;width:110px;margin-top:5px">
+    <button class="btn btn-danger leaveLobby">Leave Lobby</button>
+  </div>
   {{/with}}
   {{#unless showPlayerList}}
   {{#if gameInProgress}}
@@ -70,14 +73,6 @@
     {{/each}}
     {{/if}}
     {{/with}}
-  </div>
-  <div class="teamRow">
-    <div class="col-sm-6 chatCol niceShadow">
-      <div style="text-align: center; font-weight: bold">Chat</div>
-      <textarea class="form-control chatBox" readonly="readonly">
-      </textarea>
-      <input class="form-control" id="chatInput"/>
-    </div>
     {{#if isHost}}
     <div class="col-sm-6 hostCol niceShadow">
       <div class="tileTitle">Lobby Controls</div>

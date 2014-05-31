@@ -6,4 +6,3 @@ Meteor.startup ->
       Accounts._loginButtonsSession.errorMessage "Signups currently disabled."
     else
       Accounts._loginButtonsSession.errorMessage ""
-    
