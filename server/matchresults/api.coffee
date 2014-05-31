@@ -17,9 +17,9 @@ Router.map ->
         @response.writeHead 500, {'Content-Type': 'text/html'}
         @response.end 'invalid data'
         return
-      #find the referenced match
-      lobby = lobbies.findOne {_id: data.match_id}
-      result = MatchResults.findOne {_id: data.match_id}
+      #findFaster the referenced match
+      lobby = lobbies.findOneFaster {_id: data.match_id}
+      result = MatchResults.findOneFaster {_id: data.match_id}
       if !lobby? || !result?
         log.error "Received match event with unknown lobby/result #{data.match_id}"
         return

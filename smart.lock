@@ -13,7 +13,8 @@
       "Bootstrap-Validator": {},
       "bootboxjs": {},
       "iron-router-progress": {},
-      "smart-publish": {}
+      "smart-publish": {},
+      "find-faster": {}
     },
     "packages": {
       "bootstrap-3": {
@@ -75,6 +76,11 @@
         "git": "https://github.com/yeputons/meteor-smart-publish.git",
         "tag": "v0.1.4",
         "commit": "9b0279927fa4f8042f8f56ba475ce9737ceaa8cf"
+      },
+      "find-faster": {
+        "git": "https://github.com/arunoda/meteor-find-faster.git",
+        "tag": "v0.1.3",
+        "commit": "b821858e34692aa89782a06c32a88b735b2885ab"
       },
       "timesync": {
         "git": "https://github.com/mizzao/meteor-timesync.git",

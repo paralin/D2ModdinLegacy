@@ -9,7 +9,7 @@ Meteor.startup ->
 
 @startFindServer = (lobbyId)->
   console.log "finding server for "+lobbyId
-  lobby = lobbies.findOne {_id: lobbyId}
+  lobby = lobbies.findOneFaster {_id: lobbyId}
   return if !lobby?
   lobbyQueue.insert
     _id: lobbyId

@@ -2,8 +2,8 @@ Meteor.smartPublish "devData", ->
   if !@userId? || !AuthManager.userIsInRole(@userId, "developer")
     return @stop()
   @addDependency "modfetch", "_id", (fetch)->
-    mods.find {fetch: fetch._id}
+    mods.findFaster {fetch: fetch._id}
   if AuthManager.userIsInRole @userId, "admin"
-    modfetch.find({})
+    modfetch.findFaster({})
   else
-    modfetch.find({user: @userId})
+    modfetch.findFaster({user: @userId})
