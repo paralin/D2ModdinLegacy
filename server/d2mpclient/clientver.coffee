@@ -5,6 +5,6 @@ Router.map ->
     where: 'server'
     path: '/clientver'
     action: ->
-      info = clientParams.findOne({stype: "version"})
+      info = clientParams.findOneFaster({stype: "version"})
       @response.writeHead 200, {'Content-Type': 'text/html'}
       @response.end 'version:'+info.version+'|'+urlBase+info.version+".zip"

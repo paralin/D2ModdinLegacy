@@ -4,7 +4,7 @@ disconnectTimeouts = {}
 disconnectLTimeouts = {}
 #Monitor user events
 Meteor.startup ->
-  Meteor.users.find({"status.online": false}).observeChanges
+  Meteor.users.findFaster({"status.online": false}).observeChanges
     removed: (id)->
       timeout = disconnectLTimeouts[id]
       if timeout?
@@ -26,7 +26,7 @@ Meteor.startup ->
 updatePlayer = (lobby, id, props)->
   [team, player] = locatePlayerS lobby, id
   if !player?
-    log.error "Can't find player in #{lobby._id} to update"
+    log.error "Can't findFaster player in #{lobby._id} to update"
     return
   _.extend player, props
   lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire}}
@@ -48,15 +48,15 @@ locateRPlayer = (result, id)->
 updateRPlayer = (result, id, props)->
   [team, player] = locateRPlayer result, id
   if !player?
-    #log.error "Can't find player #{id} in #{result._id} to update"
+    #log.error "Can't findFaster player #{id} in #{result._id} to update"
     return
   _.extend player, props
   MatchResults.update {_id: result._id}, {$set: {teams: result.teams}}
   result
 
 @handleEvent = (id, eve)->
-  lobby = lobbies.findOne {_id: id}
-  result = MatchResults.findOne {_id: id} 
+  lobby = lobbies.findOneFaster {_id: id}
+  result = MatchResults.findOneFaster {_id: id} 
   return if !lobby? || !result?
   if eve.player?
     eve.player = toSteamID64 eve.player
@@ -66,7 +66,7 @@ updateRPlayer = (result, id, props)->
       log.info "#{id} state is now #{states}"
       lobby.state = eve.new_state
       lobbies.update {_id: id}, {$set: {state: lobby.state}}
-      result = MatchResults.findOne {_id: id}
+      result = MatchResults.findOneFaster {_id: id}
       if result?
         status = "loading"
         if eve.new_state > GAMESTATE.HeroSelect && eve.new_state < GAMESTATE.PostGame
@@ -94,14 +94,14 @@ updateRPlayer = (result, id, props)->
           killd.kills++
       MatchResults.update {_id: id}, {$set: {teams: result.teams}}
 @handleMatchComplete = (id, data)->
-  lobby = lobbies.findOne {_id: id}
-  result = MatchResults.findOne {_id: id}
+  lobby = lobbies.findOneFaster {_id: id}
+  result = MatchResults.findOneFaster {_id: id}
   for team in data.teams
     for player in team.players
       player.account_id = toSteamID64 player.account_id
       [tid, lplay] = locatePlayer lobby, player.account_id
       if !lplay?
-        log.error "Can't find player #{player.account_id} to update name & avatar"
+        log.error "Can't findFaster player #{player.account_id} to update name & avatar"
         return
       log.debug JSON.stringify lplay
       player.avatar = lplay.avatar.full
@@ -112,8 +112,8 @@ updateRPlayer = (result, id, props)->
   if lobby?
     lobbies.remove {_id: id}
 @handleLoadFail = (id)->
-  lobby = lobbies.findOne {_id: id}
-  return if !MatchResults.findOne({_id: id})?
+  lobby = lobbies.findOneFaster {_id: id}
+  return if !MatchResults.findOneFaster({_id: id})?
   MatchResults.remove {_id: id}
   log.info "[LOADFAIL] Players failed to load for #{id}"
   if lobby?
@@ -155,7 +155,7 @@ setPlayerTeam = (lobby, uid, tteam)->
   lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire, spectator: lobby.spectator}}
 
 @checkIfDeleteLobby = (lobbyId)->
-  lobby = lobbies.findOne({_id: lobbyId})
+  lobby = lobbies.findOneFaster({_id: lobbyId})
   return if !lobby?
   return if lobby.status is 2 or lobby.status is 3
   if !(_.contains(lobby.radiant, lobby.creatorid)) && !(_.contains(lobby.dire, lobby.creatorid))
@@ -174,13 +174,13 @@ internalRemoveFromLobby = (userId, lobby)->
       tea.splice tea.indexOf(player), 1
       break
   if !player?
-    log.error "Can't find player #{userId} in lobby #{lobby._id} to remove"
+    log.error "Can't findFaster player #{userId} in lobby #{lobby._id} to remove"
     return
   lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire}}
 
 @leaveInProgressLobby = (userId)->
   return if !userId?
-  user = Meteor.users.findOne({_id: userId})
+  user = Meteor.users.findOneFaster({_id: userId})
   return if !user?
   lobby = findUserLobby(userId)
   if lobby.isMatchmaking
@@ -192,7 +192,7 @@ internalRemoveFromLobby = (userId, lobby)->
 
 isIngame = (userId)->
   return if !userId?
-  user = Meteor.users.findOne({_id: userId})
+  user = Meteor.users.findOneFaster({_id: userId})
   return if !user?
   lobby = findUserLobby(userId)
   return lobby?
@@ -204,7 +204,7 @@ maybeStopMatchmaking = (userId, l)->
     cancelFindServer l._id
 
 @kickPlayer = (lobbyId, userId)->
-  l = lobbies.findOne {_id: lobbyId}
+  l = lobbies.findOneFaster {_id: lobbyId}
   internalRemoveFromLobby(userId, l)
   maybeStopMatchmaking(userId, l)
   stopFinding(l)
@@ -216,9 +216,9 @@ maybeStopMatchmaking = (userId, l)->
   console.log userId+" banned from lobby "+lobbyId
 
 @leaveLobby = (userId)->
-  user = Meteor.users.findOne {_id: userId}, {fields: {lobbyID: 1}}
+  user = Meteor.users.findOneFaster {_id: userId}, {fields: {lobbyID: 1}}
   return if !user? || !user.lobbyID?
-  l = lobbies.findOne {_id: user.lobbyID}
+  l = lobbies.findOneFaster {_id: user.lobbyID}
   if !l?
     Meteor.users.update {_id: userId}, {$unset: {lobbyID: ""}}
     return
@@ -235,7 +235,7 @@ startGame = (lobby)->
 
 @createLobby = (creatorId, mod, name)->
   return if !creatorId?
-  user = Meteor.users.findOne({_id: creatorId})
+  user = Meteor.users.findOneFaster({_id: creatorId})
   log.info "[Lobby] #{mod.name} - #{user.profile.name}"
   setMod user, mod.name+"="+mod.version
   return lobbies.insert
@@ -263,9 +263,9 @@ startGame = (lobby)->
 
 @joinLobby = (lobby, userId)->
   return if !lobby? || !userId?
-  user = Meteor.users.findOne {_id: userId}
+  user = Meteor.users.findOneFaster {_id: userId}
   return if lobby._id is user.lobbyID
-  user = Meteor.users.findOne({_id: userId})
+  user = Meteor.users.findOneFaster({_id: userId})
   team = null
   if lobby.dire.length <= lobby.radiant.length && lobby.dire.length < 5
     team = "dire"
@@ -279,7 +279,7 @@ startGame = (lobby)->
   updateObj  = {}
   updateObj[team] = lobby[team]
   lobbies.update {_id: lobby._id}, {$set: updateObj}
-  mod = mods.findOne {name: lobby.mod}
+  mod = mods.findOneFaster {name: lobby.mod}
   setMod user, lobby.mod+"="+mod.version
 stopFinding = (lobby)->
   return if !lobby?
@@ -290,21 +290,21 @@ Meteor.methods
   "devCreateLobby": (fetchid) ->
     if !@userId? || !AuthManager.userIsInRole @userId, "developer"
       throw new Meteor.Error 403, "Not authorized."
-    fetch = modfetch.findOne {_id: fetchid}
+    fetch = modfetch.findOneFaster {_id: fetchid}
     if !fetch?
-      throw new Meteor.Error 404, "Can't find that fetch."
-    mod = mods.findOne {fetch: fetchid}
+      throw new Meteor.Error 404, "Can't findFaster that fetch."
+    mod = mods.findOneFaster {fetch: fetchid}
     if !mod?
-      throw new Meteor.Error 404, "Can't find the mod."
-    user = Meteor.users.findOne {_id: @userId}
-    client = clients.findOne({steamIDs: user.services.steam.id})
+      throw new Meteor.Error 404, "Can't findFaster the mod."
+    user = Meteor.users.findOneFaster {_id: @userId}
+    client = clients.findOneFaster({steamIDs: user.services.steam.id})
     if !client? || !_.contains(client.installedMods, mod.name+"="+mod.version)
       throw new Meteor.Error 401, mod.name
     createLobby @userId, mod, "Test Lobby"
   "stopFinding": ->
     if !@userId?
       throw new Meteor.Error 404, "Not finding a match."
-    lobby = lobbies.findOne({creatorid: @userId})
+    lobby = lobbies.findOneFaster({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "Not the owner of this lobby."
     console.log "stop finding #{lobby._id}"
@@ -312,7 +312,7 @@ Meteor.methods
   "startGame": ->
     if !@userId?
       throw new Meteor.Error 403, "Log in first."
-    lobby = lobbies.findOne({creatorid: @userId})
+    lobby = lobbies.findOneFaster({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 404, "You are not the host of a lobby."
     if lobby.status isnt 0
@@ -324,7 +324,7 @@ Meteor.methods
     check pass, String
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId})
+    lobby = lobbies.findOneFaster({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     if pass.length > 40
@@ -334,18 +334,18 @@ Meteor.methods
     check region, Number
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId})
+    lobby = lobbies.findOneFaster({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     reg = REGIONSK[region]
     if !reg?
-      throw new Meteor.Error 404, "Can't find that region."
+      throw new Meteor.Error 404, "Can't findFaster that region."
     lobbies.update {_id: lobby._id}, {$set: {region: region}}
   "setLobbyName": (name)->
     check(name, String)
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId})
+    lobby = lobbies.findOneFaster({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     if name.length > 40
@@ -362,17 +362,17 @@ Meteor.methods
       hasPassword: true
       password: pass
     if !lobby?
-      throw new Meteor.Error 404, "Can't find a waiting lobby with that pass."
+      throw new Meteor.Error 404, "Can't findFaster a waiting lobby with that pass."
     if (lobby.dire.length+lobby.radiant.length) is 10
       throw new Meteor.Error 404, "Lobby is full."
     if lobby.isMatchmaking
       throw new Meteor.Error 403, "Can't join a matchmaking lobby directly."
-    mod = mods.findOne({name: lobby.mod})
+    mod = mods.findOneFaster({name: lobby.mod})
     if !mod?
-      throw new Meteor.Error 404, "Can't seem to find the mod in the database."
+      throw new Meteor.Error 404, "Can't seem to findFaster the mod in the database."
     if mod.bundle?
-      user = Meteor.users.findOne({_id: @userId})
-      client = clients.findOne({steamIDs: user.services.steam.id})
+      user = Meteor.users.findOneFaster({_id: @userId})
+      client = clients.findOneFaster({steamIDs: user.services.steam.id})
       if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
         throw new Meteor.Error 401, lobby.mod
     if _.contains lobby.banned, @userId
@@ -390,16 +390,16 @@ Meteor.methods
       status: 0
       hasPassword: false
     if !lobby?
-      throw new Meteor.Error 404, "Can't find that lobby."
+      throw new Meteor.Error 404, "Can't findFaster that lobby."
     if (lobby.dire.length+lobby.radiant.length) is 10
       throw new Meteor.Error 404, "Lobby is full."
     if lobby.isMatchmaking
       throw new Meteor.Error 403, "Can't join a matchmaking lobby directly."
-    mod = mods.findOne({name: lobby.mod})
+    mod = mods.findOneFaster({name: lobby.mod})
     if !mod?
-      throw new Meteor.Error 404, "Can't seem to find the mod in the database."
+      throw new Meteor.Error 404, "Can't seem to findFaster the mod in the database."
     if mod.bundle?
-      client = clients.findOne({_id: @userId})
+      client = clients.findOneFaster({_id: @userId})
       if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
         throw new Meteor.Error 401, lobby.mod
     if _.contains lobby.banned, @userId
@@ -408,10 +408,10 @@ Meteor.methods
     console.log @userId+" joined lobby "+lobby.name
   "kickPlayer": (id)->
     check(id, String)
-    user = Meteor.users.findOne({_id: @userId})
+    user = Meteor.users.findOneFaster({_id: @userId})
     if !@userId?
       throw new Meteor.Error 403, "You're not even logged in, come on, try harder."
-    lobby = lobbies.findOne({creatorid: @userId})
+    lobby = lobbies.findOneFaster({creatorid: @userId})
     if !lobby?
       throw new Meteor.Error 403, "You don't own any lobbies."
     kickPlayer(lobby._id, id)
@@ -424,20 +424,20 @@ Meteor.methods
       throw new Meteor.Error 403, "You must be logged in to make a lobby."
     if AuthManager.userIsInRole @userId, "banned"
       throw new Meteor.Error 403 ,"You are banned from joining/creating lobbies."
-    user = Meteor.users.findOne({_id: @userId})
+    user = Meteor.users.findOneFaster({_id: @userId})
     leaveLobby(@userId)
     if isIngame(@userId)
       throw new Meteor.Error 403, "You are already in a game."
     if !name?
       name = user.profile.name+"'s Lobby"
-    mod = mods.findOne({name: mod})
+    mod = mods.findOneFaster({name: mod})
     if !mod?
-      throw new Meteor.Error 404, "Can't find the mod you want in the db."
+      throw new Meteor.Error 404, "Can't findFaster the mod you want in the db."
     if !mod.playable
       throw new Meteor.Error 403, "This mod is not playable yet."
     if mod.bundle?
       #Find their client
-      client = clients.findOne({_id: @userId})
+      client = clients.findOneFaster({_id: @userId})
       if !client? || !_.contains(client.installedMods, mod.name+"="+mod.version)
         throw new Meteor.Error 401, mod.name
     lobby = createLobby(@userId, mod, name)

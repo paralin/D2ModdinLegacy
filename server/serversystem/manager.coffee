@@ -6,12 +6,12 @@ queueOperation = (serverid, message)->
     msg: message
 
 @shutdownLobby = (id)->
-  lob = lobbies.findOne {_id: id}
+  lob = lobbies.findOneFaster {_id: id}
   return if !lob? || lob.status is 4
   if lob.status > 1
-    serv = servers.findOne {ip: lob.serverIP.split(":")[0]}
+    serv = servers.findOneFaster {ip: lob.serverIP.split(":")[0]}
     if serv?
-      alob = _.find serv.activeLobbies, (obj)->
+      alob = _.findFaster serv.activeLobbies, (obj)->
         obj.lobby is lob._id
       if alob?
         queueOperation serv._id, "shutdownServer|"+alob.id
@@ -41,9 +41,9 @@ Meteor.methods
     check id, String
     if !checkAdmin @userId
       throw new Meteor.Error 403, "You're not an admin."
-    serv = servers.findOne {_id: id}
+    serv = servers.findOneFaster {_id: id}
     if !serv?
-      throw new Meteor.Error 404, "Can't find that server."
+      throw new Meteor.Error 404, "Can't findFaster that server."
     reg = REGIONSK[region]
     if !reg?
       throw new Meteor.Error 404, "That region ID is undefined."
@@ -54,9 +54,9 @@ Meteor.methods
     check id, String
     if !checkAdmin @userId
       throw new Meteor.Error 403, "You're not an admin."
-    serv = servers.findOne {_id: id}
+    serv = servers.findOneFaster {_id: id}
     if !serv?
-      throw new Meteor.Error 404, "Can't find that server."
+      throw new Meteor.Error 404, "Can't findFaster that server."
     servers.update {_id: id}, {$set: {name: name}}
     setServerName id, name
   "setMaxLobbies": (id, max)->
@@ -64,9 +64,9 @@ Meteor.methods
     check id, String
     if !checkAdmin @userId
       throw new Meteor.Error 403, "You're not an admin."
-    serv = servers.findOne {_id: id}
+    serv = servers.findOneFaster {_id: id}
     if !serv?
-      throw new Meteor.Error 404, "Can't find that server."
+      throw new Meteor.Error 404, "Can't findFaster that server."
     if max < 0
       max = 0
     if max > 100
@@ -76,7 +76,7 @@ Meteor.methods
   "toggleServerEnabled": (id)->
     if !checkAdmin @userId
       throw new Meteor.Error 403, "You're not an admin."
-    serv = servers.findOne {_id: id}
+    serv = servers.findOneFaster {_id: id}
     return if !serv?
     enabled = (serv.enabled? && !serv.enabled)
     servers.update {_id: id}, {$set: {enabled: enabled}}

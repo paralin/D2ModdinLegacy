@@ -2,13 +2,13 @@ Meteor.methods
   "spectateGame": (resid)->
     if !@userId?
       throw new Meteor.Error 403, "You must be logged in."
-    client = clients.findOne {_id: @userId}
+    client = clients.findOneFaster {_id: @userId}
     if !client?
       throw new Meteor.Error 404, "Your mod manager is not running."
-    result = MatchResults.findOne {_id: resid}
+    result = MatchResults.findOneFaster {_id: resid}
     if !result?
-      throw new Meteor.Error 404, "Can't find that game."
-    mod = mods.findOne {name: result.mod, playable: true}
+      throw new Meteor.Error 404, "Can't findFaster that game."
+    mod = mods.findOneFaster {name: result.mod, playable: true}
     if !mod?
       throw new Meteor.Error 404, "Mod #{result.mod} not found or not public/playable."
     ver = mod.name+"="+mod.version
@@ -23,12 +23,12 @@ Meteor.methods
     if !AuthManager.userIsInRole @userId, ["admin", "developer", "moderator", "spectator"]
       filter.public = true
       filter.playable = true
-    mod = mods.findOne filter
+    mod = mods.findOneFaster filter
     if !mod?
       throw new Meteor.Error 404, "Mod "+modName+" not found or not public/playable."
     if !@userId?
       throw new Meteor.Error 403, "You must be logged in."
-    client = clients.findOne({_id: @userId})
+    client = clients.findOneFaster({_id: @userId})
     if !client?
       throw new Meteor.Error 404, "Your client is not running."
     ver = mod.name+"="+mod.version

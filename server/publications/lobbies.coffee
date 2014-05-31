@@ -14,7 +14,7 @@ Meteor.publish "lobbyList", ->
       region: 1
 
 Meteor.publish "lobbyDetails", ->
-  user = Meteor.users.findOne {_id: @userId}
+  user = Meteor.users.findOneFaster {_id: @userId}
   if !user? || !user.lobbyID?
     return []
   lobbies.find

@@ -1,5 +1,5 @@
 Meteor.publish "matchResult", (id)->
-  MatchResults.find {_id: id},
+  MatchResults.findFaster {_id: id},
     fields:
       spectate_addr: 0
       match_id: 0
