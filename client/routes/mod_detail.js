@@ -4,7 +4,7 @@ Router.map(function () {
     template: "modDetail",
     fastRender: true,
     data: function(){
-      return {mod: mods.findOne()};
+      return {mod: mods.findOne({name: this.params.name})};
     }
   });
 });

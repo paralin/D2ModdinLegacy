@@ -127,7 +127,7 @@ Template.lobby.isHost = ->
 Template.findDialog.isHost = Template.lobby.isHost
 
 Template.lobby.lobby = ->
-  lobbies.findOne()
+  findUserLobby Meteor.userId()
 
 Template.lobby.status = Template.findDialog.status = ->
   lobby = lobbies.findOne()
@@ -141,7 +141,7 @@ Template.lobby.status = Template.findDialog.status = ->
     when 3 then return "Game in progress!"
     when 4 then return "Game has ended."
 Template.lobby.mod = ->
-  mods.findOne()
+  mods.findOne({name: findUserLobby(Meteor.userId()).mod})
 
 Template.lobby.gameInProgress = ->
   lobby = findUserLobby Meteor.userId()
