@@ -1,11 +1,11 @@
 #!/bin/bash
 rm -rf ./.demeteorized/
 demeteorizer
+rm -rf ../d2mpdeploy/programs/ ../d2mpdeploy/server/
 cp -r ./.demeteorized/* ../d2mpdeploy/
 cd ../d2mpdeploy/
-git checkout -- programs/server/packages/webapp.js
 git add -A
 git status
 git commit -m "Update"
-git push oshift master
+git push
 cd -

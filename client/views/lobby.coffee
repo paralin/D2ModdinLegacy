@@ -63,8 +63,8 @@ Template.findDialog.servProgColor = ->
   Session.get "servProgColor"
 Template.findDialog.arePlaying = ->
   lobby = lobbies.findOne()
-  return false if !lobby?
-  lobby.status is 3 and (lobby.state < GAMESTATE.PostGame)
+  return false if !lobby? || !lobby.status?
+  lobby.status is 3# and (lobby.state < GAMESTATE.PostGame)
 
 Template.findDialog.events
   'click .connectBtn': ->
@@ -144,11 +144,12 @@ Template.lobby.mod = ->
   mods.findOne({name: findUserLobby(Meteor.userId()).mod})
 
 Template.lobby.gameInProgress = ->
-  lobby = findUserLobby Meteor.userId()
-  return if !lobby?
-  prog = (lobby.state is GAMESTATE.Playing or lobby.state is GAMESTATE.PreGame)
-  [team, me] = locatePlayer lobby, Meteor.user().services.steam.id
-  prog && me.connected
+  #lobby = findUserLobby Meteor.userId()
+  #return if !lobby? || 
+  return false
+  #prog = (lobby.state is GAMESTATE.Playing or lobby.state is GAMESTATE.PreGame)
+  #[team, me] = locatePlayer lobby, Meteor.user().services.steam.id
+  #prog && me.connected
 
 Template.lobby.spectatorSlots = ->
   slots = @spectator
@@ -197,6 +198,11 @@ Template.findDialog.connectURL = ->
   lobby = lobbies.findOne()
   return if !lobby? or !lobby.serverIP?
   "steam://connect/"+lobby.serverIP
+Template.findDialog.serverIP = ->
+  lobby = lobbies.findOne()
+  return if !lobby? or !lobby.serverIP?
+  lobby.serverIP
+
 
 Template.findDialog.progress = ->
   Session.get("servProgress")
