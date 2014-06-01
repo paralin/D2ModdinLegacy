@@ -10,26 +10,26 @@
   return if !lobby?
   index = null
   for plyr in lobby.radiant
-    continue if !plyr._id?
+    continue if !plyr? || !plyr._id?
     if plyr._id is uid
       index = plyr
       break
   team = "radiant"
   if !index?
-    index = _.findWhere(lobby.dire, {_id: uid})
     for plyr in lobby.dire
-      continue if !plyr._id?
+      continue if !plyr? || !plyr._id?
       if plyr._id is uid
         index = plyr
         break
     team = "dire"
-  if !index?
+  ###if !index?
     ix = -1
     for slot in lobby.spectator
       ix++
       index = _.findWhere(slot, {_id: uid})
       team = "spectator"+ix
       break if index?
+  ###
   [team, index]
 @locatePlayerS = (lobby, uid)->
   return if !lobby?

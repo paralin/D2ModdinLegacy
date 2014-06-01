@@ -217,15 +217,15 @@ maybeStopMatchmaking = (userId, l)->
     cancelFindServer l._id
 
 @kickPlayer = (lobbyId, userId)->
-  l = lobbies.findOneFaster {_id: lobbyId}
+  l = lobbies.findOne {_id: lobbyId}
+  return if !l?
   internalRemoveFromLobby(userId, l)
-  maybeStopMatchmaking(userId, l)
   stopFinding(l)
-  if !lobby.banned?
-    lobby.banned = [userId]
+  if !l.banned?
+    l.banned = [userId]
   else
-    lobby.banned.push userId
-  lobbies.update {_id: l._id}, {$set: {banned: lobby.banned}}
+    l.banned.push userId
+  lobbies.update {_id: l._id}, {$set: {banned: l.banned}}
   console.log userId+" banned from lobby "+lobbyId
 
 @leaveLobby = (userId)->
