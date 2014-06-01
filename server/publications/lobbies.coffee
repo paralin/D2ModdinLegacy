@@ -1,5 +1,5 @@
 Meteor.publish "lobbyList", ->
-  lobbies.find
+  lobbies.findFaster
     public: true
     isMatchmaking: false
     status: {$lt: 1}
@@ -17,7 +17,7 @@ Meteor.publish "lobbyDetails", ->
   user = Meteor.users.findOneFaster {_id: @userId}
   if !user? || !user.lobbyID?
     return []
-  lobbies.find
+  lobbies.findFaster
     _id: user.lobbyID
   ,
     limit: 1
