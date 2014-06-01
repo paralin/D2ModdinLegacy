@@ -1,45 +1,3 @@
-<template name="resultList">
-  <div id="wrapper">
-    <section class="container text-center" style="margin-top: 30px;">
-      <h1 class="text-center">
-        <strong>Match</strong> History<br/>
-      </h1>
-      <ul class="pagination" style="margin:0;margin-top:10px">
-        <li class={{leftClass}}><a href={{leftPath}} class="lpBtn">&laquo;</a></li>
-        {{#each pages}}
-          <li class={{pagClass}}><a href="/results/{{num}}">{{num}}</a></li>
-        {{/each}}
-        <li class={{rightClass}}><a href={{rightPath}} class="rpBtn">&raquo;</a></li>
-      </ul>
-    </section>
-    <div id="mods" class="resultsTable">
-      <section class="container">
-        <div class="row">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th style="width:5%">Mod</th>
-                <th style="width:80%">Teams</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {{#each results}}
-                <tr class={{inProgressClass}}>
-                  {{#with thisMod}}
-                    <td style="padding:3px"><img src={{thumbnail}} style="width:50px;height:50px;" /></td>
-                  {{/with}}
-                  <td>{{>inlineTeams teams}}</td>
-                  <td style="text-align:right;min-width:180px">{{#if canSpectate}}<button class="btn btn-info specBtn">Spectate</button>{{/if}} <a href={{resultURI}} class="btn btn-success">Details</a></td>
-                </tr>
-              {{/each}}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </div>
-  </div>
-</template>
 <template name="inlineLTeams">
   <div class="ilteams">
     <p>
@@ -52,17 +10,6 @@
         <span class="avi"><img src={{avatar.small}} /> {{name}}</span>
       {{/each}}
     </p>
-  </div>
-</template>
-<template name="inlineTeams">
-  <div class="ilteams">
-    {{#each this}}
-      <p>
-        {{#each players}}
-          <span class="avi"><img src={{avatar}} /> {{name}}</span>
-        {{/each}}
-      </p>
-    {{/each}}
   </div>
 </template>
 <template name="matchResult">

@@ -1,2 +1,2 @@
-Meteor.startup ->
-  Meteor.subscribe "metrics"
+#Meteor.startup ->
+#  Meteor.subscribe "metrics"

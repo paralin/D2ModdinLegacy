@@ -33,6 +33,7 @@ Meteor.startup ->
     route = Router.current()
     return if !route?
     user = Meteor.user()
+    return if !user?
     if !user.lobbyID? and route.route.name is "lobby"
       Router.go Router.routes["lobbyList"].path()
       return
@@ -190,9 +191,7 @@ Template.lobby.emptySlotD = ->
   slots
 
 Template.findDialog.lobbyCount = ->
-  metric = Metrics.findOne {_id: 'queue'}
-  return if !metric?
-  metric.count
+  "This counter was too slow so I disabled it :)"
 
 Template.findDialog.connectURL = ->
   lobby = lobbies.findOne()

@@ -145,21 +145,17 @@ removeFromTeam = (uid, lobby)->
   return if !index?
   if team is "radiant" or team is "dire"
     index = lobby[team].indexOf(index)
+    return if index is -1
     res = lobby[team].splice(index, 1)[0]
-    return res
-  else
-    specIdx = parseInt team.substring(9)
-    res = lobby.spectator[specIdx].splice(index, 1)[0]
     return res
 
 setPlayerTeam = (lobby, uid, tteam)->
   return if !lobby?
+  return if lobby[tteam].length >= 5
   res = removeFromTeam uid, lobby
-  if tteam is "radiant" or tteam is "dire"
-    lobby[tteam].push(res)
-  else
-    lobby.spectator[parseInt(tteam.substring(9))].push res
-  lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire, spectator: lobby.spectator}}
+  return if !res?
+  lobby[tteam].push(res)
+  lobbies.update {_id: lobby._id}, {$set: {radiant: lobby.radiant, dire: lobby.dire}}
 
 @checkIfDeleteLobby = (lobbyId)->
   lobby = lobbies.findOneFaster({_id: lobbyId})
