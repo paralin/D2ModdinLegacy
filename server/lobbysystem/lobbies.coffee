@@ -390,8 +390,7 @@ Meteor.methods
     if !mod?
       throw new Meteor.Error 404, "Can't seem to findFaster the mod in the database."
     if mod.bundle?
-      user = Meteor.users.findOneFaster({_id: @userId})
-      client = clients.findOneFaster({steamIDs: user.services.steam.id})
+      client = clients.findOne({_id: @userId})
       if !client? || !_.contains(client.installedMods, lobby.mod+"="+mod.version)
         throw new Meteor.Error 401, lobby.mod
     if _.contains lobby.banned, @userId
@@ -452,6 +451,8 @@ Meteor.methods
       throw new Meteor.Error 403, "You are already in a game."
     if !name?
       name = user.profile.name+"'s Lobby"
+    if name.length > 40
+      name = name.substring 0, 40
     mod = mods.findOneFaster({name: mod})
     if !mod?
       throw new Meteor.Error 404, "Can't findFaster the mod you want in the db."
