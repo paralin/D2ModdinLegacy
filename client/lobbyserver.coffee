@@ -6,16 +6,17 @@ colls = {
   publicLobbies: lobbyList
 }
 
-@lobbyServConn = new WebSocket 'ws://10.0.1.3:4000/browser'
+@lobbyServConn = new ReconnectingWebSocket 'ws://10.0.1.3:4000/browser'
 
 window.onbeforeunload = ->
   lobbyServConn.onclose = null
   lobbyServConn.close()
 
+@callMethod = (name, args)->
 handleMsg = (msg)->
   data = JSON.parse msg
-  console.log msg
   console.log data
+  console.log msg
   switch data.msg
     when "auth"
       if data.status
@@ -28,6 +29,13 @@ handleMsg = (msg)->
           title: "Deauthenticated"
           text: "You are no longer authed with the lobby server."
           type: "error"
+    when "error"
+      $.pnotify
+        title: "Lobby Error"
+        text: data.reason
+        type: "error"
+    when "modneeded"
+      Router.go "/install/#{data.name}"
     when "colupd"
       for upd in data.ops
         coll = colls[upd._c]
@@ -50,7 +58,7 @@ lobbyServConn.onmessage = (e)->
 send = (data)->
   lobbyServConn.send JSON.stringify data
 
-sendAuth = (user)->
+@sendAuth = (user)->
   if !user?
     send id: "deauth"
   else
@@ -66,11 +74,15 @@ lobbyServConn.onclose = ->
     title: "Disconnected"
     text: "Disconnected from the lobby server."
     type: "error"
-  lobbies.remove({})
   lobbyList.remove({})
 lobbyServConn.onopen = ->
+  $.pnotify
+    title: "Connected"
+    text: "Connected to the lobby server."
+    type: "success"
+  lobbies.remove({})
   if setup
-    return sendAuth()
+    return sendAuth(Meteor.user())
   setup = true
   Deps.autorun ->
     user = Meteor.user()

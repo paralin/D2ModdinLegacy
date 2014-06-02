@@ -7,7 +7,7 @@ Router.map(function () {
       {
         var mod = mods.findOne(); 
         if(mod == null || !mod.playable){
-          if(!mod.playable){
+          if(mod != null && !mod.playable){
             $.pnotify({
               title: "Not Available",
               text: "This mod is not ready to be played yet.",

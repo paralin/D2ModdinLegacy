@@ -12,6 +12,7 @@
     "bootboxjs": {},
     "iron-router-progress": {},
     "smart-publish": {},
-    "find-faster": {}
+    "find-faster": {},
+    "kadira": {}
   }
 }
