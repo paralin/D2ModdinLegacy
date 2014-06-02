@@ -2,12 +2,16 @@
   <div class="ilteams">
     <p>
       {{#each radiant}}
-        <span class="avi"><img src={{avatar.small}} /> {{name}}</span>
+        {{#with this}}
+        <span class="avi"><img src={{avatar}} /> {{name}}</span>
+        {{/with}}
       {{/each}}
     </p>
     <p>
       {{#each dire}}
-        <span class="avi"><img src={{avatar.small}} /> {{name}}</span>
+        {{#with this}}
+        <span class="avi"><img src={{avatar}} /> {{name}}</span>
+        {{/with}}
       {{/each}}
     </p>
   </div>

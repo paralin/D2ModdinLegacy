@@ -1,4 +1,3 @@
-#Constants
 radiantSlots = 5
 direSlots = 5
 wasInLobby = false
@@ -6,7 +5,7 @@ wasLobbyID = 0
 targetFindTime = 30000 #30 seconds average?
 Meteor.startup ->
   Session.set "servProgress", 50
-  Deps.autorun -> #Loading bar tick
+  Deps.autorun ->
     curr = Session.get "servProgress"
     lobby = lobbies.findOne()
     startTime = Session.get "findStartTime"
@@ -128,7 +127,7 @@ Template.lobby.isHost = ->
 Template.findDialog.isHost = Template.lobby.isHost
 
 Template.lobby.lobby = ->
-  findUserLobby Meteor.userId()
+  lobbies.findOne()
 
 Template.lobby.status = Template.findDialog.status = ->
   lobby = lobbies.findOne()
@@ -142,7 +141,7 @@ Template.lobby.status = Template.findDialog.status = ->
     when 3 then return "Game in progress!"
     when 4 then return "Game has ended."
 Template.lobby.mod = ->
-  mods.findOne({name: findUserLobby(Meteor.userId()).mod})
+  mods.findOne({name: lobbies.findOne()})
 
 Template.lobby.gameInProgress = ->
   #lobby = findUserLobby Meteor.userId()
@@ -207,7 +206,7 @@ Template.findDialog.progress = ->
   Session.get("servProgress")
 
 Template.findDialog.gameOver = ->
-  lobby = findUserLobby Meteor.userId()
+  lobby = lobbies.findOne()
   return if !lobby?
   lobby.state >= GAMESTATE.PostGame
 Template.findDialog.timeElapsed = ->
@@ -220,7 +219,7 @@ Template.findDialog.progBarClass = ->
   else
     "progress-striped active"
 Template.findDialog.isConfiguring = ->
-  lobby = findUserLobby Meteor.userId()
+  lobby = lobbies.findOne()
   lobby? and lobby.status is 2
 Template.lobby.playerClass = ->
   cl = ""

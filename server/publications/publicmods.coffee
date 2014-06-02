@@ -1,16 +1,17 @@
+@mods = new Meteor.Collection "mods"
 smods = []
 smodsk = {}
 
 updateList = ->
   smods = []
   smodsk = {}
-  list = mods.findFaster({public: true}).fetch()
+  list = mods.findFaster({isPublic: true}).fetch()
   for mod in list
     smodsk[mod.name] = mod
     smods.push(mod)
 Meteor.startup ->
   updateList()
-  mods.findFaster({public: true}).observeChanges
+  mods.findFaster({isPublic: true}).observeChanges
     added: updateList
     removed: updateList
     changed: updateList

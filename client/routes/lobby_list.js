@@ -2,9 +2,6 @@ Router.map(function () {
   this.route("lobbyList", {
     path: "lobbies/:name?",
     template: "lobbyList",
-    waitOn: function(){
-      return [Meteor.subscribe("lobbyList")];
-    },
     data: function(){
       if(this.params.name != undefined)
       {
@@ -21,9 +18,9 @@ Router.map(function () {
           Router.go("/lobbies");
           return;
         }
-        return {hasMod: true, mod: this.params.name, lobbies: lobbies.find({mod: this.params.name}), modD: mods.findOne({name: this.params.name})};
+        return {hasMod: true, mod: this.params.name, lobbies: lobbyList.find({mod: this.params.name}), modD: mods.findOne({name: this.params.name})};
       }
-      return {lobbies: lobbies.find()};
+      return {lobbies: lobbyList.find()};
     }
   });
 });

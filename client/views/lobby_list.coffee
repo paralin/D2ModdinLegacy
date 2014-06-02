@@ -1,5 +1,5 @@
 Template.lobbyList.thisMod = ->
-  mods.findOne {name: @mod}
+  mods.findOne {_id: @mod}
 Template.lobbyList.events
   "click .enterLobPass": ->
     bootbox.prompt

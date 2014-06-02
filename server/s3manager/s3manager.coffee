@@ -6,17 +6,6 @@ kn = knox.createClient
   'secret' : "410lWAfLqXpGD66eoqhzeau0T3Sjwc2wqCem7e9c",
   'bucket': 'd2mpclient'
 s3 = S3.fromKnox kn
-###
-Meteor.startup ->
-  s3.listBuckets {}, (err, data)->
-    console.log "=== buckets ==="
-    if err?
-      console.log "Error loading buckets: "+err
-    else if data?
-      bucketFound = false
-      for bucket, i in data.Buckets
-        console.log "  --> "+bucket.Name
-###
 headers =
   'Content-Type': 'application/octet-stream'
   'x-amz-storage-class': 'REDUCED_REDUNDANCY'
@@ -27,8 +16,6 @@ headers =
       done(err)
     uploader.on 'end', (url)->
       done(null, url)
-
-
 @generateModDownloadURL = (mod)->
   getBundleDownloadURL mod.bundle
 @getBundleDownloadURL = (file)->

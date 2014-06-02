@@ -1,4 +1,3 @@
-#0 = download and launch layout
 Session.set("botBarStatus", 0)
 
 Meteor.startup ->
@@ -17,6 +16,7 @@ Template.bottomBar.showDLButton = ->
   if !client?
     return true
   return client.status is 1
+
 Template.bottomBar.status = ->
   Session.get("managerStatus")
 
