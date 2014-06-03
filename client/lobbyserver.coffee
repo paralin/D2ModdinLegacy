@@ -7,7 +7,7 @@ colls = {
 }
 
 Meteor.startup ->
-  @lobbyServConn = new ReconnectingWebSocket 'ws://10.0.1.3:4000/browser'
+  @lobbyServConn = new ReconnectingWebSocket 'ws://ddp2.d2modd.in/browser'
 
   window.onbeforeunload = ->
     lobbyServConn.onclose = ()->
