@@ -5,7 +5,7 @@ Router.map(function () {
     data: function(){
       if(this.params.name != undefined)
       {
-        var mod = mods.findOne(); 
+        var mod = mods.findOne({name: this.params.name}); 
         if(mod == null || !mod.playable){
           if(mod != null && !mod.playable){
             $.pnotify({
