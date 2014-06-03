@@ -1,4 +1,4 @@
 Meteor.publish "clientProgram", ->
   if !@userId?
     @stop()
-  clients.findFaster {_id: @userId}, {limit: 1}
+  clients.find {_id: @userId}, {limit: 1}

@@ -31,7 +31,9 @@
       <table class="table table-striped">
         <tbody>
         {{#each lobby.radiant}}
+        {{#with this}}
         <tr class={{playerClass}}><td>{{#if isHost}}<i class="fa fa-ban kickBtn"></i>{{/if}}{{name}}</td></tr>
+        {{/with}}
         {{/each}}
         {{#each emptySlotR}}
         <tr><td><a class="joinBtn">Take Slot</a></td></tr>
@@ -46,7 +48,9 @@
       <table class="table table-striped">
         <tbody>
         {{#each lobby.dire}}
+        {{#with this}}
         <tr class={{playerClass}}><td>{{#if isHost}}<i class="fa fa-ban kickBtn"></i>{{/if}}{{name}}</td></tr>
+        {{/with}}
         {{/each}}
         {{#each emptySlotD}}
         <tr><td><a class="joinBtn">Take Slot</a></td></tr>
@@ -75,6 +79,12 @@
     {{/each}}
     {{/if}}
     {{/with}}
+    <div class="col-sm-6 chatCol niceShadow">
+      <div style="text-align: center; font-weight: bold">Chat</div>
+      <textarea class="form-control chatBox" readonly="readonly">
+      </textarea>
+      <input class="form-control" id="chatInput" maxlength="140"/>
+    </div>
     {{#if isHost}}
     <div class="col-sm-6 hostCol niceShadow">
       <div class="tileTitle">Lobby Controls</div>

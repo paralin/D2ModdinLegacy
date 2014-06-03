@@ -18,7 +18,7 @@ Router.map(function () {
           Router.go("/lobbies");
           return;
         }
-        return {hasMod: true, mod: this.params.name, lobbies: lobbyList.find({mod: this.params.name}), modD: mods.findOne({name: this.params.name})};
+        return {hasMod: true, mod: mod._id, lobbies: lobbyList.find({mod: mod._id}), modD: mod};
       }
       return {lobbies: lobbyList.find()};
     }

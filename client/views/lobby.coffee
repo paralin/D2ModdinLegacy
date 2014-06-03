@@ -3,6 +3,13 @@ direSlots = 5
 wasInLobby = false
 wasLobbyID = 0
 targetFindTime = 30000 #30 seconds average?
+
+@pushChatMessage = (msg)->
+  box = $(".chatBox")
+  return if box.length is 0
+  box.val(box.val()+"\n"+msg)
+  box.scrollTop(box[0].scrollHeight)
+
 Meteor.startup ->
   Session.set "servProgress", 50
   Deps.autorun ->
@@ -33,18 +40,15 @@ Meteor.startup ->
     return if !route?
     user = Meteor.user()
     return if !user?
-    if !user.lobbyID? and route.route.name is "lobby"
+    lobby = lobbies.findOne()
+    if route.route.name is "lobby" and !lobby?
       Router.go Router.routes["lobbyList"].path()
       return
-    if route.route.name isnt "lobby"
-      if user.lobbyID?
-        Router.go Router.routes["lobby"].path({id: user.lobbyID})
-  Deps.autorun -> #Chat callbacks
-    lobby = findUserLobby Meteor.userId()
-    route = Router.current()
-    return if !route? || route.route.name isnt "lobby"
-    wasInLobby = true
-    wasLobbyID = lobby._id
+    else if route.route.name isnt "lobby"
+      if lobby?
+        Router.go Router.routes["lobby"].path({id: lobby._id})
+        wasInLobby = true
+        wasLobbyID = lobby._id
 
 Template.lobby.statusIs = (st)->
   lobby = lobbies.findOne()
@@ -83,17 +87,12 @@ Template.findDialog.events
           delay: 5000
 Template.lobby.events
   "click .leaveLobby": ->
-    Meteor.call "leaveLobby"
+    callMethod "leavelobby", {}
   "change .regionInput": (evt)->
     newVal = parseInt $(evt.target).val()
-    Meteor.call "setLobbyRegion", newVal, (err, res)->
-      if err?
-        $.pnotify
-          title: "Can't Set Region"
-          text: err.reason
-          type: "error"
+    callMethod "setregion", {region: newVal}
   "click .kickBtn": ->
-    Meteor.call "kickPlayer", @_id
+    callMethod "kickplayer", {steam: @steam}
   'click .startBtn': ->
     Meteor.call "startGame", (err, res)->
       if err?
@@ -112,10 +111,17 @@ Template.lobby.events
     if evt.which is 13
       field = template.find(".titleInput")
       text = field.value
-      Meteor.call("setLobbyName", text)
+      callMethod "setname", {name: text}
       field.blur()
   "click .joinBtn": ->
-    Meteor.call "switchTeam", @team
+    callMethod "switchteam", {team: @team}
+  'keypress #chatInput': (evt, template)->
+    if evt.which is 13
+      input = $("#chatInput")
+      text = input.val()
+      input.val("")
+      return if text is ""
+      callMethod "chatmsg", {message: text}
 
 Template.lobby.isHost = ->
   user = Meteor.userId()
@@ -141,7 +147,7 @@ Template.lobby.status = Template.findDialog.status = ->
     when 3 then return "Game in progress!"
     when 4 then return "Game has ended."
 Template.lobby.mod = ->
-  mods.findOne({name: lobbies.findOne()})
+  mods.findOne({_id: lobbies.findOne().mod})
 
 Template.lobby.gameInProgress = ->
   #lobby = findUserLobby Meteor.userId()
@@ -166,31 +172,29 @@ Template.lobby.spectatorSlots = ->
 Template.lobby.emptySlotS = ->
   slots = []
   i = 0
-  while i < (4-@slots.length)
+  curr = _.without(@slots, null)
+  while i < (4-curr.length)
     slots.push ({team: @team})
     i++
   slots
 Template.lobby.emptySlotR = ->
   lobby = lobbies.findOne()
-  return if !lobby? or !lobby.radiant?
+  curr = _.without(lobby.radiant, null)
   slots = []
   i = 0
-  while i < (radiantSlots-lobby.radiant.length)
+  while i < (5-curr.length)
     slots.push({team: "radiant"})
     i++
   slots
 Template.lobby.emptySlotD = ->
   lobby = lobbies.findOne()
-  return if !lobby? or !lobby.dire?
+  curr = _.without(lobby.dire, null)
   slots = []
   i = 0
-  while i < (direSlots-lobby.dire.length)
+  while i < (5-curr.length)
     slots.push({team: "dire"})
     i++
   slots
-
-Template.findDialog.lobbyCount = ->
-  "This counter was too slow so I disabled it :)"
 
 Template.findDialog.connectURL = ->
   lobby = lobbies.findOne()

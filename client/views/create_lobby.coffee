@@ -3,4 +3,4 @@ Template.createLobby.events
     lobbyName = $("#lobbyName").val()
     if lobbyName is ""
       lobbyName = null
-    callMethod "createLobby", {name: lobbyName, mod: @_id}
+    callMethod "createlobby", {name: lobbyName, mod: @_id}

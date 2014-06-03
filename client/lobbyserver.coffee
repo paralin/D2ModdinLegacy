@@ -13,6 +13,11 @@ window.onbeforeunload = ->
   lobbyServConn.close()
 
 @callMethod = (name, args)->
+  data =
+    id: name
+    req: args
+  lobbyServConn.send JSON.stringify data
+
 handleMsg = (msg)->
   data = JSON.parse msg
   console.log data
@@ -25,6 +30,7 @@ handleMsg = (msg)->
           text: "You are connected to the lobby server."
           type: "success"
       else
+        lobbies.remove {}
         $.pnotify
           title: "Deauthenticated"
           text: "You are no longer authed with the lobby server."
@@ -34,8 +40,23 @@ handleMsg = (msg)->
         title: "Lobby Error"
         text: data.reason
         type: "error"
+    when "chat"
+      pushChatMessage data.message
     when "modneeded"
       Router.go "/install/#{data.name}"
+    when "installres"
+      Session.set "isDownMod", false
+      if data.success
+        Router.go "/lobbies"
+        $.pnotify
+          title: "Mod Installed"
+          text: "The mod has been downloaded successfully."
+          type: "success"
+      else
+        $.pnotify
+          title: "Download Problem"
+          text: data.reason
+          type: "error"
     when "colupd"
       for upd in data.ops
         coll = colls[upd._c]
