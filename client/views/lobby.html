@@ -90,13 +90,12 @@
       <div class="tileTitle">Lobby Controls</div>
       <div style="width:100%;height:150px;padding:15px;padding-top:0;">
         <input class="titleInput form-control" value={{lobby.name}} maxlength=40 />
-        <input class="passwordInput form-control" placeholder="no password" value={{lobby.password}} maxlength=40 />
         <select class="regionInput form-control">
           {{#each regionNames}}
             <option value="{{this.key}}">{{this.value}}</option>
           {{/each}}
         </select>
-        <a class="btn btn-success startBtn" style="margin-top:0;width:100%">Start Game</a>
+        <a class="btn btn-success startBtn" style="margin-top:28px;width:100%">Start Game</a>
       </div>
     </div>
     {{/if}}

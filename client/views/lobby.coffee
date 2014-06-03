@@ -77,14 +77,7 @@ Template.findDialog.events
       $(".connectBtn").prop 'disabled', false
     , 1500
   'click .stopFindingBtn': ->
-    console.log "stop finding button"
-    Meteor.call "stopFinding", (err, res)->
-      if err?
-        $.pnotify
-          title: "Can't Stop Queuing"
-          text: err.reason
-          type: "error"
-          delay: 5000
+    callMethod "stopqueue", {}
 Template.lobby.events
   "click .leaveLobby": ->
     callMethod "leavelobby", {}
@@ -94,13 +87,7 @@ Template.lobby.events
   "click .kickBtn": ->
     callMethod "kickplayer", {steam: @steam}
   'click .startBtn': ->
-    Meteor.call "startGame", (err, res)->
-      if err?
-        $.pnotify
-          title: "Can't Start"
-          text: err.reason
-          type: "error"
-          delay: 5000
+    callMethod "startqueue", {}
   'keypress .passwordInput': (evt, template)->
     if evt.which is 13
       field = template.find('.passwordInput')

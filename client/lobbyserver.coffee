@@ -9,7 +9,8 @@ colls = {
 @lobbyServConn = new ReconnectingWebSocket 'ws://10.0.1.3:4000/browser'
 
 window.onbeforeunload = ->
-  lobbyServConn.onclose = null
+  lobbyServConn.onclose = ()->
+    console.log "Onclose"
   lobbyServConn.close()
 
 @callMethod = (name, args)->
