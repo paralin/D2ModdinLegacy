@@ -120,8 +120,13 @@
     {{/unless}}
   </div>
   {{#if arePlaying}}
-    <span class="ensureD2" style="padding-top:15px"><b>connect {{serverIP}}</b></span>
-  <a class="btn btn-success connectBtn" href={{connectURL}}>Connect to Server</a>
+    {{#if hasManager}}
+    <span class="ensureD2" style="padding-top:15px"><b>Your mod manager has already attempted to connect Dota.</b></span>
+    <button class="btn btn-success connectBtn">Attempt Connection</button>
+    {{else}}
+    <span class="ensureD2" style="padding-top:15px"><b>You need the mod manager running to connect.</b></span>
+    <button class="btn btn-primary launchmm">Launch Manager</button>
+    {{/if}}
   {{else}}
   {{#if isHost}}
   {{#unless isConfiguring}}

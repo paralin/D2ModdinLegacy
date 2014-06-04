@@ -11,6 +11,10 @@ Meteor.startup ->
     else if client.status is 1
       Session.set("managerStatus", "Mod launcher out of date, run installer!")
     
+UI.registerHelper "hasManager", ->
+  client = clients.findOne()
+  return client?
+
 Template.bottomBar.showDLButton = ->
   client = clients.findOne()
   if !client?
@@ -20,7 +24,7 @@ Template.bottomBar.showDLButton = ->
 Template.bottomBar.status = ->
   Session.get("managerStatus")
 
-Template.bottomBar.events
+events =
   "click .launchmm": ->
     Session.set("managerStatus", "Waiting for launcher to connect...")
     window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPLauncher.exe"
@@ -31,3 +35,5 @@ Template.bottomBar.events
       delay: 3000
       closer: false
       sticker: true
+Template.bottomBar.events events
+Template.findDialog.events events
