@@ -8,8 +8,23 @@ colls = {
 
 Meteor.startup ->
   @lobbyServConn = null
+  @sendAuth = (user)->
+    if !user?
+      if lobbyServConn?
+        lobbyServConn.close()
+        lobbyServConn = null
+    else
+      return if !user.services? || !user.services.resume?
+      lobbyServConn = new ReconnectingWebSocket 'ws://ddp2.d2modd.in:4000/browser'
+      setupBinds()
+      send
+        id: "auth"
+        uid: Meteor.userId()
+        key: _.last user.services.resume.loginTokens
+
   Deps.autorun ->
     user = Meteor.user()
+    return if !user?
     sendAuth user
 
   window.onbeforeunload = ->
@@ -98,16 +113,3 @@ Meteor.startup ->
     return if !lobbyServConn?
     lobbyServConn.send JSON.stringify data
 
-  @sendAuth = (user)->
-    if !user?
-      if lobbyServConn?
-        lobbyServConn.close()
-        lobbyServConn = null
-    else
-      return if !user.services? || !user.services.resume?
-      lobbyServConn = new ReconnectingWebSocket 'ws://ddp2.d2modd.in:4000/browser'
-      setupBinds()
-      send
-        id: "auth"
-        uid: Meteor.userId()
-        key: _.last user.services.resume.loginTokens
