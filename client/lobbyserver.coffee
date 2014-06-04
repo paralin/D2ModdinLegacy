@@ -7,13 +7,16 @@ colls = {
 }
 
 Meteor.startup ->
-  @lobbyServConn = new ReconnectingWebSocket 'ws://ddp2.d2modd.in:4000/browser'
+  @lobbyServConn = null
+  setup = false
 
   window.onbeforeunload = ->
+    return if !lobbyServConn?
     lobbyServConn.onclose = ()->
     lobbyServConn.close()
 
   @callMethod = (name, args)->
+    return if !lobbyServConn?
     data =
       id: name
       req: args
@@ -72,38 +75,42 @@ Meteor.startup ->
             when "remove"
               coll.remove upd
 
-  lobbyServConn.onmessage = (e)->
-    handleMsg e.data
+  setupBinds = ->
+    lobbyServConn.onmessage = (e)->
+      handleMsg e.data
+    lobbyServConn.onclose = ->
+      $.pnotify
+        title: "Disconnected"
+        text: "Disconnected from the lobby server."
+        type: "error"
+      lobbyList.remove({})
+    lobbyServConn.onopen = ->
+      $.pnotify
+        title: "Connected"
+        text: "Connected to the lobby server."
+        type: "success"
+      lobbies.remove({})
+      if setup
+        return sendAuth(Meteor.user())
+      setup = true
+      Deps.autorun ->
+        user = Meteor.user()
+        sendAuth user
 
   send = (data)->
+    return if !lobbyServConn?
     lobbyServConn.send JSON.stringify data
 
   @sendAuth = (user)->
     if !user?
-      send id: "deauth"
+      if lobbyServConn?
+        lobbyServConn.close()
+        lobbyServConn = null
     else
       return if !user.services? || !user.services.resume?
+      lobbyServConn = new ReconnectingWebSocket 'ws://ddp2.d2modd.in:4000/browser'
+      setupBinds()
       send
         id: "auth"
         uid: Meteor.userId()
         key: _.last user.services.resume.loginTokens
-
-  setup = false
-  lobbyServConn.onclose = ->
-    $.pnotify
-      title: "Disconnected"
-      text: "Disconnected from the lobby server."
-      type: "error"
-    lobbyList.remove({})
-  lobbyServConn.onopen = ->
-    $.pnotify
-      title: "Connected"
-      text: "Connected to the lobby server."
-      type: "success"
-    lobbies.remove({})
-    if setup
-      return sendAuth(Meteor.user())
-    setup = true
-    Deps.autorun ->
-      user = Meteor.user()
-      sendAuth user

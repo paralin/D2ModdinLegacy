@@ -134,7 +134,9 @@ Template.lobby.status = Template.findDialog.status = ->
     when 3 then return "Game in progress!"
     when 4 then return "Game has ended."
 Template.lobby.mod = ->
-  mods.findOne({_id: lobbies.findOne().mod})
+  lobby = lobbies.findOne()
+  return if !lobby?
+  mods.findOne({_id:lobby.mod})
 
 Template.lobby.gameInProgress = ->
   #lobby = findUserLobby Meteor.userId()
