@@ -7,7 +7,7 @@ colls = {
 }
 
 Meteor.startup ->
-  @lobbyServConn = null
+  lobbyServConn = null
   @sendAuth = (user)->
     if !user?
       if lobbyServConn?
@@ -15,13 +15,14 @@ Meteor.startup ->
         lobbyServConn = null
     else
       return if !user.services? || !user.services.resume?
-      lobbyServConn = new ReconnectingWebSocket 'ws://ddp2.d2modd.in:4000/browser'
-      setupBinds()
-      send
-        id: "auth"
-        uid: Meteor.userId()
-        key: _.last user.services.resume.loginTokens
-
+      if !lobbyServConn?
+        lobbyServConn = new ReconnectingWebSocket 'ws://ddp2.d2modd.in:4000/browser'
+        setupBinds()
+      else
+        send
+          id: "auth"
+          uid: Meteor.userId()
+          key: _.last user.services.resume.loginTokens
   Deps.autorun ->
     user = Meteor.user()
     return if !user?
@@ -107,7 +108,10 @@ Meteor.startup ->
         text: "Connected to the lobby server."
         type: "success"
       lobbies.remove({})
-      return sendAuth(Meteor.user())
+      send
+        id: "auth"
+        uid: Meteor.userId()
+        key: _.last user.services.resume.loginTokens
 
   send = (data)->
     return if !lobbyServConn?
