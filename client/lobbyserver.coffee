@@ -8,7 +8,9 @@ colls = {
 
 Meteor.startup ->
   @lobbyServConn = null
-  setup = false
+  Deps.autorun ->
+    user = Meteor.user()
+    sendAuth user
 
   window.onbeforeunload = ->
     return if !lobbyServConn?
@@ -90,12 +92,7 @@ Meteor.startup ->
         text: "Connected to the lobby server."
         type: "success"
       lobbies.remove({})
-      if setup
-        return sendAuth(Meteor.user())
-      setup = true
-      Deps.autorun ->
-        user = Meteor.user()
-        sendAuth user
+      return sendAuth(Meteor.user())
 
   send = (data)->
     return if !lobbyServConn?
