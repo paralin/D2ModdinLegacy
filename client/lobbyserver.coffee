@@ -111,7 +111,7 @@ Meteor.startup ->
       send
         id: "auth"
         uid: Meteor.userId()
-        key: _.last user.services.resume.loginTokens
+        key: _.last Meteor.user().services.resume.loginTokens
 
   send = (data)->
     return if !lobbyServConn?
