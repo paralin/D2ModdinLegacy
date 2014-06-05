@@ -5,9 +5,10 @@ colls = {
   lobbies: lobbies,
   publicLobbies: lobbyList
 }
+hasConnected = true
 
 Meteor.startup ->
-  lobbyServConn = null
+  @lobbyServConn = null
   @sendAuth = (user)->
     if !user?
       if lobbyServConn?
@@ -16,16 +17,16 @@ Meteor.startup ->
     else
       return if !user.services? || !user.services.resume?
       if !lobbyServConn?
-        lobbyServConn = new ReconnectingWebSocket 'ws://ddp2.d2modd.in:4000/browser'
+        @lobbyServConn = new XSockets.WebSocket 'ws://10.0.1.3:4000/Browser'
         setupBinds()
       else
         send
           id: "auth"
           uid: Meteor.userId()
           key: _.last user.services.resume.loginTokens
+
   Deps.autorun ->
     user = Meteor.user()
-    return if !user?
     sendAuth user
 
   window.onbeforeunload = ->
@@ -38,23 +39,10 @@ Meteor.startup ->
     data =
       id: name
       req: args
-    lobbyServConn.send JSON.stringify data
+    send data
 
-  handleMsg = (msg)->
-    data = JSON.parse msg
+  handleMsg = (data)->
     switch data.msg
-      when "auth"
-        if data.status
-          $.pnotify
-            title: "Authenticated"
-            text: "You are connected to the lobby server."
-            type: "success"
-        else
-          lobbies.remove {}
-          $.pnotify
-            title: "Deauthenticated"
-            text: "You are no longer authed with the lobby server."
-            type: "error"
       when "error"
         $.pnotify
           title: "Lobby Error"
@@ -94,15 +82,33 @@ Meteor.startup ->
               coll.remove upd
 
   setupBinds = ->
-    lobbyServConn.onmessage = (e)->
-      handleMsg e.data
+    lobbyServConn.on 'auth', (data)->
+      if data.status
+        $.pnotify
+          title: "Authenticated"
+          text: "You are connected to the lobby server."
+          type: "success"
+      else
+        lobbies.remove {}
+        $.pnotify
+          title: "Deauthenticated"
+          text: "You are no longer authed with the lobby server."
+          type: "error"
+    lobbyServConn.on 'lobby', (msg)->
+      handleMsg msg
     lobbyServConn.onclose = ->
+      lobbyServConn = null
+      sendAuth(Meteor.user())
+      return if !hasConnected
+      lobbyList.remove({})
+      hasConnected = false
       $.pnotify
         title: "Disconnected"
         text: "Disconnected from the lobby server."
         type: "error"
-      lobbyList.remove({})
-    lobbyServConn.onopen = ->
+    lobbyServConn.onopen = (clientInfo)->
+      hasConnected = true
+      console.log "connected"
       $.pnotify
         title: "Connected"
         text: "Connected to the lobby server."
@@ -115,5 +121,4 @@ Meteor.startup ->
 
   send = (data)->
     return if !lobbyServConn?
-    lobbyServConn.send JSON.stringify data
-
+    lobbyServConn.publish 'data', data
