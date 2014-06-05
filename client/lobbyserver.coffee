@@ -17,7 +17,7 @@ Meteor.startup ->
     else
       return if !user.services? || !user.services.resume?
       if !lobbyServConn?
-        @lobbyServConn = new XSockets.WebSocket 'ws://10.0.1.3:4000/Browser'
+        @lobbyServConn = new XSockets.WebSocket 'ws://ddp2.d2modd.in:4502/BrowserController'
         setupBinds()
       else
         send
@@ -42,6 +42,7 @@ Meteor.startup ->
     send data
 
   handleMsg = (data)->
+    console.log JSON.stringify data
     switch data.msg
       when "error"
         $.pnotify
@@ -97,9 +98,9 @@ Meteor.startup ->
     lobbyServConn.on 'lobby', (msg)->
       handleMsg msg
     lobbyServConn.onclose = ->
-      lobbyServConn = null
-      sendAuth(Meteor.user())
-      return if !hasConnected
+      #lobbyServConn = null
+      #sendAuth(Meteor.user())
+      #return if !hasConnected
       lobbyList.remove({})
       hasConnected = false
       $.pnotify
