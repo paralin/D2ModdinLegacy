@@ -2,8 +2,8 @@ Fiber = Meteor.require "fibers"
 S3 = Meteor.require 's3'
 knox = Meteor.require 'knox'
 kn = knox.createClient
-  'key'     : "AKIAJ4QROL3BSAMJTI7Q",
-  'secret' : "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",
+  'key'     : "AKIAJETYC7KSUXEAMT3Q",
+  'secret' : "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",
   'bucket': 'd2mpclient'
 s3 = S3.fromKnox kn
 headers =
