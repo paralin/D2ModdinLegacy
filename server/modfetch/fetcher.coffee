@@ -37,49 +37,13 @@ cloneRepo = (name, url)->
       console.log(err) if err?
       done(err, repo)
 
-# Procedures #
-defaultMod =
-  name: ""
-  fullname: ""
-  version: ""
-  author: ""
-  authorimage: ""
-  thumbnail: ""
-  spreadimage: ""
-  website: ""
-  subtitle: ""
-  description: ""
-  features: []
-  public: false
-  playable: false
-  requirements: {}
-  spreadvideo: null
-  exclude: []
-_.matches = (attrs) ->
-  (obj) ->
-    return _.isEmpty(attrs)  unless obj?
-    return true  if obj is attrs
-    for key of attrs
-      continue
-    true
-isValidMod = _.matches defaultMod
-
 @registerMod = (fetch)->
   info = fetch.info
-  info = _.pick info, _.keys defaultMod
-  return {error: "You are missing one or more fields in info.json."} if !isValidMod info
   info.bundle = info.name+".zip"
   info.fetch = fetch._id
   info.user = fetch.user
-  servAddon =
-    name: info.name
-    version: info.version
-    bundle: "serv_#{info.name}.zip"
-    fetch: fetch._id
   mods.remove {name: info.name}
-  ServerAddons.remove {name: info.name}
   mods.insert info
-  ServerAddons.insert servAddon
   log.info "Registered mod #{info.name} in the database."
 
 @bundleMod = (fetch)->

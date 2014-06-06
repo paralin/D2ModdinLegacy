@@ -2,10 +2,7 @@ defaultFetch =
   git: ""
   ref: ""
   name: ""
-matchesFetch = null
 gitRegex = new RegExp "((git|ssh|http(s)?)|(git@[\\w.]+))(:(//)?)([\\w.@\\:/-~]+)(.git)(/)?"
-Meteor.startup ->
-  matchesFetch = _.matches defaultFetch
 Meteor.methods
   'doFetch': (id)->
     user = Meteor.users.findOneFaster {_id: @userId}
@@ -41,8 +38,6 @@ Meteor.methods
     exist = modfetch.findOneFaster {_id: id, user: @userId}
     if !exist?
       throw new Meteor.Error 404, "Can't findFaster that mod fetch."
-    if !matchesFetch fetch
-      throw new Meteor.Error 403, "Your fetch info is invalid."
     if !gitRegex.test fetch.git
       throw new Meteor.Error 403, "Your git URL is not valid."
     if fetch.name.length > 30 || fetch.name.length < 4
@@ -85,7 +80,6 @@ Meteor.methods
       throw new Meteor.Error 404, "Can't findFaster that mod."
     clearExistingRepo id
     modfetch.remove({_id: id})
-    ServerAddons.remove {fetch: id}
     mod = mods.findOneFaster(fetch: id)
     if mod?
       mods.remove({fetch: id})
@@ -96,8 +90,6 @@ Meteor.methods
     user = Meteor.users.findOneFaster {_id: @userId}
     if !AuthManager.userIsInRole @userId, "developer"
       throw new Meteor.Error 403, "You are not a developer."
-    if !matchesFetch fetch
-      throw new Meteor.Error 403, "Your fetch info is invalid."
     if !gitRegex.test fetch.git
       throw new Meteor.Error 403, "Your git URL is not valid."
     if fetch.name.length > 30 || fetch.name.length < 4
