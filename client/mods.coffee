@@ -1,12 +1,15 @@
 @mods = new Meteor.Collection null
 
+#Add an initial cache to speed up appcache
+cache = []
+
 Deps.autorun ->
   status = Meteor.status()
   return if !status.connected
-  Meteor.call "getMods", (err, list)->
+  HTTP.get "/data/mods", (err, res)->
     if err?
       console.log "Error retreiving mods #{err}"
       return
     mods.remove({})
-    for mod in list
+    for mod in res.data
       mods.insert mod

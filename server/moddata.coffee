@@ -16,6 +16,11 @@ Meteor.startup ->
     removed: updateList
     changed: updateList
 
-Meteor.methods
-  "getMods": ->
-    return smods
+Router.map ->
+  @route "moddata",
+    where: "server"
+    path: "/data/mods"
+    action: ->
+      @response.writeHead 200,
+        "Content-Type": "application/json"
+      @response.end JSON.stringify smods
