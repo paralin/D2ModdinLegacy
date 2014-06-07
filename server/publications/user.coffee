@@ -1,5 +1,6 @@
 Meteor.publish "userData", ->
-  Meteor.users.findFaster {_id: @userId}, {fields: {
-    createdAt: 0
-    status: 0
+  if !@userId?
+    return @stop()
+  Meteor.users.findFaster {_id: @userId}, {limit: 1, fields: {
+    services: 1
   }}

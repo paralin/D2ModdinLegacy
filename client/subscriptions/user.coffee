@@ -1,4 +1,5 @@
 Meteor.startup ->
   Deps.autorun ->
-    Meteor.user()
+    user = Meteor.user()
+    return if !user?
     Meteor.subscribe("userData")
