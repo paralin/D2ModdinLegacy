@@ -8,7 +8,6 @@ coffeescript
 bootstrap-3
 accounts-ui-bootstrap-3
 stylus
-user-status
 underscore
 jquery
 pnotify
@@ -26,6 +25,5 @@ buzz.js
 Bootstrap-Validator
 bootboxjs
 smart-publish
-find-faster
 http
 appcache

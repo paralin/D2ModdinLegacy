@@ -1,7 +1,6 @@
 {
   "packages": {
     "bootstrap-3": {},
-    "user-status": {},
     "pnotify": {},
     "font-awesome": {},
     "iron-router": {},
@@ -11,8 +10,6 @@
     "Bootstrap-Validator": {},
     "bootboxjs": {},
     "iron-router-progress": {},
-    "smart-publish": {},
-    "find-faster": {},
-    "kadira": {}
+    "smart-publish": {}
   }
 }

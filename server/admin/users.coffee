@@ -3,7 +3,7 @@ Meteor.methods
     check id, String
     if !@userId? || !AuthManager.userIsInRole(@userId, "admin")
       throw new Meteor.Error 403, "You are not authorized to delete users."
-    delu = Meteor.users.findOneFaster {_id: id}
+    delu = Meteor.users.findOne {_id: id}
     if !delu?
       throw new Meteor.Error 404, "Can't findFaster that user."
     leaveLobby id
@@ -13,7 +13,7 @@ Meteor.methods
     check id, String
     if !@userId? || !AuthManager.userIsInRole(@userId, "admin")
       throw new Meteor.Error 403, "You are not authorized to change bans."
-    banu = Meteor.users.findOneFaster {_id: id}
+    banu = Meteor.users.findOne {_id: id}
     if !banu?
       throw new Meteor.Error 404, "Can't findFaster that user."
     if !banned?

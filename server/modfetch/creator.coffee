@@ -5,7 +5,7 @@ defaultFetch =
 gitRegex = new RegExp "((git|ssh|http(s)?)|(git@[\\w.]+))(:(//)?)([\\w.@\\:/-~]+)(.git)(/)?"
 Meteor.methods
   'doFetch': (id)->
-    user = Meteor.users.findOneFaster {_id: @userId}
+    user = Meteor.users.findOne {_id: @userId}
     if !AuthManager.userIsInRole @userId, "developer"
       throw new Meteor.Error 403, "You are not a developer."
     fetch = modfetch.findOne
@@ -32,10 +32,10 @@ Meteor.methods
       return
     modfetch.update {_id: id}, {$set: {status: 0, error: "Deployed successfully."}}
   'updateModFetch': (id,fetch)->
-    user = Meteor.users.findOneFaster {_id: @userId}
+    user = Meteor.users.findOne {_id: @userId}
     if !AuthManager.userIsInRole @userId, "developer"
       throw new Meteor.Error 403, "You are not a developer."
-    exist = modfetch.findOneFaster {_id: id, user: @userId}
+    exist = modfetch.findOne {_id: id, user: @userId}
     if !exist?
       throw new Meteor.Error 404, "Can't findFaster that mod fetch."
     if !gitRegex.test fetch.git
@@ -52,42 +52,42 @@ Meteor.methods
     clearExistingRepo id
     modfetch.update {_id: id}, fetch
   'flipPublic': (id)->
-    user = Meteor.users.findOneFaster {_id: @userId}
+    user = Meteor.users.findOne {_id: @userId}
     if !AuthManager.userIsInRole @userId, "developer"
       throw new Meteor.Error 403, "You are not a developer."
-    fetch = modfetch.findOneFaster({_id: id})
+    fetch = modfetch.findOne({_id: id})
     if !fetch?
       throw new Meteor.Error 404, "Can't findFaster that mod."
-    mod = mods.findOneFaster(fetch: id)
+    mod = mods.findOne(fetch: id)
     if mod?
       mods.update({_id: mod._id}, {$set: {public: !mod.public}})
   'flipPlayable': (id)->
-    user = Meteor.users.findOneFaster {_id: @userId}
+    user = Meteor.users.findOne {_id: @userId}
     if !AuthManager.userIsInRole @userId, "developer"
       throw new Meteor.Error 403, "You are not a developer."
-    fetch = modfetch.findOneFaster({_id: id})
+    fetch = modfetch.findOne({_id: id})
     if !fetch?
       throw new Meteor.Error 404, "Can't findFaster that mod."
-    mod = mods.findOneFaster(fetch: id)
+    mod = mods.findOne(fetch: id)
     if mod?
       mods.update({_id: mod._id}, {$set: {playable: !mod.playable}})
   'delMod': (id)->
-    user = Meteor.users.findOneFaster {_id: @userId}
+    user = Meteor.users.findOne {_id: @userId}
     if !AuthManager.userIsInRole @userId, "developer"
       throw new Meteor.Error 403, "You are not a developer."
-    fetch = modfetch.findOneFaster({_id: id})
+    fetch = modfetch.findOne({_id: id})
     if !fetch?
       throw new Meteor.Error 404, "Can't findFaster that mod."
     clearExistingRepo id
     modfetch.remove({_id: id})
-    mod = mods.findOneFaster(fetch: id)
+    mod = mods.findOne(fetch: id)
     if mod?
       mods.remove({fetch: id})
       deleteObject mod.bundle
       deleteObject "serv_"+mod.bundle
     true
   'createModFetch': (fetch)->
-    user = Meteor.users.findOneFaster {_id: @userId}
+    user = Meteor.users.findOne {_id: @userId}
     if !AuthManager.userIsInRole @userId, "developer"
       throw new Meteor.Error 403, "You are not a developer."
     if !gitRegex.test fetch.git

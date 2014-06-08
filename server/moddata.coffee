@@ -5,13 +5,13 @@ smodsk = {}
 updateList = ->
   smods = []
   smodsk = {}
-  list = mods.findFaster({isPublic: true}).fetch()
+  list = mods.find({isPublic: true}).fetch()
   for mod in list
     smodsk[mod.name] = mod
     smods.push(mod)
 Meteor.startup ->
   updateList()
-  mods.findFaster({isPublic: true}).observeChanges
+  mods.find({isPublic: true}).observeChanges
     added: updateList
     removed: updateList
     changed: updateList
