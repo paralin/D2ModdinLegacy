@@ -2,7 +2,7 @@ Session.set("botBarStatus", 0)
 
 Meteor.startup ->
   Meteor.autorun ->
-    client = clients.findOne()
+    hasClient = Session.get "clientData"
     if !client?
       Session.set("managerStatus", "Manager is not installed/not running.")
       return
@@ -12,11 +12,11 @@ Meteor.startup ->
       Session.set("managerStatus", "Mod launcher out of date, run installer!")
     
 UI.registerHelper "hasManager", ->
-  client = clients.findOne()
+  client = Session.get "clientData"
   return client?
 
 Template.bottomBar.showDLButton = ->
-  client = clients.findOne()
+  client = Session.get "clientData"
   if !client?
     return true
   return client.status is 1

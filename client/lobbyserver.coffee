@@ -83,6 +83,7 @@ Meteor.startup ->
               coll.remove upd
 
   setupBinds = ->
+    Session.set "clientData", null
     lobbyServConn.on 'auth', (data)->
       if data.status
         $.pnotify
@@ -97,6 +98,13 @@ Meteor.startup ->
           type: "error"
     lobbyServConn.on 'lobby', (msg)->
       handleMsg msg
+    lobbyServConn.on 'manager', (msg)->
+      if msg.msg is 'status'
+        if msg.status
+          Session.set "clientData",
+            status: 0
+        else
+          Session.set "clientData", null
     lobbyServConn.onclose = ->
       #lobbyServConn = null
       #sendAuth(Meteor.user())

@@ -4,7 +4,7 @@ Template.installMod.isDownloading = ->
   Session.get "isDownMod"
 
 Template.installMod.hasModManager = ->
-  clients.findOne()?
+  (Session.get "clientData")?
 Template.installMod.destroyed = ->
   if installingNot?
     installingNot.remove() if(installingNot.remove)
