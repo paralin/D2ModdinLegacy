@@ -16,4 +16,7 @@ Session.vim
 ### Meteor ###
 .meteor/local
 .meteor/meteorite
+.meteor/tmp/
+*.log
+*.tgz
 .demeteorized

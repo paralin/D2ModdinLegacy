@@ -1,10 +1,16 @@
 git = Meteor.require "gift"
-os = Meteor.require "os"
 fs = Meteor.require "fs"
 ncp = Async.wrap((Meteor.require "ncp").ncp)
 rmdir = Async.wrap(Meteor.require "rimraf")
 archiver = Meteor.require "archiver"
 Fiber = Meteor.require "fibers"
+path = Meteor.require('path')
+tmp = ""
+if process.mainModule.filename?
+  tmp = path.dirname(process.mainModule.filename)+"/../tmp/"
+else
+  tmp = process.env.TEMP_DIR || "/tmp/"
+
 
 Meteor.startup ->
   modfetch.update {status: 1}, {$set: {status: 0, error: "Your fetch was interrupted. Please try it again."}}, {multi: true}
@@ -13,7 +19,7 @@ mkdirp = (path)->
   fs.mkdir path, (e)->
     return
 
-rootDir = "#{os.tmpdir()}/d2mprepo/"
+rootDir = "#{tmp}/d2mprepo/"
 
 cloneOrPull = (name, url, branch)->
   if !fs.existsSync(rootDir+name+"/")
@@ -52,7 +58,7 @@ cloneRepo = (name, url)->
     clientname = fetch.info.name+".zip"
     servname = "serv_"+clientname
     #Copy all but .git to a staging dir
-    stage = "#{os.tmpdir()}/d2mpstaging/"
+    stage = "#{tmp}/d2mpstaging/"
     mkdirp stage
     stagem = stage+fetch.info.name+"/"
     rmdir stagem if fs.existsSync stagem
