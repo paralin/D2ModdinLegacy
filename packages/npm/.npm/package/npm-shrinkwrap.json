@@ -199,14 +199,6 @@
     "s3": {
       "version": "0.3.1"
     },
-    "steamidconvert": {
-      "version": "0.2.2",
-      "dependencies": {
-        "bignumber.js": {
-          "version": "1.0.1"
-        }
-      }
-    },
     "winston": {
       "version": "0.7.3",
       "dependencies": {

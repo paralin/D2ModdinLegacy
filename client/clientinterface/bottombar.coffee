@@ -2,7 +2,7 @@ Session.set("botBarStatus", 0)
 
 Meteor.startup ->
   Meteor.autorun ->
-    hasClient = Session.get "clientData"
+    client = Session.get "clientData"
     if !client?
       Session.set("managerStatus", "Manager is not installed/not running.")
       return

@@ -99,6 +99,7 @@ Meteor.startup ->
     lobbyServConn.on 'lobby', (msg)->
       handleMsg msg
     lobbyServConn.on 'manager', (msg)->
+      console.log msg
       if msg.msg is 'status'
         if msg.status
           Session.set "clientData",
